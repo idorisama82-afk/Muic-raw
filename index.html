@@ -36,11 +36,27 @@
         .loader { border: 5px solid #f3f3f3; border-top: 5px solid var(--danger); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        
+        @keyframes earthquake { 
+            0% { transform: translate(1px, 1px) rotate(0deg); } 
+            10% { transform: translate(-1px, -2px) rotate(-1deg); } 
+            20% { transform: translate(-3px, 0px) rotate(1deg); } 
+            30% { transform: translate(3px, 2px) rotate(0deg); } 
+            40% { transform: translate(1px, -1px) rotate(1deg); } 
+            50% { transform: translate(-1px, 2px) rotate(-1deg); } 
+            60% { transform: translate(-3px, 1px) rotate(0deg); } 
+            70% { transform: translate(3px, 1px) rotate(-1deg); } 
+            80% { transform: translate(-1px, -1px) rotate(1deg); } 
+            90% { transform: translate(1px, 2px) rotate(0deg); } 
+            100% { transform: translate(1px, -2px) rotate(-1deg); } 
+        }
 
         #quiz-section { display: none; width: 100%; }
-        .main-content { flex: 3; transition: filter 0.5s ease; } 
+        .main-content { flex: 3; transition: filter 0.5s ease, transform 0.5s ease; transform-origin: top center;} 
         
         .cursed-vision { filter: blur(6px) hue-rotate(180deg) contrast(150%); }
+        .shaking-vision { animation: earthquake 0.2s infinite; }
+        .shrunk-vision { transform: scale(0.35); }
 
         .sidebar { flex: 1; position: sticky; top: 20px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 15px; z-index: 100;}
         .timer-box { font-size: 2.5rem; font-weight: bold; color: var(--danger); font-family: monospace; line-height: 1; text-align: center;}
@@ -65,36 +81,18 @@
         .option { padding: 20px; border: 2px solid #dadce0; border-radius: 12px; cursor: pointer; transition: all 0.2s; background: #fff; font-size: 18px; font-weight: bold; display: flex; align-items: center;}
         .option:hover:not(.locked) { background: #f8f9fa; border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1);}
         .option.selected-correct { background: var(--success); border-color: var(--success); color: white; pointer-events: none; animation: pop 0.3s ease;}
-        .option.selected-wrong { background: var(--danger); border-color: var(--danger); color: white; pointer-events: none; text-decoration: line-through;}
+        .option.selected-wrong { background: var(--danger); border-color: var(--danger); color: white; pointer-events: none; text-decoration: line-through; opacity: 0.5;}
+        .option.locked { pointer-events: none; }
         .char-badge { background: rgba(0,0,0,0.1); padding: 5px 12px; border-radius: 8px; margin-right: 15px; font-size: 20px;}
         
         @keyframes pop { 0% {transform: scale(1);} 50% {transform: scale(1.05);} 100% {transform: scale(1);} }
 
-        .map-wrapper { 
-            position: relative; 
-            width: 800px; 
-            height: 950px; 
-            margin: 0 auto; 
-            background-image: url('Map-of-Vietnam.svg'); 
-            background-size: contain; 
-            background-repeat: no-repeat; 
-            background-position: center; 
-        }
-
+        .map-wrapper { position: relative; width: 800px; height: 950px; margin: 0 auto; background-image: url('Map-of-Vietnam.svg'); background-size: contain; background-repeat: no-repeat; background-position: center; }
         .hotspot { position: absolute; background: var(--warning); color: #000; width: 30px; height: 30px; line-height: 30px; text-align: center; border-radius: 50%; cursor: pointer; font-weight: bold; box-shadow: 0 0 10px rgba(0,0,0,0.5); animation: pulse 1.5s infinite; border: 2px solid #fff;}
         .hotspot.done { background: var(--success); animation: none; pointer-events: none; color: white;}
-        #hs0 { top: 120px; left: 300px; } 
-        #hs1 { top: 320px; left: 220px; } 
-        #hs2 { top: 480px; left: 320px; } 
-        #hs3 { top: 700px; left: 420px; } 
-        #hs4 { top: 780px; left: 350px; } 
+        #hs0 { top: 120px; left: 300px; } #hs1 { top: 320px; left: 220px; } #hs2 { top: 480px; left: 320px; } #hs3 { top: 700px; left: 420px; } #hs4 { top: 780px; left: 350px; } 
         
-        .puzzle-grid { 
-            display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 120px); gap: 2px; margin-top: 15px; 
-            background-image: url('ben-nha-rong-2.jpg'); 
-            background-size: cover; background-position: center; border: 4px solid #333; border-radius: 8px; overflow: hidden; 
-        }
-
+        .puzzle-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 120px); gap: 2px; margin-top: 15px; background-image: url('ben-nha-rong-2.jpg'); background-size: cover; background-position: center; border: 4px solid #333; border-radius: 8px; overflow: hidden; }
         .piece { background-color: var(--primary); color: white; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: bold; cursor: pointer; transition: 0.3s; border: 1px solid #fff; }
         .piece.revealed { opacity: 0; pointer-events: none; }
 
@@ -127,9 +125,7 @@
 </head>
 <body>
 
-<audio id="bgMusic" loop>
-    <source src="Thịnh Vượng Việt Nam Sáng Ngời _ buitruonglinh - buitruonglinh.mp3" type="audio/mpeg">
-</audio>
+<audio id="bgMusic" loop><source src="Thịnh Vượng Việt Nam Sáng Ngời _ buitruonglinh - buitruonglinh.mp3" type="audio/mpeg"></audio>
 <button id="music-btn" onclick="toggleMusic()">🎵 Bật Nhạc</button>
 
 <div id="custom-modal" class="modal-overlay">
@@ -146,13 +142,13 @@
     <h1 style="color: var(--danger); cursor: pointer; user-select: none;" ondblclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';">THEO DẤU CHÂN NGƯỜI</h1>
     
     <div class="meta-info" style="font-size: 14px; background: #fce8e6; color: var(--danger); padding: 10px; border-radius: 8px; margin-bottom: 20px; font-weight: bold;">
-        ⚠️ COMBO CHUỖI ĐÚNG SẼ +% ĐIỂM. CHUỖI 5 ĐƯỢC TẶNG 1 THẺ KỸ NĂNG!
+        ⚠️ COMBO CHUỖI ĐÚNG SẼ +% ĐIỂM. CHUỖI 5 ĐƯỢC TẶNG THẺ KỸ NĂNG!
     </div>
     <input type="text" id="playerName" placeholder="Nhập Tên / Mã Sinh Viên...">
     <button class="btn btn-danger" onclick="joinLobby()">🚀 VÀO PHÒNG CHỜ</button>
     
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v6.0.0 (Giải Đấu Sinh Tồn) <br>
+        Phiên bản v8.0.0 (Đặc Quyền Của Thần) <br>
         Copyright © 2026 by Idori
     </div>
 </div>
@@ -179,7 +175,6 @@
         
         <button class="btn btn-danger" style="padding: 15px; font-size: 20px;" onclick="adminStartGame()">🚀 KHỞI ĐỘNG GAME & CHIẾU BXH</button>
         <button class="btn btn-secondary" onclick="adminResetRoom()" style="margin-top: 15px;">🔄 Reset & Dọn Dẹp Phòng</button>
-        <button class="btn" onclick="hackInfiniteSkills()" style="margin-top: 15px; background: #000; color: #0f0; border: 2px solid #0f0; box-shadow: 0 0 10px #0f0;">☠️ HACK VÔ HẠN THẺ (CHO MÌNH)</button>
     </div>
 </div>
 
@@ -203,7 +198,6 @@
         <tbody id="admin-lb-body"></tbody>
     </table>
     
-    <!-- CÁC NÚT ĐIỀU KHIỂN CỦA ADMIN -->
     <div style="display: flex; gap: 15px; margin-top: 20px;">
         <button class="btn btn-danger" onclick="adminEndGame()" style="flex: 2; padding: 15px; font-size: 18px; background: #d32f2f;">🛑 KẾT THÚC & TỔNG KẾT TRẬN</button>
         <button class="btn btn-secondary" onclick="adminResetRoom()" style="flex: 1; padding: 15px; font-size: 16px;">🔄 Xóa Data</button>
@@ -343,22 +337,21 @@
     let tasksCompleted = 0, currentP1Index = 0, mapActive = null, pzActive = null;
     let myPlayerRef = null, isCheating = false, leaveTime = 0;
     
-    // --- BIẾN COMBO & KỸ NĂNG ---
     let currentStreak = 0;
     let skillCount = 1; 
     let currentLeaderboard = [];
+    
+    // BIẾN THẦN THÁNH CHO IDORI
+    let isVIP = false;
 
     database.ref('room_state').on('value', (snapshot) => {
         let state = snapshot.val();
-        
-        // KIỂM TRA LỆNH BẮT ĐẦU GAME
         if(state === 'playing' && playerName !== "" && !isGameActive && !isGameOver) {
             initiateGame(); 
         } 
         else if (state === 'waiting') {
             isGameActive = false;
         }
-        // KIỂM TRA LỆNH ADMIN ÉP KẾT THÚC GAME!
         else if (state === 'ended' && isGameActive && !isGameOver) {
             isInputPaused = true;
             openModal("🛑 HẾT GIỜ!", "Admin đã thổi còi kết thúc trận đấu! Hệ thống đang tự động tổng kết điểm số...", "alert", () => {
@@ -401,6 +394,25 @@
             setTimeout(() => { mainArea.classList.remove('cursed-vision'); }, 15000);
         }
 
+        if(ev.type === 'earthquake' && ev.by !== playerName) {
+            let mainArea = document.getElementById('game-main-area');
+            mainArea.classList.add('shaking-vision');
+            openModal("🌋 ĐỘNG ĐẤT!", `<b>${ev.by}</b> đã kích hoạt động đất! Giữ chặt chuột!`, "alert");
+            setTimeout(() => { mainArea.classList.remove('shaking-vision'); }, 10000);
+        }
+
+        if(ev.type === 'shrink' && ev.by !== playerName) {
+            let mainArea = document.getElementById('game-main-area');
+            mainArea.classList.add('shrunk-vision');
+            openModal("🍄 BÙA TEO NHỎ!", `Pháp sư <b>${ev.by}</b> đã làm teo nhỏ màn hình của bạn! Kéo mắt vào mà đọc!`, "alert");
+            setTimeout(() => { mainArea.classList.remove('shrunk-vision'); }, 15000);
+        }
+
+        if(ev.type === 'time_steal' && ev.target === playerName) {
+            elapsedTime += 60; updateStats();
+            openModal("⏳ MẤT THỜI GIAN!", `Tên giặc <b>${ev.by}</b> đã ném cho bạn 60 giây thời gian phạt!`, "alert");
+        }
+
         if(ev.type === 'steal' && ev.target === playerName) {
             score = Math.max(0, score - 100); updateStats();
             openModal("🚨 MẤT TRỘM!", `Tên giặc <b>${ev.by}</b> đã dùng Thẻ Bàn Tay Đen cướp mất 100 điểm của bạn!`, "alert");
@@ -416,10 +428,21 @@
         let rawName = document.getElementById("playerName").value.trim();
         if(!rawName) return alert("Nhập mã định danh trước khi lên tàu!");
         
+        // HỆ THỐNG XÁC THỰC VIP CỦA IDORI
+        if(rawName.toLowerCase() === 'idori') {
+            let pass = prompt("HỆ THỐNG BẢO MẬT: Nhập mật khẩu quyền năng của Lớp trưởng Idori:");
+            if(pass === "DLTV15halam@drid") {
+                isVIP = true;
+                alert("Đã xác thực Lớp trưởng Idori! Kích hoạt chế độ Thần Thánh: Vô hạn thẻ, chọn kỹ năng tùy ý, vô hiệu hóa Anti-Cheat!");
+            } else {
+                return alert("Sai mật khẩu! Ngươi không phải Idori thật!");
+            }
+        }
+        
         database.ref('room_players').once('value').then((snapshot) => {
             let nameExists = false;
             snapshot.forEach((child) => { if(child.val().name.toLowerCase() === rawName.toLowerCase()) nameExists = true; });
-            if(nameExists) return openModal("⛔ BÁO ĐỘNG TRÙNG TÊN!", "Cái tên <b>" + rawName + "</b> này đã có người đăng ký. Hãy chọn tên khác!", "alert");
+            if(nameExists && !isVIP) return openModal("⛔ BÁO ĐỘNG TRÙNG TÊN!", "Cái tên <b>" + rawName + "</b> này đã có người đăng ký. Hãy chọn tên khác!", "alert");
 
             playerName = rawName;
             if(!isMusicPlaying) toggleMusic(); 
@@ -442,7 +465,6 @@
         document.getElementById('admin-live-section').style.display = 'block';
     }
 
-    // --- CHỨC NĂNG KẾT THÚC GAME CHO ADMIN ---
     function adminEndGame() {
         if(confirm("🛑 Bạn có CHẮC CHẮN muốn kết thúc trò chơi ngay bây giờ? Toàn bộ người chơi sẽ bị khóa bài và nộp điểm!")) {
             database.ref('room_state').set('ended');
@@ -458,12 +480,6 @@
             database.ref('room_events').remove(); 
             location.reload();
         }
-    }
-    
-    function hackInfiniteSkills() {
-        skillCount = 9999;
-        updateStats();
-        alert("Khắc nhập! Tài khoản của Lớp trưởng Idori đã nhận 9999 Thẻ Kỹ Năng!");
     }
 
     function shuffleArray(array) {
@@ -487,7 +503,10 @@
     function initiateGame() {
         document.getElementById('waiting-section').style.display = 'none';
         document.getElementById('quiz-section').style.display = 'flex';
-        document.getElementById('player-display-name').innerText = "Chiến binh: " + playerName;
+        
+        let pNameText = "Chiến binh: " + playerName;
+        if(isVIP) pNameText = "👑 ADMIN: " + playerName;
+        document.getElementById('player-display-name').innerText = pNameText;
         
         deepShuffleData();
         isGameActive = true; 
@@ -505,14 +524,44 @@
             let m = Math.floor(elapsedTime / 60), s = elapsedTime % 60;
             document.getElementById('timer-display').innerText = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
         }, 1000);
+        
+        if(isVIP) updateStats(); // Hiện nút kho kỹ năng liền
     }
 
+    // --- RÚT THẺ KỸ NĂNG ---
     function drawSkill() {
-        if(skillCount <= 0 || isInputPaused) return;
+        if(isInputPaused) return;
+        
+        // NẾU LÀ IDORI -> MỞ KHO VŨ KHÍ TỰ CHỌN
+        if(isVIP) {
+            let html = `
+                <button class="btn btn-primary" style="font-size:12px;padding:8px;" onclick="executeSkill(0)">Nhân đôi điểm</button>
+                <button class="btn btn-success" style="font-size:12px;padding:8px;" onclick="executeSkill(1)">-60s thời gian</button>
+                <button class="btn btn-info" style="font-size:12px;padding:8px;" onclick="executeSkill(2)">Bão Tuyết (Đóng băng)</button>
+                <button class="btn btn-danger" style="font-size:12px;padding:8px;" onclick="executeSkill(3)">Cướp 100đ Top 1</button>
+                <button class="btn btn-warning" style="font-size:12px;padding:8px;color:#000" onclick="executeSkill(4)">Leak Đáp Án</button>
+                <button class="btn" style="background:#9c27b0;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(5)">Ảo Giác (Mờ chữ)</button>
+                <button class="btn" style="background:#e91e63;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(6)">Tráo Điểm Chỉ Định</button>
+                <button class="btn" style="background:#607d8b;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(7)">Tráo Điểm Random</button>
+                <button class="btn" style="background:#00bcd4;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(8)">Thẻ 50/50</button>
+                <button class="btn" style="background:#795548;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(9)">Đạo tặc thời gian</button>
+                <button class="btn" style="background:#ff5722;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(10)">Động Đất</button>
+                <button class="btn" style="background:#8bc34a;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(11)">Bùa Nấm Lùn</button>
+            `;
+            openModal("👑 KHO VŨ KHÍ CỦA IDORI", `<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">${html}</div>`, "alert");
+            return;
+        }
+
+        // NẾU LÀ NGƯỜI CHƠI BÌNH THƯỜNG -> RANDOM
+        if(skillCount <= 0) return;
         skillCount--; 
         updateStats();
+        executeSkill(Math.floor(Math.random() * 12));
+    }
 
-        let r = Math.floor(Math.random() * 8); 
+    // --- THỰC THI KỸ NĂNG ---
+    function executeSkill(r) {
+        if(isVIP) document.getElementById('custom-modal').classList.remove('show');
         
         switch(r) {
             case 0: 
@@ -584,17 +633,51 @@
                     openModal("🎲 THẺ ĐỊNH MỆNH", "Phòng có mỗi mình bạn, không ai để đổi. Tặng an ủi 100 điểm!", "alert");
                 }
                 break;
+            case 8: 
+                if(document.getElementById('phase1-card').style.display !== 'none') {
+                    let correctIdx = p1Data[currentP1Index].ans;
+                    let btns = document.getElementById('p1-options').querySelectorAll('.option');
+                    let wrongIndices = [0,1,2,3].filter(i => i !== correctIdx);
+                    wrongIndices = shuffleArray(wrongIndices);
+                    btns[wrongIndices[0]].classList.add('selected-wrong', 'locked');
+                    btns[wrongIndices[1]].classList.add('selected-wrong', 'locked');
+                    openModal("💡 THẺ 50/50", "Quyền trợ giúp! Hệ thống đã loại bỏ giúp bạn 2 phương án sai!", "alert");
+                } else {
+                    score += 100; updateStats();
+                    openModal("💡 THẺ 50/50", "Thẻ này chỉ dùng ở phần Trắc nghiệm. Tặng bạn 100 điểm đền bù nhé!", "alert");
+                }
+                break;
+            case 9: 
+                let top1_time = currentLeaderboard.length > 0 ? currentLeaderboard[0].name : null;
+                if(top1_time && top1_time !== playerName) {
+                    database.ref('room_events').set({type: 'time_steal', by: playerName, target: top1_time, time: Date.now()});
+                    elapsedTime = Math.max(0, elapsedTime - 60); updateStats();
+                    openModal("⏳ THẺ ĐẠO TẶC THỜI GIAN", `Bạn được trừ 60s phạt và đã ném 60s phạt đó sang cho TOP 1 (${top1_time})!`, "alert");
+                } else {
+                    elapsedTime = Math.max(0, elapsedTime - 60); updateStats();
+                    openModal("⏳ THẺ THỜI GIAN", "Bạn đang TOP 1 nên không chôm giờ của ai được, tự giảm cho mình 60s!", "alert");
+                }
+                break;
+            case 10: 
+                database.ref('room_events').set({type: 'earthquake', by: playerName, time: Date.now()});
+                openModal("🌋 THẺ ĐỘNG ĐẤT", "Kích hoạt chấn động! Màn hình của mọi đối thủ sẽ rung lắc dữ dội trong 10 giây!", "alert");
+                break;
+            case 11: 
+                database.ref('room_events').set({type: 'shrink', by: playerName, time: Date.now()});
+                openModal("🍄 THẺ NẤM LÙN", "Ám toán đối thủ! Giao diện của tất cả người chơi khác bị thu nhỏ xíu trong 15 giây!", "alert");
+                break;
         }
     }
 
+    // --- ANTI CHEAT ---
     window.addEventListener("blur", () => {
-        if (!isGameActive || isGameOver) return; 
+        if (!isGameActive || isGameOver || isVIP) return; // IDORI ĐƯỢC MIỄN TỘI RỜI TAB
         elapsedTime += 60; updateFirebaseData(); 
         isCheating = true; leaveTime = Date.now();
     });
 
     window.addEventListener("focus", () => {
-        if (isCheating && isGameActive && !isGameOver) {
+        if (isCheating && isGameActive && !isGameOver && !isVIP) {
             let extraPenalty = Math.floor(((Date.now() - leaveTime) / 1000) * 4);
             elapsedTime += extraPenalty; updateFirebaseData(); isCheating = false;
             openModal("🚨 BẮT QUẢ TANG!", `Lách luật đi đâu đấy?<br>1. Phạt cảnh cáo: <b>+60 Giây</b><br>2. Phạt vắng mặt x4: <b>+${extraPenalty} Giây</b>`, "alert");
@@ -634,8 +717,12 @@
         if(currentStreak > 0) comboUI.classList.add('active'); else comboUI.classList.remove('active');
 
         let sBtn = document.getElementById('skill-btn');
-        if(skillCount > 0) {
-            sBtn.innerText = "🃏 RÚT THẺ KỸ NĂNG (Còn: " + (skillCount>100 ? "Vô hạn" : skillCount) + ")";
+        if(isVIP) {
+            sBtn.innerText = "👑 KHO KỸ NĂNG (Vô Hạn)";
+            sBtn.style.display = "block";
+            sBtn.style.background = "linear-gradient(45deg, #9c27b0, #e91e63)";
+        } else if(skillCount > 0) {
+            sBtn.innerText = "🃏 RÚT THẺ KỸ NĂNG (Còn: " + skillCount + ")";
             sBtn.style.display = "block";
         } else {
             sBtn.style.display = "none";
@@ -777,55 +864,20 @@
         if(myPlayerRef) myPlayerRef.update({ status: statusMsg, time: elapsedTime, score: score });
         document.getElementById('quiz-section').style.display = 'none'; document.getElementById('leaderboard-section').style.display = 'block';
     }
-// ==========================================
+
+    // ==========================================
     // HỆ THỐNG PHÒNG THỦ CHỐNG HACKER VÀ SOI CODE
     // ==========================================
-    
-    // 1. Chặn bấm chuột phải (Tắt Context Menu)
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-    });
-
-    // 2. Chặn các tổ hợp phím tắt mở DevTools và Xem Source
+    document.addEventListener('contextmenu', function(e) { if(!isVIP) e.preventDefault(); });
     document.addEventListener('keydown', function(e) {
-        // Chặn phím F12
-        if (e.key === 'F12' || e.keyCode === 123) {
-            e.preventDefault();
-            return false;
-        }
-        
-        // Chặn Ctrl + Shift + I (Mở tab Elements/Console)
-        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
-            e.preventDefault();
-            return false;
-        }
-        
-        // Chặn Ctrl + Shift + J (Mở thẳng Console)
-        if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
-            e.preventDefault();
-            return false;
-        }
-        
-        // Chặn Ctrl + Shift + C (Công cụ Inspect trỏ chuột)
-        if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) {
-            e.preventDefault();
-            return false;
-        }
-        
-        // Chặn Ctrl + U (Xem Source Code HTML)
-        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
-            e.preventDefault();
-            return false;
-        }
-
-        // Chặn Ctrl + S (Lưu trang web về máy)
-        if (e.ctrlKey && (e.key === 'S' || e.key === 's')) {
-            e.preventDefault();
-            return false;
-        }
+        if(isVIP) return; // IDORI ĐƯỢC QUYỀN MỞ F12 THOẢI MÁI
+        if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) { e.preventDefault(); return false; }
+        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) { e.preventDefault(); return false; }
+        if (e.ctrlKey && (e.key === 'S' || e.key === 's')) { e.preventDefault(); return false; }
     });
-
-    // 3. Đòn tâm lý: Lời nguyền rủa nếu tụi nó lách được vào Console
     console.log("%c🛑 DỪNG LẠI NGAY!", "color: red; font-size: 50px; font-weight: bold; text-shadow: 2px 2px 0 #000;");
     console.log("%cKhu vực này không dành cho người chơi. Hệ thống Anti-Cheat của Idori đang ghi lại địa chỉ IP của bạn. Mọi hành vi cố tình chỉnh sửa sẽ bị cấm thi ngay lập tức!", "color: yellow; font-size: 20px; font-weight: bold; background: #222; padding: 10px; border-radius: 5px;");
 </script>
