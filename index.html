@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chiến Dịch Lịch Sử - 05/6/1911</title>
+    <title>Theo Dấu Chân Người</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -70,26 +70,26 @@
         
         @keyframes pop { 0% {transform: scale(1);} 50% {transform: scale(1.05);} 100% {transform: scale(1);} }
 
-        /* Map Styles */
+        /* Map Styles - FIXED KHUNG & TỌA ĐỘ CHUẨN */
         .map-wrapper { 
-    position: relative; 
-    width: 800px; /* Ép cứng chiều rộng */
-    height: 950px; /* Ép cứng chiều cao */
-    margin: 0 auto; /* Căn giữa */
-    background-image: url('Map-of-Vietnam.svg'); 
-    background-size: contain; 
-    background-repeat: no-repeat; 
-    background-position: center; 
-}
+            position: relative; 
+            width: 800px; 
+            height: 950px; 
+            margin: 0 auto; 
+            background-image: url('Map-of-Vietnam.svg'); 
+            background-size: contain; 
+            background-repeat: no-repeat; 
+            background-position: center; 
+        }
 
         .hotspot { position: absolute; background: var(--warning); color: #000; width: 30px; height: 30px; line-height: 30px; text-align: center; border-radius: 50%; cursor: pointer; font-weight: bold; box-shadow: 0 0 10px rgba(0,0,0,0.5); animation: pulse 1.5s infinite; border: 2px solid #fff;}
         .hotspot.done { background: var(--success); animation: none; pointer-events: none; color: white;}
-        #hs0 { top: 15%; left: 55%; } /* Vị trí gần Hà Nội/Phía Bắc */
-#hs0 { top: 200px; left: 580px; } /* Vị trí 1: Phía Bắc */
-#hs1 { top: 450px; left: 470px; } /* Vị trí 2: Miền Trung */
-#hs2 { top: 600px; left: 530px; } /* Vị trí 3: Nam Trung Bộ */
-#hs3 { top: 820px; left: 750px; } /* Vị trí 4: Biển Đông */
-#hs4 { top: 920px; left: 540px; } /* Vị trí 5: Phía Nam */
+        #hs0 { top: 200px; left: 580px; } 
+        #hs1 { top: 450px; left: 470px; } 
+        #hs2 { top: 600px; left: 530px; } 
+        #hs3 { top: 820px; left: 750px; } 
+        #hs4 { top: 920px; left: 540px; } 
+        
         /* Puzzle Styles */
         .puzzle-grid { 
             display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 120px); gap: 2px; margin-top: 15px; 
@@ -146,19 +146,26 @@
 
 <div id="setup-section" class="card">
     <img src="stock-vector-seamless-puzzles-grid-blank-template-jigsaw-puzzle-pieces-seamless-pattern-mosaic-background-2747017317.jpg" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
-    <h1 style="color: var(--danger);">CHIẾN DỊCH 05/6/1911</h1>
+    
+    <!-- Nhấp đúp chuột vào chữ THEO DẤU CHÂN NGƯỜI này để mở ADMIN -->
+    <h1 style="color: var(--danger); cursor: pointer; user-select: none;" ondblclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';">THEO DẤU CHÂN NGƯỜI</h1>
+    
     <div class="meta-info" style="font-size: 14px; background: #fce8e6; color: var(--danger); padding: 10px; border-radius: 8px; margin-bottom: 20px; font-weight: bold;">
         ⚠️ LUẬT SINH TỒN: Rời tab bị phạt x4 thời gian. CÂU HỎI & ĐÁP ÁN ĐƯỢC XÁO TRỘN NGẪU NHIÊN!
     </div>
     <input type="text" id="playerName" placeholder="Nhập Tên / Mã Sinh Viên...">
     <button class="btn btn-danger" onclick="joinLobby()">🚀 VÀO PHÒNG CHỜ</button>
-    <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Dành Cho Admin</button>
+    
+    <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
+        Phiên bản v1.0.0 <br>
+        Copyright © 2026 by Idori
+    </div>
 </div>
 
 <div id="waiting-section" class="card" style="display: none;">
-    <h1 style="color: var(--primary);">PHÒNG CHỜ CHIẾN DỊCH</h1>
+    <h1 style="color: var(--primary);">PHÒNG CHỜ TẬP KẾT</h1>
     <div class="loader"></div>
-    <h2 style="color: #5f6368;" id="waiting-msg">Đang chờ người chơi khác` phát lệnh...</h2>
+    <h2 style="color: #5f6368;" id="waiting-msg">Đang chờ người chơi khác phát lệnh...</h2>
     <div style="background: #e8f0fe; padding: 15px; border-radius: 8px; margin-top: 20px;">
         <h3 style="margin: 0; color: var(--primary);">Sĩ số hiện tại: <span id="lobby-count" style="font-size: 24px; color: var(--danger);">0</span> chiến binh</h3>
     </div>
@@ -210,7 +217,7 @@
         <h3 style="margin: 0; text-align: center; color: #5f6368;" id="player-display-name">Tên</h3>
         <div class="timer-box" id="timer-display">00:00</div>
         <div class="score-box">ĐIỂM: <span id="current-score">0</span></div>
-        <div style="font-weight: bold; color: #5f6368; font-size: 14px;">Tiến độ chiến dịch: <span id="progress-text">0/29</span></div>
+        <div style="font-weight: bold; color: #5f6368; font-size: 14px;">Tiến độ hành trình: <span id="progress-text">0/29</span></div>
         <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
         
         <div class="live-lb-box">
@@ -233,7 +240,7 @@
             <div class="options-grid" id="p1-options"></div>
         </div>
 
-        <div class="card" style="border-top: 6px solid var(--warning);" id="phase2-card" style="display: none;">
+        <div class="card" id="phase2-card" style="border-top: 6px solid var(--warning); display: none;">
             <h2 style="color: var(--warning); margin-bottom: 5px;">GĐ 2: DẤU CHÂN LỊCH SỬ (Form BGD)</h2>
             <p style="color: #5f6368; font-size: 14px; text-align: center;">*Bấm vào 5 địa danh. Trả lời Đúng/Sai.</p>
             <div class="map-wrapper">
@@ -245,7 +252,7 @@
             </div>
         </div>
 
-        <div class="card" style="border-top: 6px solid var(--danger);" id="phase3-card" style="display: none;">
+        <div class="card" id="phase3-card" style="border-top: 6px solid var(--danger); display: none;">
             <h2 style="color: var(--danger); margin-bottom: 5px;">GĐ 3: GIẢI MÃ HÌNH ẢNH</h2>
             <p style="color: #5f6368; font-size: 14px; text-align: center;">*Lật mảnh ghép trả lời câu hỏi. Đoán đúng hình chốt +500đ.</p>
             <div class="puzzle-grid" id="puzzle-grid"></div>
@@ -541,9 +548,9 @@
         let lbArray = [];
         for (let id in data) { lbArray.push(data[id]); }
         
-        // CÔNG THỨC: 60% ĐIỂM SỐ - 40% THỜI GIAN
+        // CHỐNG ÂM ĐIỂM BẰNG MATH.MAX
         lbArray.forEach(p => {
-            p.rankScore = (p.score * 0.6) - (p.time * 0.4);
+            p.rankScore = Math.max(0, (p.score * 0.6) - (p.time * 0.4));
         });
 
         // XẾP HẠNG THEO ĐIỂM TỔNG HỢP CAO NHẤT LÊN ĐẦU
