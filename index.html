@@ -84,12 +84,12 @@
 
         .hotspot { position: absolute; background: var(--warning); color: #000; width: 30px; height: 30px; line-height: 30px; text-align: center; border-radius: 50%; cursor: pointer; font-weight: bold; box-shadow: 0 0 10px rgba(0,0,0,0.5); animation: pulse 1.5s infinite; border: 2px solid #fff;}
         .hotspot.done { background: var(--success); animation: none; pointer-events: none; color: white;}
-        #hs0 { top: 200px; left: 580px; } 
-        #hs1 { top: 450px; left: 470px; } 
-        #hs2 { top: 600px; left: 530px; } 
-        #hs3 { top: 820px; left: 750px; } 
-        #hs4 { top: 920px; left: 540px; } 
-        
+      /* Tọa độ kéo về phần Đất Liền (bên trái bản đồ) */
+        #hs0 { top: 120px; left: 300px; } /* Vị trí 1: Pác Bó (Cao Bằng) - Tuốt phía Bắc */
+        #hs1 { top: 320px; left: 220px; } /* Vị trí 2: Làng Sen (Nghệ An) - Miền Trung */
+        #hs2 { top: 480px; left: 320px; } /* Vị trí 3: Trường Quốc Học (Huế) */
+        #hs3 { top: 700px; left: 420px; } /* Vị trí 4: Trường Dục Thanh (Bình Thuận) */
+        #hs4 { top: 780px; left: 350px; } /* Vị trí 5: Bến Nhà Rồng (TP.HCM) */
         /* Puzzle Styles */
         .puzzle-grid { 
             display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 120px); gap: 2px; margin-top: 15px; 
@@ -157,7 +157,7 @@
     <button class="btn btn-danger" onclick="joinLobby()">🚀 VÀO PHÒNG CHỜ</button>
     
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v1.0.0 <br>
+        Phiên bản v1.0.1 <br>
         Copyright © 2026 by Idori
     </div>
 </div>
@@ -189,7 +189,7 @@
 </div>
 
 <div id="admin-live-section" class="card" style="display: none; max-width: 1000px;">
-    <h1 style="color: var(--danger); text-transform: uppercase;">🖥️ MÀN HÌNH MÁY CHIẾU (ADMIN)</h1>
+    <h1 style="color: var(--danger); text-transform: uppercase;">🖥️ MÀN HÌNH MÁY CHIẾU</h1>
     <h2 style="color: var(--primary);">🏆 BẢNG XẾP HẠNG TRỰC TIẾP 🏆</h2>
     <p style="font-size: 15px; font-weight: bold; color: var(--warning); background: #333; padding: 10px; border-radius: 8px;">
         CÔNG THỨC: ĐIỂM XẾP HẠNG = (ĐIỂM THỰC x 60%) - (THỜI GIAN ĐÃ DÙNG x 40%)
@@ -304,42 +304,84 @@
     const database = firebase.database();
 
     // --- DATA GỐC (Chưa xáo) ---
-    const p1Data_Original = [
-        { q: "Bác Hồ ra đi tìm đường cứu nước ngày tháng năm nào?", opts: ["05/06/1911", "06/05/1911", "02/09/1945", "19/05/1890"], ans: 0 },
-        { q: "Tên con tàu Bác đi là gì?", opts: ["Latouche-Tréville", "Amiral Latouche-Tréville", "Đô đốc Courbet", "Chasseloup-Laubat"], ans: 1 },
-        { q: "Tên Bác dùng khi lên tàu là?", opts: ["Nguyễn Ái Quốc", "Lý Thụy", "Văn Ba", "Hồ Chí Minh"], ans: 2 },
-        { q: "Công việc đầu tiên của Bác trên tàu?", opts: ["Phụ bếp", "Đốt lò", "Quét dọn", "Phục vụ"], ans: 0 },
-        { q: "Lương tháng đầu tiên của Bác?", opts: ["40 franc", "45 franc", "50 franc", "100 franc"], ans: 1 },
-        { q: "Nơi Bác ra đi tìm đường cứu nước?", opts: ["Hải Phòng", "Bến Nhà Rồng", "Đà Nẵng", "Cảng Cát Lái"], ans: 1 },
-        { q: "Bến Nhà Rồng hiện thuộc quận mấy TP.HCM?", opts: ["Quận 1", "Quận 3", "Quận 4", "Quận 7"], ans: 2 },
-        { q: "Năm 1919, Bác gửi văn kiện gì đến Hội nghị Versailles?", opts: ["Tuyên ngôn độc lập", "Đường Kách mệnh", "Yêu sách nhân dân An Nam", "Bản án chế độ thực dân Pháp"], ans: 2 },
-        { q: "Bác đọc Luận cương của Lenin năm nào?", opts: ["1919", "1920", "1921", "1925"], ans: 1 },
-        { q: "Hội Việt Nam Cách mạng Thanh niên thành lập tại đâu?", opts: ["Paris", "Moscow", "Quảng Châu", "Hương Cảng"], ans: 2 },
-        { q: "Báo Thanh niên xuất bản số đầu tiên ngày nào?", opts: ["21/06/1925", "03/02/1930", "02/09/1945", "19/05/1890"], ans: 0 },
-        { q: "Đảng Cộng sản Việt Nam thành lập ngày nào?", opts: ["03/02/1930", "02/09/1945", "19/08/1945", "07/05/1954"], ans: 0 },
-        { q: "Bác trở về nước năm 1941 tại tỉnh nào?", opts: ["Lạng Sơn", "Cao Bằng", "Tuyên Quang", "Hà Giang"], ans: 1 },
-        { q: "Bí danh của Bác khi hoạt động ở Thái Lan?", opts: ["Thầu Chín", "Vương", "Trần", "Lý Thụy"], ans: 0 },
-        { q: "Tác phẩm 'Bản án chế độ thực dân Pháp' xuất bản lần đầu ở đâu?", opts: ["Việt Nam", "Trung Quốc", "Pháp", "Nga"], ans: 2 }
+   const p1Data_Original = [
+        { q: "Vào ngày tháng năm nào, người thanh niên yêu nước Nguyễn Tất Thành đã chính thức rời bến Nhà Rồng, bắt đầu hành trình bôn ba tìm đường cứu nước?", opts: ["05/06/1911", "06/05/1911", "02/09/1945", "19/05/1890"], ans: 0 },
+        { q: "Con tàu buôn của Pháp đã đưa Bác Hồ rời khỏi Sài Gòn sang phương Tây năm 1911 mang tên là gì?", opts: ["Latouche-Tréville", "Amiral Latouche-Tréville", "Đô đốc Courbet", "Chasseloup-Laubat"], ans: 1 },
+        { q: "Khi xin làm việc trên tàu Amiral Latouche-Tréville để được sang Pháp, Nguyễn Tất Thành đã lấy tên gọi (bí danh) là gì?", opts: ["Nguyễn Ái Quốc", "Lý Thụy", "Văn Ba", "Hồ Chí Minh"], ans: 2 },
+        { q: "Để có thể trụ lại trên chuyến tàu hành trình sang Pháp, công việc đầu tiên vô cùng vất vả mà Bác Hồ phải làm là gì?", opts: ["Phụ bếp", "Đốt lò", "Quét dọn", "Phục vụ"], ans: 0 },
+        { q: "Mức lương bèo bọt mà người thanh niên Văn Ba nhận được trong tháng làm việc đầu tiên trên tàu là bao nhiêu?", opts: ["40 franc", "45 franc", "50 franc", "100 franc"], ans: 1 },
+        { q: "Địa danh lịch sử nào là nơi đã in dấu chân cuối cùng của Bác trước khi rời xa Tổ quốc suốt 30 năm dài đằng đẵng?", opts: ["Hải Phòng", "Bến Nhà Rồng", "Đà Nẵng", "Cảng Cát Lái"], ans: 1 },
+        { q: "Hiện nay, di tích lịch sử Bến Nhà Rồng (Bảo tàng Hồ Chí Minh) tọa lạc tại quận nào của Thành phố Hồ Chí Minh?", opts: ["Quận 1", "Quận 3", "Quận 4", "Quận 7"], ans: 2 },
+        { q: "Năm 1919, thay mặt những người Việt Nam yêu nước tại Pháp, Nguyễn Ái Quốc đã gửi văn kiện nào tới Hội nghị Versailles?", opts: ["Tuyên ngôn độc lập", "Đường Kách mệnh", "Yêu sách nhân dân An Nam", "Bản án chế độ thực dân Pháp"], ans: 2 },
+        { q: "Vào năm nào, Nguyễn Ái Quốc đã đọc được 'Sơ thảo lần thứ nhất những luận cương về vấn đề dân tộc và vấn đề thuộc địa' của V.I. Lenin?", opts: ["1919", "1920", "1921", "1925"], ans: 1 },
+        { q: "Tháng 6 năm 1925, tổ chức Hội Việt Nam Cách mạng Thanh niên do Nguyễn Ái Quốc sáng lập được ra đời tại địa điểm nào?", opts: ["Paris", "Moscow", "Quảng Châu", "Hương Cảng"], ans: 2 },
+        { q: "Cơ quan ngôn luận của Hội Việt Nam Cách mạng Thanh niên - tờ Báo Thanh niên, đã xuất bản số đầu tiên vào ngày tháng năm nào?", opts: ["21/06/1925", "03/02/1930", "02/09/1945", "19/05/1890"], ans: 0 },
+        { q: "Hội nghị hợp nhất các tổ chức cộng sản do lãnh tụ Nguyễn Ái Quốc chủ trì đã quyết định thành lập Đảng Cộng sản Việt Nam vào ngày nào?", opts: ["03/02/1930", "02/09/1945", "19/08/1945", "07/05/1954"], ans: 0 },
+        { q: "Sau 30 năm hoạt động ở nước ngoài, mùa xuân năm 1941, lãnh tụ Nguyễn Ái Quốc đã vượt biên giới Việt - Trung để trở về tỉnh nào của nước ta?", opts: ["Lạng Sơn", "Cao Bằng", "Tuyên Quang", "Hà Giang"], ans: 1 },
+        { q: "Trong khoảng thời gian từ năm 1928 đến 1929, khi hoạt động cách mạng tại Thái Lan (Xiêm), Bác Hồ đã sử dụng bí danh nào để che mắt địch?", opts: ["Thầu Chín", "Vương", "Trần", "Lý Thụy"], ans: 0 },
+        { q: "Tác phẩm nổi tiếng 'Bản án chế độ thực dân Pháp' do Nguyễn Ái Quốc viết bằng tiếng Pháp được xuất bản lần đầu tiên (năm 1925) tại quốc gia nào?", opts: ["Việt Nam", "Trung Quốc", "Pháp", "Nga"], ans: 2 }
     ];
 
     const p2MapData_Original = [
-        { title: "Pác Bó - Cao Bằng", stmts: [{t:"Bác về nước qua cột mốc 108.", a:true}, {t:"Pác Bó phong trào cách mạng yếu.", a:false}, {t:"Bác mang bí danh Thầu Chín.", a:false}, {t:"Đánh dấu 30 năm bôn ba.", a:true}] },
-        { title: "Làng Sen - Nghệ An", stmts: [{t:"Làng Sen là quê ngoại.", a:false}, {t:"Tên khai sinh là Nguyễn Sinh Cung.", a:true}, {t:"Gia đình nhà nho nghèo yêu nước.", a:true}, {t:"Thân phụ là cụ Phan Bội Châu.", a:false}] },
-        { title: "Trường Quốc Học - Huế", stmts: [{t:"Người từng học tại Quốc Học Huế.", a:true}, {t:"Tham gia phong trào chống thuế 1908.", a:true}, {t:"Gặp Đảng Cộng sản Pháp tại đây.", a:false}, {t:"Lấy tên là Văn Ba.", a:false}] },
-        { title: "Trường Dục Thanh", stmts: [{t:"Do sĩ phu yêu nước sáng lập.", a:true}, {t:"Bác dạy Thể dục và Quốc ngữ.", a:true}, {t:"Bác làm Hiệu trưởng.", a:false}, {t:"Rời trường năm 1911 vào Sài Gòn.", a:true}] },
-        { title: "Bến Nhà Rồng", stmts: [{t:"Lên tàu Amiral Latouche-Tréville.", a:true}, {t:"Công việc đầu tiên là thợ ảnh.", a:false}, {t:"Mục đích là tìm đường cứu nước.", a:true}, {t:"Hướng ban đầu là sang Nhật Bản.", a:false}] }
+        const p2MapData_Original = [
+        { 
+            title: "Pác Bó - Cao Bằng", 
+            stmts: [
+                {t: "Ngày 28/1/1941, lãnh tụ Nguyễn Ái Quốc đã trở về Tổ quốc qua cột mốc 108 tại Pác Bó.", a: true}, 
+                {t: "Khi Bác trở về, phong trào cách mạng ở khu vực Pác Bó (Cao Bằng) còn rất yếu kém và chưa phát triển.", a: false}, 
+                {t: "Trong thời gian hoạt động bí mật tại Pác Bó, Bác Hồ đã sử dụng bí danh là Thầu Chín.", a: false}, 
+                {t: "Sự kiện Bác Hồ trở về Pác Bó năm 1941 đã đánh dấu mốc quan trọng sau trọn 30 năm Người bôn ba tìm đường cứu nước.", a: true}
+            ] 
+        },
+        { 
+            title: "Làng Sen - Nghệ An", 
+            stmts: [
+                {t: "Làng Sen (hay còn gọi là làng Kim Liên) là quê ngoại của Bác, nơi Người cất tiếng khóc chào đời.", a: false}, 
+                {t: "Tên khai sinh thuở nhỏ của Chủ tịch Hồ Chí Minh khi sống cùng gia đình tại quê nhà là Nguyễn Sinh Cung.", a: true}, 
+                {t: "Bác Hồ sinh ra và lớn lên trong một gia đình nhà nho nghèo nhưng có truyền thống yêu nước nồng nàn.", a: true}, 
+                {t: "Thân phụ (cha ruột) của Bác Hồ là nhà cách mạng lỗi lạc - cụ Phan Bội Châu.", a: false}
+            ] 
+        },
+        { 
+            title: "Trường Quốc Học - Huế", 
+            stmts: [
+                {t: "Chủ tịch Hồ Chí Minh (lúc bấy giờ tên là Nguyễn Tất Thành) từng có thời gian theo học tại trường Quốc Học Huế.", a: true}, 
+                {t: "Trong thời gian ở Huế, Người đã trực tiếp tham gia vào phong trào đấu tranh chống thuế của nông dân Trung Kỳ năm 1908.", a: true}, 
+                {t: "Chính tại trường Quốc Học Huế, Bác đã có cơ hội gặp gỡ và tiếp xúc với các đảng viên của Đảng Cộng sản Pháp.", a: false}, 
+                {t: "Khi rời trường Quốc Học Huế để tiếp tục hành trình vào phía Nam, Bác đã quyết định đổi tên mình thành Văn Ba.", a: false}
+            ] 
+        },
+        { 
+            title: "Trường Dục Thanh - Bình Thuận", 
+            stmts: [
+                {t: "Trường Dục Thanh được sáng lập vào năm 1907 bởi các sĩ phu yêu nước nhằm hưởng ứng phong trào Duy Tân.", a: true}, 
+                {t: "Tại ngôi trường này, thầy giáo thanh niên Nguyễn Tất Thành đã đảm nhận việc dạy môn Thể dục và chữ Quốc ngữ.", a: true}, 
+                {t: "Trong suốt thời gian giảng dạy tại trường Dục Thanh, Nguyễn Tất Thành đã giữ chức vụ Hiệu trưởng của trường.", a: false}, 
+                {t: "Vào tháng 2 năm 1911, thầy giáo Nguyễn Tất Thành đã rời trường Dục Thanh để tiếp tục hành trình vào Sài Gòn.", a: true}
+            ] 
+        },
+        { 
+            title: "Bến Nhà Rồng - TP.HCM", 
+            stmts: [
+                {t: "Ngày 5/6/1911, Bác đã lên con tàu buôn mang tên Amiral Latouche-Tréville để bắt đầu rời khỏi Việt Nam.", a: true}, 
+                {t: "Công việc đầu tiên Bác làm để kiếm sống trên con tàu này là làm nghề thợ chụp ảnh.", a: false}, 
+                {t: "Mục đích lớn nhất của Người khi quyết định ra đi là tìm ra con đường cứu nước, giải phóng dân tộc khỏi ách đô hộ.", a: true}, 
+                {t: "Ban đầu, dự định của Bác là sẽ đi sang Châu Á (như Nhật Bản) để học hỏi kinh nghiệm từ phong trào Đông Du.", a: false}
+            ] 
+        }
     ];
 
     const p3PuzzleData_Original = [
-        { q: "Thân phụ Bác Hồ là ai?", opts: ["Nguyễn Sinh Sắc", "Nguyễn Sinh Khiêm", "Phan Bội Châu", "Hoàng Hoa Thám"], ans: 0 },
-        { q: "Thân mẫu Bác Hồ là ai?", opts: ["Hoàng Thị Loan", "Nguyễn Thị Thanh", "Hoàng Thị Cúc", "Lê Thị Tú"], ans: 0 },
-        { q: "Anh trai Bác tên là gì?", opts: ["Nguyễn Sinh Khiêm", "Nguyễn Sinh Sắc", "Nguyễn Sinh Xin", "Nguyễn Tất Đạt"], ans: 0 },
-        { q: "Chị gái Bác tên là gì?", opts: ["Nguyễn Thị Thanh", "Hoàng Thị Loan", "Nguyễn Thị Bạch Liên", "Lê Thị Thanh"], ans: 0 },
-        { q: "Bài thơ 'Ngắm Trăng' thuộc tập thơ nào?", opts: ["Nhật ký trong tù", "Thơ chúc Tết", "Từ ấy", "Nhật ký chìm tàu"], ans: 0 },
-        { q: "Bác biết bao nhiêu ngoại ngữ?", opts: ["Trên 20", "Khoảng 10", "Khoảng 15", "Dưới 5"], ans: 0 },
-        { q: "Bác được UNESCO vinh danh là gì?", opts: ["Danh nhân văn hóa", "Vĩ nhân thời đại", "Lãnh tụ kiệt xuất", "Nhà quân sự"], ans: 0 },
-        { q: "Lời kêu gọi toàn quốc kháng chiến năm nào?", opts: ["1946", "1945", "1954", "1960"], ans: 0 },
-        { q: "Di chúc Bác được viết lần đầu năm nào?", opts: ["1965", "1968", "1969", "1960"], ans: 0 }
+       const p3PuzzleData_Original = [
+        { q: "Người cha ruột của Chủ tịch Hồ Chí Minh, một nhà nho nghèo yêu nước và từng đỗ Phó bảng, tên là gì?", opts: ["Nguyễn Sinh Sắc", "Nguyễn Sinh Khiêm", "Phan Bội Châu", "Hoàng Hoa Thám"], ans: 0 },
+        { q: "Người mẹ tần tảo, hết lòng vì chồng con của Bác Hồ, người đã qua đời khi Bác còn rất nhỏ tại Huế, tên là gì?", opts: ["Hoàng Thị Loan", "Nguyễn Thị Thanh", "Hoàng Thị Cúc", "Lê Thị Tú"], ans: 0 },
+        { q: "Chủ tịch Hồ Chí Minh có một người anh trai ruột cũng là một người yêu nước, tên của ông là gì?", opts: ["Nguyễn Sinh Khiêm", "Nguyễn Sinh Sắc", "Nguyễn Sinh Xin", "Nguyễn Tất Đạt"], ans: 0 },
+        { q: "Người chị gái ruột duy nhất của Bác Hồ (còn được gọi là cô Bạch Liên), người từng bị thực dân Pháp bắt giam, tên là gì?", opts: ["Nguyễn Thị Thanh", "Hoàng Thị Loan", "Nguyễn Thị Bạch Liên", "Lê Thị Thanh"], ans: 0 },
+        { q: "Bài thơ 'Ngắm Trăng' (Vọng nguyệt) nổi tiếng của Chủ tịch Hồ Chí Minh được trích từ tập thơ nào do Người sáng tác khi bị giam ở Quảng Tây?", opts: ["Nhật ký trong tù", "Thơ chúc Tết", "Từ ấy", "Nhật ký chìm tàu"], ans: 0 },
+        { q: "Nhờ quá trình bôn ba tìm đường cứu nước và tự học không ngừng nghỉ, Bác Hồ được cho là có thể sử dụng thông thạo khoảng bao nhiêu ngoại ngữ?", opts: ["Trên 20", "Khoảng 10", "Khoảng 15", "Dưới 5"], ans: 0 },
+        { q: "Nhân dịp kỷ niệm 100 năm ngày sinh của Chủ tịch Hồ Chí Minh (1990), Tổ chức UNESCO đã vinh danh Người với danh hiệu cao quý nào?", opts: ["Danh nhân văn hóa", "Vĩ nhân thời đại", "Lãnh tụ kiệt xuất", "Nhà quân sự"], ans: 0 },
+        { q: "'Chúng ta thà hy sinh tất cả, chứ nhất định không chịu mất nước...'. Lời kêu gọi toàn quốc kháng chiến này được Bác viết vào năm nào?", opts: ["1946", "1945", "1954", "1960"], ans: 0 },
+        { q: "Bản Di chúc thiêng liêng để lại cho toàn Đảng, toàn dân được Chủ tịch Hồ Chí Minh bắt đầu viết những dòng đầu tiên vào năm nào?", opts: ["1965", "1968", "1969", "1960"], ans: 0 }
     ];
 
     // Data đã xáo trộn
