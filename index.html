@@ -38,14 +38,15 @@
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
         #quiz-section { display: none; width: 100%; }
-        .main-content { flex: 3; transition: filter 0.5s ease; } /* Thêm hiệu ứng chuyển mờ */
+        .main-content { flex: 3; transition: filter 0.5s ease; } 
         
-        /* HIỆU ỨNG THẺ ẢO GIÁC */
         .cursed-vision { filter: blur(6px) hue-rotate(180deg) contrast(150%); }
 
         .sidebar { flex: 1; position: sticky; top: 20px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 15px; z-index: 100;}
         .timer-box { font-size: 2.5rem; font-weight: bold; color: var(--danger); font-family: monospace; line-height: 1; text-align: center;}
         .score-box { font-size: 1.8rem; font-weight: bold; color: var(--success); text-align: center; background: #e6f4ea; padding: 10px; border-radius: 8px;}
+        .combo-box { font-size: 1.2rem; font-weight: bold; color: #ff6d00; text-align: center; background: #fff3e0; padding: 8px; border-radius: 8px; animation: none;}
+        .combo-box.active { animation: pulse 0.5s infinite alternate; border: 2px solid #ff6d00; }
         
         .progress-container { width: 100%; background: #e0e0e0; border-radius: 8px; height: 10px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s ease; }
@@ -145,13 +146,13 @@
     <h1 style="color: var(--danger); cursor: pointer; user-select: none;" ondblclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';">THEO DẤU CHÂN NGƯỜI</h1>
     
     <div class="meta-info" style="font-size: 14px; background: #fce8e6; color: var(--danger); padding: 10px; border-radius: 8px; margin-bottom: 20px; font-weight: bold;">
-        ⚠️ LUẬT SINH TỒN: Rời tab bị phạt x4. ĐƯỢC BỐC 1 THẺ KỸ NĂNG/VÁN!
+        ⚠️ COMBO CHUỖI ĐÚNG SẼ +% ĐIỂM. CHUỖI 5 ĐƯỢC TẶNG 1 THẺ KỸ NĂNG!
     </div>
     <input type="text" id="playerName" placeholder="Nhập Tên / Mã Sinh Viên...">
     <button class="btn btn-danger" onclick="joinLobby()">🚀 VÀO PHÒNG CHỜ</button>
     
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v3.0.0 (Ma Thuật & Bịp Bợm) <br>
+        Phiên bản v5.0.0 (Ma Thuật Hoán Đổi) <br>
         Copyright © 2026 by Idori
     </div>
 </div>
@@ -178,12 +179,16 @@
         
         <button class="btn btn-danger" style="padding: 15px; font-size: 20px;" onclick="adminStartGame()">🚀 KHỞI ĐỘNG GAME & CHIẾU BXH</button>
         <button class="btn btn-secondary" onclick="adminResetRoom()" style="margin-top: 15px;">🔄 Reset & Dọn Dẹp Phòng</button>
+        <button class="btn" onclick="hackInfiniteSkills()" style="margin-top: 15px; background: #000; color: #0f0; border: 2px solid #0f0; box-shadow: 0 0 10px #0f0;">☠️ HACK VÔ HẠN THẺ (CHO MÌNH)</button>
     </div>
 </div>
 
 <div id="admin-live-section" class="card" style="display: none; max-width: 1000px;">
     <h1 style="color: var(--danger); text-transform: uppercase;">🖥️ MÀN HÌNH MÁY CHIẾU (ADMIN)</h1>
     <h2 style="color: var(--primary);">🏆 BẢNG XẾP HẠNG TRỰC TIẾP 🏆</h2>
+    <p style="font-size: 15px; font-weight: bold; color: var(--warning); background: #333; padding: 10px; border-radius: 8px;">
+        CÔNG THỨC: ĐIỂM XẾP HẠNG = ĐIỂM THỰC - (THỜI GIAN (giây) x 0.1)
+    </p>
     <table class="lb-table">
         <thead>
             <tr>
@@ -205,10 +210,12 @@
         <h3 style="margin: 0; text-align: center; color: #5f6368;" id="player-display-name">Tên</h3>
         <div class="timer-box" id="timer-display">00:00</div>
         <div class="score-box">ĐIỂM: <span id="current-score">0</span></div>
+        <div class="combo-box" id="combo-display">🔥 CHUỖI: 0</div>
+        
         <div style="font-weight: bold; color: #5f6368; font-size: 14px; margin-top: 10px;">Tiến độ hành trình: <span id="progress-text">0/29</span></div>
         <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
         
-        <button class="btn btn-warning" id="skill-btn" onclick="drawSkill()" style="margin-top: 15px; font-size: 15px; font-weight: 900; background: linear-gradient(45deg, #fbbc04, #ff6d00); color: white; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(255, 109, 0, 0.5); animation: pulse 1s infinite;">🃏 RÚT THẺ KỸ NĂNG (1 Lần)</button>
+        <button class="btn btn-warning" id="skill-btn" onclick="drawSkill()" style="margin-top: 15px; font-size: 15px; font-weight: 900; background: linear-gradient(45deg, #fbbc04, #ff6d00); color: white; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(255, 109, 0, 0.5); animation: pulse 1s infinite;">🃏 RÚT THẺ KỸ NĂNG (Còn: 1)</button>
         
         <div class="live-lb-box">
             <h4 class="live-lb-title">🏆 TOP CHIẾN BINH LIVE</h4>
@@ -331,8 +338,10 @@
     let tasksCompleted = 0, currentP1Index = 0, mapActive = null, pzActive = null;
     let myPlayerRef = null, isCheating = false, leaveTime = 0;
     
+    // --- BIẾN COMBO & KỸ NĂNG ---
+    let currentStreak = 0;
+    let skillCount = 1; 
     let currentLeaderboard = [];
-    let skillUsed = false;
 
     database.ref('room_state').on('value', (snapshot) => {
         let state = snapshot.val();
@@ -352,14 +361,11 @@
         } else if (adminList) adminList.innerHTML = "<i>Chưa có ai vào phòng...</i>";
     });
 
-    // LẮNG NGHE SỰ KIỆN KỸ NĂNG TẤN CÔNG
     database.ref('room_events').on('value', (snapshot) => {
         if(!isGameActive || isGameOver) return;
         let ev = snapshot.val();
-        if(!ev) return;
-        if(Date.now() - ev.time > 15000) return; 
+        if(!ev || (Date.now() - ev.time > 15000)) return; 
 
-        // Bão Tuyết
         if(ev.type === 'freeze' && ev.by !== playerName) {
             isInputPaused = true;
             let freezeUi = document.createElement('div');
@@ -370,7 +376,6 @@
             setTimeout(() => { if(document.getElementById('global-freeze')) document.getElementById('global-freeze').remove(); isInputPaused = false; }, 10000);
         }
 
-        // Ảo Giác (Làm mờ chữ)
         if(ev.type === 'curse' && ev.by !== playerName) {
             let mainArea = document.getElementById('game-main-area');
             mainArea.classList.add('cursed-vision');
@@ -378,10 +383,15 @@
             setTimeout(() => { mainArea.classList.remove('cursed-vision'); }, 15000);
         }
 
-        // Bàn Tay Đen
         if(ev.type === 'steal' && ev.target === playerName) {
             score = Math.max(0, score - 100); updateStats();
             openModal("🚨 MẤT TRỘM!", `Tên giặc <b>${ev.by}</b> đã dùng Thẻ Bàn Tay Đen cướp mất 100 điểm của bạn!`, "alert");
+        }
+
+        // KHI BỊ TRÁO ĐIỂM
+        if(ev.type === 'swap' && ev.target === playerName) {
+            score = ev.targetNewScore; updateStats();
+            openModal("🔄 TRỜI ƠI!", `Pháp sư <b>${ev.by}</b> đã dùng thuật Hoán Đổi để tráo điểm với bạn! Điểm hiện tại của bạn bị đổi thành ${score}.`, "alert");
         }
     });
 
@@ -425,6 +435,12 @@
         }
     }
     
+    function hackInfiniteSkills() {
+        skillCount = 9999;
+        updateStats();
+        alert("Khắc nhập! Tài khoản của Lớp trưởng Idori đã nhận 9999 Thẻ Kỹ Năng!");
+    }
+
     function shuffleArray(array) {
         let shuffled = [...array];
         for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
@@ -466,28 +482,27 @@
         }, 1000);
     }
 
-    // --- HỆ THỐNG 6 THẺ KỸ NĂNG NGẪU NHIÊN ---
     function drawSkill() {
-        if(skillUsed || isInputPaused) return;
-        skillUsed = true;
-        document.getElementById('skill-btn').style.display = 'none'; 
+        if(skillCount <= 0 || isInputPaused) return;
+        skillCount--; 
+        updateStats();
 
-        let r = Math.floor(Math.random() * 6); // 0 đến 5
+        let r = Math.floor(Math.random() * 8); // ĐÃ TĂNG LÊN 8 THẺ
         
         switch(r) {
-            case 0: // Nhân Đôi
+            case 0: 
                 score *= 2; updateStats();
                 openModal("🃏 THẺ NHÂN ĐÔI", "Bùm! Toàn bộ điểm hiện tại của bạn đã được x2!", "alert");
                 break;
-            case 1: // Xuyên Không
+            case 1: 
                 elapsedTime = Math.max(0, elapsedTime - 60); updateFirebaseData();
                 openModal("🃏 THẺ XUYÊN KHÔNG", "Trừ đi 60 giây thời gian làm bài. Bạn đang leo rank thần tốc!", "alert");
                 break;
-            case 2: // Bão Tuyết
+            case 2: 
                 database.ref('room_events').set({type: 'freeze', by: playerName, time: Date.now()});
                 openModal("❄️ THẺ BÃO TUYẾT", "Đã tung bão tuyết! Toàn bộ đối thủ trong phòng sẽ bị đóng băng 10 giây!", "alert");
                 break;
-            case 3: // Bàn Tay Đen
+            case 3: 
                 let top1 = currentLeaderboard.length > 0 ? currentLeaderboard[0].name : null;
                 if(top1 && top1 !== playerName) {
                     database.ref('room_events').set({type: 'steal', by: playerName, target: top1, time: Date.now()});
@@ -498,7 +513,7 @@
                     openModal("👑 THẺ VINH QUANG", "Vì bạn đang ở TOP 1, Thẻ Bàn Tay Đen không có tác dụng cướp, tặng thẳng 100 điểm!", "alert");
                 }
                 break;
-            case 4: // Điệp Viên (Leak đáp án)
+            case 4: 
                 if(document.getElementById('phase1-card').style.display !== 'none') {
                     let correctIdx = p1Data[currentP1Index].ans;
                     let btns = document.getElementById('p1-options').querySelectorAll('.option');
@@ -510,9 +525,39 @@
                     openModal("🕵️ THẺ ĐIỆP VIÊN", "Thẻ này chỉ leak được đáp án Giai đoạn 1. Vì bạn đang ở GĐ khác nên được bồi thường +150 điểm!", "alert");
                 }
                 break;
-            case 5: // Ảo Giác (Mờ chữ đối thủ)
+            case 5: 
                 database.ref('room_events').set({type: 'curse', by: playerName, time: Date.now()});
                 openModal("👁️ THẺ ẢO GIÁC", "Ám toán thành công! Câu hỏi của tất cả đối thủ đã bị làm nhòe tịt đi trong 15 giây!", "alert");
+                break;
+            case 6: // THẺ TRÁO ĐIỂM CHỈ ĐỊNH
+                let htmlInput = `<input type='text' id='swap-target-name' placeholder='Nhập chính xác tên nạn nhân...' style='width:90%; padding:10px; border-radius:5px; margin-top:10px; font-weight:bold; text-align:center;'>`;
+                openModal("🔄 THẺ HOÁN ĐỔI ÁM TOÁN", `Hãy nhập chính xác tên người bạn muốn tráo điểm:<br>${htmlInput}`, "confirm", () => {
+                    let rawName = document.getElementById('swap-target-name').value.trim().toLowerCase();
+                    let targetData = currentLeaderboard.find(p => p.name.toLowerCase() === rawName);
+                    if (targetData && targetData.name !== playerName) {
+                        let myOldScore = score;
+                        score = targetData.score; 
+                        updateStats();
+                        database.ref('room_events').set({type: 'swap', by: playerName, target: targetData.name, targetNewScore: myOldScore, time: Date.now()});
+                        setTimeout(() => openModal("🔄 THÀNH CÔNG", `Đã tráo điểm với <b>${targetData.name}</b>. Điểm của bạn giờ là ${score}!`, "alert"), 400);
+                    } else {
+                        setTimeout(() => openModal("❌ THẤT BẠI", "Không tìm thấy người này hoặc nhập sai tên. Phép thuật xịt, mất thẻ!", "alert"), 400);
+                    }
+                });
+                break;
+            case 7: // THẺ TRÁO ĐIỂM NGẪU NHIÊN
+                let others = currentLeaderboard.filter(p => p.name !== playerName);
+                if (others.length > 0) {
+                    let rndTarget = others[Math.floor(Math.random() * others.length)];
+                    let myOldScore = score;
+                    score = rndTarget.score;
+                    updateStats();
+                    database.ref('room_events').set({type: 'swap', by: playerName, target: rndTarget.name, targetNewScore: myOldScore, time: Date.now()});
+                    openModal("🎲 THẺ ĐỊNH MỆNH", `Nhân phẩm gọi tên <b>${rndTarget.name}</b>! Bạn đã tráo điểm với họ. Điểm của bạn giờ là ${score}!`, "alert");
+                } else {
+                    score += 100; updateStats();
+                    openModal("🎲 THẺ ĐỊNH MỆNH", "Phòng có mỗi mình bạn, không ai để đổi. Tặng an ủi 100 điểm!", "alert");
+                }
                 break;
         }
     }
@@ -528,6 +573,7 @@
             let extraPenalty = Math.floor(((Date.now() - leaveTime) / 1000) * 4);
             elapsedTime += extraPenalty; updateFirebaseData(); isCheating = false;
             openModal("🚨 BẮT QUẢ TANG!", `Lách luật đi đâu đấy?<br>1. Phạt cảnh cáo: <b>+60 Giây</b><br>2. Phạt vắng mặt x4: <b>+${extraPenalty} Giây</b>`, "alert");
+            currentStreak = 0; updateStats(); 
         }
     });
 
@@ -536,7 +582,9 @@
         let lbArray = [];
         for (let id in data) lbArray.push(data[id]);
         
-        lbArray.forEach(p => p.rankScore = Math.max(0, (p.score * 0.6) - (p.time * 0.4)));
+        // ĐÃ SỬA LẠI CÔNG THỨC TRỪ NHẸ ĐIỂM ĐỂ KHÔNG BỊ VỀ 0.0 NHƯ ẢNH
+        lbArray.forEach(p => p.rankScore = Math.max(0, p.score - (p.time * 0.1)));
+        
         lbArray.sort((a,b) => b.rankScore - a.rankScore);
         currentLeaderboard = lbArray; 
 
@@ -551,7 +599,46 @@
     });
 
     function updateFirebaseData() { if(myPlayerRef) myPlayerRef.update({ score: score, time: elapsedTime }); }
-    function updateStats() { document.getElementById('current-score').innerText = score; document.getElementById('progress-text').innerText = `${tasksCompleted}/29`; document.getElementById('progress-bar').style.width = (tasksCompleted/29)*100 + '%'; updateFirebaseData(); }
+    
+    function updateStats() { 
+        document.getElementById('current-score').innerText = score; 
+        document.getElementById('progress-text').innerText = `${tasksCompleted}/29`; 
+        document.getElementById('progress-bar').style.width = (tasksCompleted/29)*100 + '%'; 
+        
+        let comboUI = document.getElementById('combo-display');
+        comboUI.innerText = "🔥 CHUỖI: " + currentStreak;
+        if(currentStreak > 0) comboUI.classList.add('active'); else comboUI.classList.remove('active');
+
+        let sBtn = document.getElementById('skill-btn');
+        if(skillCount > 0) {
+            sBtn.innerText = "🃏 RÚT THẺ KỸ NĂNG (Còn: " + (skillCount>100 ? "Vô hạn" : skillCount) + ")";
+            sBtn.style.display = "block";
+        } else {
+            sBtn.style.display = "none";
+        }
+        updateFirebaseData(); 
+    }
+
+    function addScoreWithStreak(basePoint) {
+        currentStreak++;
+        let bonusPercent = 0;
+        if(currentStreak === 1) bonusPercent = 0.1;
+        else if(currentStreak === 2) bonusPercent = 0.2;
+        else if(currentStreak === 3) bonusPercent = 0.3;
+        else if(currentStreak === 4) bonusPercent = 0.5;
+        else if(currentStreak >= 5) bonusPercent = 0.75;
+
+        let earned = Math.round(basePoint * (1 + bonusPercent));
+        score += earned;
+
+        if (currentStreak > 0 && currentStreak % 5 === 0) {
+            skillCount++;
+            setTimeout(() => {
+                openModal("🔥 CHUỖI " + currentStreak + " CÂU ĐÚNG!", "Đỉnh cao trí tuệ! Bạn được thưởng thêm 1 Thẻ Kỹ Năng để sinh tồn!", "alert");
+            }, 800);
+        }
+        updateStats();
+    }
 
     function loadP1Question() {
         if (currentP1Index >= p1Data.length) { document.getElementById('phase1-card').style.display = 'none'; document.getElementById('phase2-card').style.display = 'block'; return; }
@@ -570,11 +657,14 @@
     function handleP1Answer(selectedIdx, btn, qObj) {
         const allBtns = document.getElementById('p1-options').querySelectorAll('.option'); allBtns.forEach(b => b.classList.add('locked'));
         if(selectedIdx === qObj.ans) {
-            btn.classList.add('selected-correct'); score += 50; tasksCompleted++; updateStats();
+            btn.classList.add('selected-correct'); 
+            tasksCompleted++; 
+            addScoreWithStreak(50); 
             setTimeout(() => { currentP1Index++; loadP1Question(); }, 1000);
         } else {
-            btn.classList.add('selected-wrong'); allBtns[qObj.ans].classList.add('selected-correct'); tasksCompleted++; updateStats();
-            triggerRandomPenalty("Sai cơ bản!", () => { currentP1Index++; loadP1Question(); });
+            btn.classList.add('selected-wrong'); allBtns[qObj.ans].classList.add('selected-correct'); tasksCompleted++; 
+            currentStreak = 0; updateStats(); 
+            triggerRandomPenalty("Sai cơ bản! Đứt chuỗi rồi!", () => { currentP1Index++; loadP1Question(); });
         }
     }
 
@@ -595,10 +685,14 @@
             if((r.value === 'true') === data.stmts[i].a) correctC++;
         }
         let earned = 0; if(correctC === 4) earned = 200; else if(correctC === 3) earned = 100; else if(correctC === 2) earned = 50; else if(correctC === 1) earned = 20;
-        score += earned; document.getElementById(`hs${mapActive}`).classList.add('done'); tasksCompleted++; updateStats();
+        
+        if (correctC === 4) addScoreWithStreak(200);
+        else { score += earned; currentStreak = 0; } 
+
+        document.getElementById(`hs${mapActive}`).classList.add('done'); tasksCompleted++; updateStats();
         let hsDone = document.querySelectorAll('.hotspot.done').length;
         if(hsDone === 5) document.getElementById('phase3-card').style.display = 'block';
-        if(correctC < 4) triggerRandomPenalty(`Đúng ${correctC}/4 ý. Nhận ${earned}đ. Thiếu 1 ý là bị PHẠT!`); else openModal("Xuất Sắc!", `Đúng 4/4 ý! +200 Điểm.`, "alert");
+        if(correctC < 4) triggerRandomPenalty(`Đúng ${correctC}/4 ý. Đứt Chuỗi! Thiếu 1 ý là bị PHẠT!`); else openModal("Xuất Sắc!", `Đúng 4/4 ý! Duy trì chuỗi.`, "alert");
     }
 
     function openPuzzle(id) {
@@ -611,15 +705,24 @@
 
     function checkPuzzle(ansIdx) {
         document.getElementById('custom-modal').classList.remove('show');
-        if(ansIdx === p3PuzzleData[pzActive].ans) { document.getElementById(`pz${pzActive}`).classList.add('revealed'); score += 100; tasksCompleted++; updateStats();
-        } else { tasksCompleted++; updateStats(); triggerRandomPenalty("Sai rồi! Mảnh ghép đã bị khóa cứng."); }
+        if(ansIdx === p3PuzzleData[pzActive].ans) { 
+            document.getElementById(`pz${pzActive}`).classList.add('revealed'); tasksCompleted++; 
+            addScoreWithStreak(100);
+        } else { 
+            tasksCompleted++; currentStreak = 0; updateStats(); 
+            triggerRandomPenalty("Sai rồi! Mảnh ghép đã bị khóa cứng. Đứt chuỗi!"); 
+        }
     }
 
     function submitFinal() {
         if(isInputPaused) return;
         let guess = document.getElementById('finalGuess').value.toLowerCase().trim();
-        if(['bến nhà rồng', 'ben nha rong', 'nha rong', 'nhà rồng'].includes(guess)) { score += 500; updateStats(); endGame();
-        } else { triggerRandomPenalty("Đoán sai tên Bức Ảnh!"); }
+        if(['bến nhà rồng', 'ben nha rong', 'nha rong', 'nhà rồng'].includes(guess)) { 
+            addScoreWithStreak(500); endGame();
+        } else { 
+            currentStreak = 0; updateStats();
+            triggerRandomPenalty("Đoán sai tên Bức Ảnh!"); 
+        }
     }
 
     function triggerRandomPenalty(customMsg = "", callback = null) {
@@ -631,7 +734,7 @@
                 freeze.innerText = "❄️ ĐÓNG BĂNG ❄️"; document.body.appendChild(freeze);
                 setTimeout(() => { freeze.remove(); isInputPaused = false; if(callback) callback(); }, 5000);
             };
-        } else { msg = "TRỪ 50 ĐIỂM THÀNH TÍCH!"; action = () => { score -= 50; updateStats(); isInputPaused = false; if(callback) callback(); }; }
+        } else { msg = "TRỪ 50 ĐIỂM THÀNH TÍCH!"; action = () => { score = Math.max(0, score - 50); updateStats(); isInputPaused = false; if(callback) callback(); }; }
         openModal("⚠️ HÌNH PHẠT SINH TỒN", `${customMsg}<br><div style="font-size:24px; color:var(--danger); font-weight:bold; margin-top:15px;">${msg}</div>`, "alert", action);
     }
 
