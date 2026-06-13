@@ -73,7 +73,7 @@
         /* Map Styles */
         .map-wrapper { 
             position: relative; width: 100%; height: 400px; 
-            background-image: url('LINK_HINH_BAN_DO_CUA_ONG_VAO_DAY'); 
+            background-image: url('Map-of-Vietnam.svg'); 
             background-size: contain; background-repeat: no-repeat; background-position: center; border: 2px solid #dadce0; border-radius: 8px; margin-bottom: 15px; background-color: #e0f7fa;
         }
 
@@ -84,7 +84,7 @@
         /* Puzzle Styles */
         .puzzle-grid { 
             display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 120px); gap: 2px; margin-top: 15px; 
-            background-image: url('LINK_HINH_BAC_HO_CUA_ONG_VAO_DAY'); 
+            background-image: url('ben-nha-rong-2.jpg'); 
             background-size: cover; background-position: center; border: 4px solid #333; border-radius: 8px; overflow: hidden; 
         }
 
@@ -123,7 +123,7 @@
 <body>
 
 <audio id="bgMusic" loop>
-    <source src="LINK_NHAC_MP3_CUA_ONG_VAO_DAY" type="audio/mpeg" id="audioSource">
+    <source src="Thịnh Vượng Việt Nam Sáng Ngời _ buitruonglinh - buitruonglinh.mp3" type="audio/mpeg">
 </audio>
 <button id="music-btn" onclick="toggleMusic()">🎵 Bật Nhạc</button>
 
@@ -136,7 +136,7 @@
 </div>
 
 <div id="setup-section" class="card">
-    <img src="LINK_HINH_BIA_CUA_ONG_VAO_DAY" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+    <img src="stock-vector-seamless-puzzles-grid-blank-template-jigsaw-puzzle-pieces-seamless-pattern-mosaic-background-2747017317.jpg" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
     <h1 style="color: var(--danger);">CHIẾN DỊCH 05/6/1911</h1>
     <div class="meta-info" style="font-size: 14px; background: #fce8e6; color: var(--danger); padding: 10px; border-radius: 8px; margin-bottom: 20px; font-weight: bold;">
         ⚠️ LUẬT SINH TỒN: Rời tab bị phạt x4 thời gian. CÂU HỎI & ĐÁP ÁN ĐƯỢC XÁO TRỘN NGẪU NHIÊN!
@@ -699,7 +699,7 @@
     function submitFinal() {
         if(isInputPaused) return;
         let guess = document.getElementById('finalGuess').value.toLowerCase().trim();
-        let valid = ['bến nhà rồng', 'ben nha rong', 'nha rong', 'nhà rồng'];
+        let valid = ['bến nhà rồng', 'ben nha rong', 'nha rong', 'nhà rồng', 'Bến Nhà Rồng'];
         if(valid.includes(guess)) {
             score += 500; updateStats(); endGame();
         } else {
