@@ -72,19 +72,24 @@
 
         /* Map Styles */
         .map-wrapper { 
-            position: relative; width: 100%; height: 400px; 
-            background-image: url('Map-of-Vietnam.svg'); 
-            background-size: contain; background-repeat: no-repeat; background-position: center; border: 2px solid #dadce0; border-radius: 8px; margin-bottom: 15px; background-color: #e0f7fa;
-        }
+    position: relative; 
+    width: 600px; /* Ép cứng chiều rộng */
+    height: 800px; /* Ép cứng chiều cao */
+    margin: 0 auto; /* Căn giữa */
+    background-image: url('Map-of-Vietnam.svg'); 
+    background-size: contain; 
+    background-repeat: no-repeat; 
+    background-position: center; 
+}
 
         .hotspot { position: absolute; background: var(--warning); color: #000; width: 30px; height: 30px; line-height: 30px; text-align: center; border-radius: 50%; cursor: pointer; font-weight: bold; box-shadow: 0 0 10px rgba(0,0,0,0.5); animation: pulse 1.5s infinite; border: 2px solid #fff;}
         .hotspot.done { background: var(--success); animation: none; pointer-events: none; color: white;}
         #hs0 { top: 15%; left: 55%; } /* Vị trí gần Hà Nội/Phía Bắc */
-#hs1 { top: 40%; left: 45%; } /* Vị trí gần miền Trung/Huế */
-#hs2 { top: 60%; left: 50%; } /* Vị trí gần TP.HCM/Nam Bộ */
-#hs3 { top: 70%; left: 75%; } /* Vị trí gần Trường Sa/Biển Đông */
-#hs4 { top: 85%; left: 40%; } /* Vị trí gần phía Tây Nam */
-
+#hs0 { top: 150px; left: 350px; } /* Số 1 */
+#hs1 { top: 350px; left: 280px; } /* Số 2 */
+#hs2 { top: 500px; left: 300px; } /* Số 3 (đã kéo về gần VN) */
+#hs3 { top: 650px; left: 450px; } /* Số 4 */
+#hs4 { top: 720px; left: 320px; } /* Số 5 */
         /* Puzzle Styles */
         .puzzle-grid { 
             display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 120px); gap: 2px; margin-top: 15px; 
