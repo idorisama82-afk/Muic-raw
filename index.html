@@ -29,19 +29,20 @@
         .btn-danger { background: var(--danger); }
         .btn-secondary { background: #f1f3f4; color: #3c4043; }
         
-        /* Layout Setup & Waiting Room */
         #setup-section, #waiting-section, #admin-section, #leaderboard-section, #admin-live-section { width: 100%; max-width: 800px; margin: 50px auto; text-align: center; }
         input[type="text"], input[type="password"] { width: 80%; padding: 15px; border: 2px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; font-weight: bold; margin-bottom: 10px;}
         
         .player-tag { display: inline-block; background: #e8f0fe; color: var(--primary); padding: 8px 15px; border-radius: 20px; margin: 5px; font-weight: bold; font-size: 14px;}
         .loader { border: 5px solid #f3f3f3; border-top: 5px solid var(--danger); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-        /* Layout Quiz */
         #quiz-section { display: none; width: 100%; }
-        .main-content { flex: 3; }
+        .main-content { flex: 3; transition: filter 0.5s ease; } /* Thêm hiệu ứng chuyển mờ */
         
-        /* Sidebar */
+        /* HIỆU ỨNG THẺ ẢO GIÁC */
+        .cursed-vision { filter: blur(6px) hue-rotate(180deg) contrast(150%); }
+
         .sidebar { flex: 1; position: sticky; top: 20px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 15px; z-index: 100;}
         .timer-box { font-size: 2.5rem; font-weight: bold; color: var(--danger); font-family: monospace; line-height: 1; text-align: center;}
         .score-box { font-size: 1.8rem; font-weight: bold; color: var(--success); text-align: center; background: #e6f4ea; padding: 10px; border-radius: 8px;}
@@ -49,14 +50,12 @@
         .progress-container { width: 100%; background: #e0e0e0; border-radius: 8px; height: 10px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s ease; }
         
-        /* LIVE LEADERBOARD IN SIDEBAR */
         .live-lb-box { background: #fff3e0; border: 2px solid var(--warning); border-radius: 8px; padding: 15px; margin-top: 10px; }
         .live-lb-title { text-align: center; color: var(--danger); font-weight: bold; margin-top: 0; margin-bottom: 10px; font-size: 15px;}
         .live-lb-list { max-height: 180px; overflow-y: auto; font-size: 14px; }
         .live-lb-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ffd54f; }
         .live-lb-item:last-child { border-bottom: none; }
         
-        /* SINGLE QUESTION STYLES */
         .q-card { border-top: 6px solid var(--primary); padding: 30px; text-align: center;} 
         .q-number { font-weight: bold; color: #5f6368; font-size: 1rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;}
         .q-text { font-size: 24px; color: #202124; font-weight: bold; margin-bottom: 30px; min-height: 80px; display: flex; align-items: center; justify-content: center;}
@@ -70,7 +69,6 @@
         
         @keyframes pop { 0% {transform: scale(1);} 50% {transform: scale(1.05);} 100% {transform: scale(1);} }
 
-        /* Map Styles - FIXED KHUNG & TỌA ĐỘ CHUẨN */
         .map-wrapper { 
             position: relative; 
             width: 800px; 
@@ -84,13 +82,12 @@
 
         .hotspot { position: absolute; background: var(--warning); color: #000; width: 30px; height: 30px; line-height: 30px; text-align: center; border-radius: 50%; cursor: pointer; font-weight: bold; box-shadow: 0 0 10px rgba(0,0,0,0.5); animation: pulse 1.5s infinite; border: 2px solid #fff;}
         .hotspot.done { background: var(--success); animation: none; pointer-events: none; color: white;}
-      /* Tọa độ kéo về phần Đất Liền (bên trái bản đồ) */
-        #hs0 { top: 120px; left: 300px; } /* Vị trí 1: Pác Bó (Cao Bằng) - Tuốt phía Bắc */
-        #hs1 { top: 320px; left: 220px; } /* Vị trí 2: Làng Sen (Nghệ An) - Miền Trung */
-        #hs2 { top: 480px; left: 320px; } /* Vị trí 3: Trường Quốc Học (Huế) */
-        #hs3 { top: 700px; left: 420px; } /* Vị trí 4: Trường Dục Thanh (Bình Thuận) */
-        #hs4 { top: 780px; left: 350px; } /* Vị trí 5: Bến Nhà Rồng (TP.HCM) */
-        /* Puzzle Styles */
+        #hs0 { top: 120px; left: 300px; } 
+        #hs1 { top: 320px; left: 220px; } 
+        #hs2 { top: 480px; left: 320px; } 
+        #hs3 { top: 700px; left: 420px; } 
+        #hs4 { top: 780px; left: 350px; } 
+        
         .puzzle-grid { 
             display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 120px); gap: 2px; margin-top: 15px; 
             background-image: url('ben-nha-rong-2.jpg'); 
@@ -105,7 +102,6 @@
         .tf-table th { background-color: #e8f0fe; }
         .tf-radio { transform: scale(1.4); cursor: pointer; }
 
-        /* UI MODAL */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
         .modal-box { background: white; padding: 35px 25px; border-radius: 16px; width: 95%; max-width: 500px; text-align: center; transform: scale(0.8); transition: transform 0.2s ease; box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
@@ -114,7 +110,6 @@
         .modal-message { font-size: 18px; color: #333; margin-bottom: 25px; line-height: 1.5; text-align: center;}
         .modal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px;}
 
-        /* Leaderboard Tables */
         .lb-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 16px;}
         .lb-table th, .lb-table td { padding: 12px; border-bottom: 1px solid #ddd; }
         .lb-table th { background-color: var(--primary); color: white; }
@@ -147,17 +142,16 @@
 <div id="setup-section" class="card">
     <img src="stock-vector-seamless-puzzles-grid-blank-template-jigsaw-puzzle-pieces-seamless-pattern-mosaic-background-2747017317.jpg" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
     
-    <!-- Nhấp đúp chuột vào chữ THEO DẤU CHÂN NGƯỜI này để mở ADMIN -->
     <h1 style="color: var(--danger); cursor: pointer; user-select: none;" ondblclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';">THEO DẤU CHÂN NGƯỜI</h1>
     
     <div class="meta-info" style="font-size: 14px; background: #fce8e6; color: var(--danger); padding: 10px; border-radius: 8px; margin-bottom: 20px; font-weight: bold;">
-        ⚠️ LUẬT SINH TỒN: Rời tab bị phạt x4 thời gian. CÂU HỎI & ĐÁP ÁN ĐƯỢC XÁO TRỘN NGẪU NHIÊN!
+        ⚠️ LUẬT SINH TỒN: Rời tab bị phạt x4. ĐƯỢC BỐC 1 THẺ KỸ NĂNG/VÁN!
     </div>
     <input type="text" id="playerName" placeholder="Nhập Tên / Mã Sinh Viên...">
     <button class="btn btn-danger" onclick="joinLobby()">🚀 VÀO PHÒNG CHỜ</button>
     
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v1.0.1 <br>
+        Phiên bản v3.0.0 (Ma Thuật & Bịp Bợm) <br>
         Copyright © 2026 by Idori
     </div>
 </div>
@@ -180,8 +174,7 @@
     
     <div id="admin-controls-div" style="display: none;">
         <h3 style="color: var(--primary);">Sĩ số phòng chờ: <span id="admin-lobby-count" style="font-size: 24px; color: var(--danger);">0</span> người</h3>
-        <div id="admin-player-list" style="max-height: 200px; overflow-y: auto; text-align: center; margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 8px;">
-            </div>
+        <div id="admin-player-list" style="max-height: 200px; overflow-y: auto; text-align: center; margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 8px;"></div>
         
         <button class="btn btn-danger" style="padding: 15px; font-size: 20px;" onclick="adminStartGame()">🚀 KHỞI ĐỘNG GAME & CHIẾU BXH</button>
         <button class="btn btn-secondary" onclick="adminResetRoom()" style="margin-top: 15px;">🔄 Reset & Dọn Dẹp Phòng</button>
@@ -189,12 +182,8 @@
 </div>
 
 <div id="admin-live-section" class="card" style="display: none; max-width: 1000px;">
-    <h1 style="color: var(--danger); text-transform: uppercase;">🖥️ MÀN HÌNH MÁY CHIẾU</h1>
+    <h1 style="color: var(--danger); text-transform: uppercase;">🖥️ MÀN HÌNH MÁY CHIẾU (ADMIN)</h1>
     <h2 style="color: var(--primary);">🏆 BẢNG XẾP HẠNG TRỰC TIẾP 🏆</h2>
-    <p style="font-size: 15px; font-weight: bold; color: var(--warning); background: #333; padding: 10px; border-radius: 8px;">
-        CÔNG THỨC: ĐIỂM XẾP HẠNG = (ĐIỂM THỰC x 60%) - (THỜI GIAN ĐÃ DÙNG x 40%)
-    </p>
-    
     <table class="lb-table">
         <thead>
             <tr>
@@ -208,7 +197,6 @@
         </thead>
         <tbody id="admin-lb-body"></tbody>
     </table>
-    
     <button class="btn btn-secondary" onclick="adminResetRoom()" style="margin-top: 20px;">🔄 Dừng Game & Làm Sạch Database</button>
 </div>
 
@@ -217,8 +205,10 @@
         <h3 style="margin: 0; text-align: center; color: #5f6368;" id="player-display-name">Tên</h3>
         <div class="timer-box" id="timer-display">00:00</div>
         <div class="score-box">ĐIỂM: <span id="current-score">0</span></div>
-        <div style="font-weight: bold; color: #5f6368; font-size: 14px;">Tiến độ hành trình: <span id="progress-text">0/29</span></div>
+        <div style="font-weight: bold; color: #5f6368; font-size: 14px; margin-top: 10px;">Tiến độ hành trình: <span id="progress-text">0/29</span></div>
         <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
+        
+        <button class="btn btn-warning" id="skill-btn" onclick="drawSkill()" style="margin-top: 15px; font-size: 15px; font-weight: 900; background: linear-gradient(45deg, #fbbc04, #ff6d00); color: white; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(255, 109, 0, 0.5); animation: pulse 1s infinite;">🃏 RÚT THẺ KỸ NĂNG (1 Lần)</button>
         
         <div class="live-lb-box">
             <h4 class="live-lb-title">🏆 TOP CHIẾN BINH LIVE</h4>
@@ -232,7 +222,7 @@
         </div>
     </div>
 
-    <div class="main-content">
+    <div class="main-content" id="game-main-area">
         <div class="card q-card" id="phase1-card">
             <h2 style="color: var(--primary); margin-bottom: 5px;">GĐ 1: TÌM ĐƯỜNG CỨU NƯỚC</h2>
             <div class="q-number" id="p1-counter">Câu 1 / 15</div>
@@ -274,23 +264,16 @@
 </div>
 
 <script>
-    // --- ĐIỀU KHIỂN NHẠC BẰNG TAY ---
     let isMusicPlaying = false;
     let bgAudio = document.getElementById('bgMusic');
     bgAudio.volume = 0.5;
 
     function toggleMusic() {
         let musicBtn = document.getElementById('music-btn');
-        if(isMusicPlaying) {
-            bgAudio.pause(); musicBtn.innerText = "🎵 Bật Nhạc"; isMusicPlaying = false;
-        } else {
-            bgAudio.play().then(() => { musicBtn.innerText = "🔇 Tắt Nhạc"; isMusicPlaying = true; }).catch(e => console.log(e));
-        }
+        if(isMusicPlaying) { bgAudio.pause(); musicBtn.innerText = "🎵 Bật Nhạc"; isMusicPlaying = false;
+        } else { bgAudio.play().then(() => { musicBtn.innerText = "🔇 Tắt Nhạc"; isMusicPlaying = true; }).catch(e => console.log(e)); }
     }
 
-    // ==========================================
-    // KẾT NỐI FIREBASE 
-    // ==========================================
     const firebaseConfig = {
         apiKey: "AIzaSyBRnH3_tCHtim-KiD7pYELmXotsuI5EZiE",
         authDomain: "chiendichthang6.firebaseapp.com",
@@ -303,8 +286,7 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // --- DATA GỐC (Chưa xáo) ---
-   const p1Data_Original = [
+    const p1Data_Original = [
         { q: "Vào ngày tháng năm nào, người thanh niên yêu nước Nguyễn Tất Thành đã chính thức rời bến Nhà Rồng, bắt đầu hành trình bôn ba tìm đường cứu nước?", opts: ["05/06/1911", "06/05/1911", "02/09/1945", "19/05/1890"], ans: 0 },
         { q: "Con tàu buôn của Pháp đã đưa Bác Hồ rời khỏi Sài Gòn sang phương Tây năm 1911 mang tên là gì?", opts: ["Latouche-Tréville", "Amiral Latouche-Tréville", "Đô đốc Courbet", "Chasseloup-Laubat"], ans: 1 },
         { q: "Khi xin làm việc trên tàu Amiral Latouche-Tréville để được sang Pháp, Nguyễn Tất Thành đã lấy tên gọi (bí danh) là gì?", opts: ["Nguyễn Ái Quốc", "Lý Thụy", "Văn Ba", "Hồ Chí Minh"], ans: 2 },
@@ -323,56 +305,14 @@
     ];
 
     const p2MapData_Original = [
-        const p2MapData_Original = [
-        { 
-            title: "Pác Bó - Cao Bằng", 
-            stmts: [
-                {t: "Ngày 28/1/1941, lãnh tụ Nguyễn Ái Quốc đã trở về Tổ quốc qua cột mốc 108 tại Pác Bó.", a: true}, 
-                {t: "Khi Bác trở về, phong trào cách mạng ở khu vực Pác Bó (Cao Bằng) còn rất yếu kém và chưa phát triển.", a: false}, 
-                {t: "Trong thời gian hoạt động bí mật tại Pác Bó, Bác Hồ đã sử dụng bí danh là Thầu Chín.", a: false}, 
-                {t: "Sự kiện Bác Hồ trở về Pác Bó năm 1941 đã đánh dấu mốc quan trọng sau trọn 30 năm Người bôn ba tìm đường cứu nước.", a: true}
-            ] 
-        },
-        { 
-            title: "Làng Sen - Nghệ An", 
-            stmts: [
-                {t: "Làng Sen (hay còn gọi là làng Kim Liên) là quê ngoại của Bác, nơi Người cất tiếng khóc chào đời.", a: false}, 
-                {t: "Tên khai sinh thuở nhỏ của Chủ tịch Hồ Chí Minh khi sống cùng gia đình tại quê nhà là Nguyễn Sinh Cung.", a: true}, 
-                {t: "Bác Hồ sinh ra và lớn lên trong một gia đình nhà nho nghèo nhưng có truyền thống yêu nước nồng nàn.", a: true}, 
-                {t: "Thân phụ (cha ruột) của Bác Hồ là nhà cách mạng lỗi lạc - cụ Phan Bội Châu.", a: false}
-            ] 
-        },
-        { 
-            title: "Trường Quốc Học - Huế", 
-            stmts: [
-                {t: "Chủ tịch Hồ Chí Minh (lúc bấy giờ tên là Nguyễn Tất Thành) từng có thời gian theo học tại trường Quốc Học Huế.", a: true}, 
-                {t: "Trong thời gian ở Huế, Người đã trực tiếp tham gia vào phong trào đấu tranh chống thuế của nông dân Trung Kỳ năm 1908.", a: true}, 
-                {t: "Chính tại trường Quốc Học Huế, Bác đã có cơ hội gặp gỡ và tiếp xúc với các đảng viên của Đảng Cộng sản Pháp.", a: false}, 
-                {t: "Khi rời trường Quốc Học Huế để tiếp tục hành trình vào phía Nam, Bác đã quyết định đổi tên mình thành Văn Ba.", a: false}
-            ] 
-        },
-        { 
-            title: "Trường Dục Thanh - Bình Thuận", 
-            stmts: [
-                {t: "Trường Dục Thanh được sáng lập vào năm 1907 bởi các sĩ phu yêu nước nhằm hưởng ứng phong trào Duy Tân.", a: true}, 
-                {t: "Tại ngôi trường này, thầy giáo thanh niên Nguyễn Tất Thành đã đảm nhận việc dạy môn Thể dục và chữ Quốc ngữ.", a: true}, 
-                {t: "Trong suốt thời gian giảng dạy tại trường Dục Thanh, Nguyễn Tất Thành đã giữ chức vụ Hiệu trưởng của trường.", a: false}, 
-                {t: "Vào tháng 2 năm 1911, thầy giáo Nguyễn Tất Thành đã rời trường Dục Thanh để tiếp tục hành trình vào Sài Gòn.", a: true}
-            ] 
-        },
-        { 
-            title: "Bến Nhà Rồng - TP.HCM", 
-            stmts: [
-                {t: "Ngày 5/6/1911, Bác đã lên con tàu buôn mang tên Amiral Latouche-Tréville để bắt đầu rời khỏi Việt Nam.", a: true}, 
-                {t: "Công việc đầu tiên Bác làm để kiếm sống trên con tàu này là làm nghề thợ chụp ảnh.", a: false}, 
-                {t: "Mục đích lớn nhất của Người khi quyết định ra đi là tìm ra con đường cứu nước, giải phóng dân tộc khỏi ách đô hộ.", a: true}, 
-                {t: "Ban đầu, dự định của Bác là sẽ đi sang Châu Á (như Nhật Bản) để học hỏi kinh nghiệm từ phong trào Đông Du.", a: false}
-            ] 
-        }
+        { title: "Pác Bó - Cao Bằng", stmts: [{t: "Ngày 28/1/1941, lãnh tụ Nguyễn Ái Quốc đã trở về Tổ quốc qua cột mốc 108 tại Pác Bó.", a: true}, {t: "Khi Bác trở về, phong trào cách mạng ở khu vực Pác Bó (Cao Bằng) còn rất yếu kém và chưa phát triển.", a: false}, {t: "Trong thời gian hoạt động bí mật tại Pác Bó, Bác Hồ đã sử dụng bí danh là Thầu Chín.", a: false}, {t: "Sự kiện Bác Hồ trở về Pác Bó năm 1941 đã đánh dấu mốc quan trọng sau trọn 30 năm Người bôn ba tìm đường cứu nước.", a: true}] },
+        { title: "Làng Sen - Nghệ An", stmts: [{t: "Làng Sen (hay còn gọi là làng Kim Liên) là quê ngoại của Bác, nơi Người cất tiếng khóc chào đời.", a: false}, {t: "Tên khai sinh thuở nhỏ của Chủ tịch Hồ Chí Minh khi sống cùng gia đình tại quê nhà là Nguyễn Sinh Cung.", a: true}, {t: "Bác Hồ sinh ra và lớn lên trong một gia đình nhà nho nghèo nhưng có truyền thống yêu nước nồng nàn.", a: true}, {t: "Thân phụ (cha ruột) của Bác Hồ là nhà cách mạng lỗi lạc - cụ Phan Bội Châu.", a: false}] },
+        { title: "Trường Quốc Học - Huế", stmts: [{t: "Chủ tịch Hồ Chí Minh (lúc bấy giờ tên là Nguyễn Tất Thành) từng có thời gian theo học tại trường Quốc Học Huế.", a: true}, {t: "Trong thời gian ở Huế, Người đã trực tiếp tham gia vào phong trào đấu tranh chống thuế của nông dân Trung Kỳ năm 1908.", a: true}, {t: "Chính tại trường Quốc Học Huế, Bác đã có cơ hội gặp gỡ và tiếp xúc với các đảng viên của Đảng Cộng sản Pháp.", a: false}, {t: "Khi rời trường Quốc Học Huế để tiếp tục hành trình vào phía Nam, Bác đã quyết định đổi tên mình thành Văn Ba.", a: false}] },
+        { title: "Trường Dục Thanh - Bình Thuận", stmts: [{t: "Trường Dục Thanh được sáng lập vào năm 1907 bởi các sĩ phu yêu nước nhằm hưởng ứng phong trào Duy Tân.", a: true}, {t: "Tại ngôi trường này, thầy giáo thanh niên Nguyễn Tất Thành đã đảm nhận việc dạy môn Thể dục và chữ Quốc ngữ.", a: true}, {t: "Trong suốt thời gian giảng dạy tại trường Dục Thanh, Nguyễn Tất Thành đã giữ chức vụ Hiệu trưởng của trường.", a: false}, {t: "Vào tháng 2 năm 1911, thầy giáo Nguyễn Tất Thành đã rời trường Dục Thanh để tiếp tục hành trình vào Sài Gòn.", a: true}] },
+        { title: "Bến Nhà Rồng - TP.HCM", stmts: [{t: "Ngày 5/6/1911, Bác đã lên con tàu buôn mang tên Amiral Latouche-Tréville để bắt đầu rời khỏi Việt Nam.", a: true}, {t: "Công việc đầu tiên Bác làm để kiếm sống trên con tàu này là làm nghề thợ chụp ảnh.", a: false}, {t: "Mục đích lớn nhất của Người khi quyết định ra đi là tìm ra con đường cứu nước, giải phóng dân tộc khỏi ách đô hộ.", a: true}, {t: "Ban đầu, dự định của Bác là sẽ đi sang Châu Á (như Nhật Bản) để học hỏi kinh nghiệm từ phong trào Đông Du.", a: false}] }
     ];
 
     const p3PuzzleData_Original = [
-       const p3PuzzleData_Original = [
         { q: "Người cha ruột của Chủ tịch Hồ Chí Minh, một nhà nho nghèo yêu nước và từng đỗ Phó bảng, tên là gì?", opts: ["Nguyễn Sinh Sắc", "Nguyễn Sinh Khiêm", "Phan Bội Châu", "Hoàng Hoa Thám"], ans: 0 },
         { q: "Người mẹ tần tảo, hết lòng vì chồng con của Bác Hồ, người đã qua đời khi Bác còn rất nhỏ tại Huế, tên là gì?", opts: ["Hoàng Thị Loan", "Nguyễn Thị Thanh", "Hoàng Thị Cúc", "Lê Thị Tú"], ans: 0 },
         { q: "Chủ tịch Hồ Chí Minh có một người anh trai ruột cũng là một người yêu nước, tên của ông là gì?", opts: ["Nguyễn Sinh Khiêm", "Nguyễn Sinh Sắc", "Nguyễn Sinh Xin", "Nguyễn Tất Đạt"], ans: 0 },
@@ -384,151 +324,122 @@
         { q: "Bản Di chúc thiêng liêng để lại cho toàn Đảng, toàn dân được Chủ tịch Hồ Chí Minh bắt đầu viết những dòng đầu tiên vào năm nào?", opts: ["1965", "1968", "1969", "1960"], ans: 0 }
     ];
 
-    // Data đã xáo trộn
-    let p1Data = []; 
-    let p2MapData = [];
-    let p3PuzzleData = [];
-
+    let p1Data = [], p2MapData = [], p3PuzzleData = [];
     let playerName = "";
-    let score = 0;
-    let elapsedTime = 0; 
-    let timerInterval;
+    let score = 0, elapsedTime = 0, timerInterval;
+    let isGameActive = false, isGameOver = false, isInputPaused = false; 
+    let tasksCompleted = 0, currentP1Index = 0, mapActive = null, pzActive = null;
+    let myPlayerRef = null, isCheating = false, leaveTime = 0;
     
-    let isGameActive = false; 
-    let isGameOver = false;
-    let isInputPaused = false; 
-    let tasksCompleted = 0; 
-    let currentP1Index = 0; 
-    let mapActive = null;
-    let pzActive = null;
+    let currentLeaderboard = [];
+    let skillUsed = false;
 
-    let myPlayerRef = null;
-    let isCheating = false;
-    let leaveTime = 0;
-
-    // ==========================================
-    // HỆ THỐNG LOBBY (PHÒNG CHỜ) & ADMIN
-    // ==========================================
-    
-    // Lắng nghe trạng thái phòng từ Firebase
     database.ref('room_state').on('value', (snapshot) => {
         let state = snapshot.val();
-        if(state === 'playing' && playerName !== "" && !isGameActive) {
-            initiateGame(); // Trưởng phòng hô bắt đầu, lính lác xông lên!
-        } else if (state === 'waiting') {
-            isGameActive = false;
-        }
+        if(state === 'playing' && playerName !== "" && !isGameActive) initiateGame(); 
+        else if (state === 'waiting') isGameActive = false;
     });
 
-    // Lắng nghe sĩ số phòng chờ
     database.ref('room_players').on('value', (snapshot) => {
         let players = snapshot.val();
         let count = players ? Object.keys(players).length : 0;
-        
         document.getElementById('lobby-count').innerText = count;
         document.getElementById('admin-lobby-count').innerText = count;
-        
         let adminList = document.getElementById('admin-player-list');
         if(players && adminList) {
-            let html = "";
-            for (let id in players) {
-                html += `<span class="player-tag">${players[id].name}</span>`;
-            }
+            let html = ""; for (let id in players) html += `<span class="player-tag">${players[id].name}</span>`;
             adminList.innerHTML = html;
-        } else if (adminList) {
-            adminList.innerHTML = "<i>Chưa có ai vào phòng...</i>";
+        } else if (adminList) adminList.innerHTML = "<i>Chưa có ai vào phòng...</i>";
+    });
+
+    // LẮNG NGHE SỰ KIỆN KỸ NĂNG TẤN CÔNG
+    database.ref('room_events').on('value', (snapshot) => {
+        if(!isGameActive || isGameOver) return;
+        let ev = snapshot.val();
+        if(!ev) return;
+        if(Date.now() - ev.time > 15000) return; 
+
+        // Bão Tuyết
+        if(ev.type === 'freeze' && ev.by !== playerName) {
+            isInputPaused = true;
+            let freezeUi = document.createElement('div');
+            freezeUi.id = 'global-freeze';
+            freezeUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,180,255,0.85);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:45px;color:white;font-weight:bold;text-shadow: 0 5px 15px rgba(0,0,0,0.5);";
+            freezeUi.innerHTML = `❄️ BẠN BỊ ĐÓNG BĂNG 10s ❄️<br><span style="font-size:22px;margin-top:15px;background:#000;padding:5px 15px;border-radius:10px;">Thủ phạm: ${ev.by}</span>`;
+            document.body.appendChild(freezeUi);
+            setTimeout(() => { if(document.getElementById('global-freeze')) document.getElementById('global-freeze').remove(); isInputPaused = false; }, 10000);
+        }
+
+        // Ảo Giác (Làm mờ chữ)
+        if(ev.type === 'curse' && ev.by !== playerName) {
+            let mainArea = document.getElementById('game-main-area');
+            mainArea.classList.add('cursed-vision');
+            openModal("👁️ TRÚNG BÙA ẢO GIÁC!", `Tên phù thủy <b>${ev.by}</b> đã dùng thẻ Ảo Giác. Đọc chữ bằng niềm tin trong 15 giây nhé!`, "alert");
+            setTimeout(() => { mainArea.classList.remove('cursed-vision'); }, 15000);
+        }
+
+        // Bàn Tay Đen
+        if(ev.type === 'steal' && ev.target === playerName) {
+            score = Math.max(0, score - 100); updateStats();
+            openModal("🚨 MẤT TRỘM!", `Tên giặc <b>${ev.by}</b> đã dùng Thẻ Bàn Tay Đen cướp mất 100 điểm của bạn!`, "alert");
         }
     });
 
-    // Player bấm "VÀO PHÒNG CHỜ" (Có kiểm tra trùng tên)
     function joinLobby() {
         let rawName = document.getElementById("playerName").value.trim();
         if(!rawName) return alert("Nhập mã định danh trước khi lên tàu!");
         
-        // Quét trên Firebase xem có ai lấy tên này chưa
         database.ref('room_players').once('value').then((snapshot) => {
             let nameExists = false;
-            snapshot.forEach((child) => {
-                if(child.val().name.toLowerCase() === rawName.toLowerCase()) {
-                    nameExists = true;
-                }
-            });
+            snapshot.forEach((child) => { if(child.val().name.toLowerCase() === rawName.toLowerCase()) nameExists = true; });
+            if(nameExists) return openModal("⛔ BÁO ĐỘNG TRÙNG TÊN!", "Cái tên <b>" + rawName + "</b> này đã có người đăng ký. Hãy chọn tên khác!", "alert");
 
-            if(nameExists) {
-                openModal("⛔ BÁO ĐỘNG TRÙNG TÊN!", "Cái tên <b>" + rawName + "</b> này đã có người đăng ký trong phòng rồi. Hãy thêm hậu tố hoặc chọn tên khác để tiếp tục!", "alert");
-                return;
-            }
-
-            // Nếu an toàn -> Vào phòng chờ
             playerName = rawName;
             if(!isMusicPlaying) toggleMusic(); 
-
             document.getElementById('setup-section').style.display = 'none';
             document.getElementById('waiting-section').style.display = 'block';
-
             database.ref('room_players').push({ name: playerName });
         });
     }
 
-    // Admin Mở Khóa Panel
     function unlockAdmin() {
-        let pass = document.getElementById('adminPass').value;
-        if(pass === "DLTV15halam@drid") {
+        if(document.getElementById('adminPass').value === "DLTV15halam@drid") {
             document.getElementById('admin-login-div').style.display = 'none';
             document.getElementById('admin-controls-div').style.display = 'block';
-        } else {
-            alert("Sai pass Admin!");
-        }
+        } else alert("Sai pass Admin!");
     }
 
-    // Admin Bấm KHỞI ĐỘNG
     function adminStartGame() {
         database.ref('room_state').set('playing');
-        
         document.getElementById('admin-section').style.display = 'none';
         document.getElementById('admin-live-section').style.display = 'block';
     }
 
-    // Admin Reset toàn bộ dữ liệu
     function adminResetRoom() {
         if(confirm("XÓA SẠCH MỌI THỨ VÀ QUAY VỀ 0?")) {
             database.ref('room_state').set('waiting');
             database.ref('room_players').remove();
             database.ref('bang_xep_hang').remove();
+            database.ref('room_events').remove(); 
             location.reload();
         }
     }
-
-    // ==========================================
-    // KHỞI TẠO BÀI THI KHI NHẬN LỆNH & XÁO TRỘN ĐỀ
-    // ==========================================
     
     function shuffleArray(array) {
         let shuffled = [...array];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
+        for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
         return shuffled;
     }
 
-    // HÀM DEEP SHUFFLE (Xáo Trộn Cực Mạnh)
     function deepShuffleData() {
-        // 1. Xáo 15 Câu hỏi + Xáo cả 4 Đáp án A, B, C, D bên trong
         p1Data = p1Data_Original.map(q => {
             let optsObj = q.opts.map((text, i) => ({ text: text, isCorrect: (i === q.ans) }));
             optsObj = shuffleArray(optsObj);
             let newAnsIdx = optsObj.findIndex(o => o.isCorrect);
             return { q: q.q, opts: optsObj.map(o => o.text), ans: newAnsIdx };
         });
-        p1Data = shuffleArray(p1Data); // Xáo thứ tự 15 câu
-
-        // 2. Xáo các câu Nhận định trong Bản đồ BGD
-        p2MapData = p2MapData_Original.map(loc => {
-            return { title: loc.title, stmts: shuffleArray(loc.stmts) };
-        });
-
-        // 3. Xáo 9 câu hỏi mảnh ghép
+        p1Data = shuffleArray(p1Data); 
+        p2MapData = p2MapData_Original.map(loc => { return { title: loc.title, stmts: shuffleArray(loc.stmts) }; });
         p3PuzzleData = shuffleArray(p3PuzzleData_Original);
     }
 
@@ -537,280 +448,207 @@
         document.getElementById('quiz-section').style.display = 'flex';
         document.getElementById('player-display-name').innerText = "Chiến binh: " + playerName;
         
-        deepShuffleData(); // Gọi hàm xáo data!
-        
+        deepShuffleData();
         isGameActive = true; 
 
         myPlayerRef = database.ref('bang_xep_hang').push();
-        myPlayerRef.set({
-            name: playerName,
-            score: score,
-            time: elapsedTime,
-            status: "Đang chiến đấu..."
-        });
+        myPlayerRef.set({ name: playerName, score: score, time: elapsedTime, status: "Đang chiến đấu..." });
 
         loadP1Question(); 
         const grid = document.getElementById('puzzle-grid');
-        for(let i=0; i<9; i++) {
-            grid.innerHTML += `<div class="piece" id="pz${i}" onclick="openPuzzle(${i})">${i+1}</div>`;
-        }
+        for(let i=0; i<9; i++) grid.innerHTML += `<div class="piece" id="pz${i}" onclick="openPuzzle(${i})">${i+1}</div>`;
 
         timerInterval = setInterval(() => {
             if(isGameOver) return;
             elapsedTime++;
-            let m = Math.floor(elapsedTime / 60); 
-            let s = elapsedTime % 60;
+            let m = Math.floor(elapsedTime / 60), s = elapsedTime % 60;
             document.getElementById('timer-display').innerText = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
         }, 1000);
     }
 
-    // --- ANTI CHEAT CHỈ BẮT KHI ĐANG LÀM BÀI ---
+    // --- HỆ THỐNG 6 THẺ KỸ NĂNG NGẪU NHIÊN ---
+    function drawSkill() {
+        if(skillUsed || isInputPaused) return;
+        skillUsed = true;
+        document.getElementById('skill-btn').style.display = 'none'; 
+
+        let r = Math.floor(Math.random() * 6); // 0 đến 5
+        
+        switch(r) {
+            case 0: // Nhân Đôi
+                score *= 2; updateStats();
+                openModal("🃏 THẺ NHÂN ĐÔI", "Bùm! Toàn bộ điểm hiện tại của bạn đã được x2!", "alert");
+                break;
+            case 1: // Xuyên Không
+                elapsedTime = Math.max(0, elapsedTime - 60); updateFirebaseData();
+                openModal("🃏 THẺ XUYÊN KHÔNG", "Trừ đi 60 giây thời gian làm bài. Bạn đang leo rank thần tốc!", "alert");
+                break;
+            case 2: // Bão Tuyết
+                database.ref('room_events').set({type: 'freeze', by: playerName, time: Date.now()});
+                openModal("❄️ THẺ BÃO TUYẾT", "Đã tung bão tuyết! Toàn bộ đối thủ trong phòng sẽ bị đóng băng 10 giây!", "alert");
+                break;
+            case 3: // Bàn Tay Đen
+                let top1 = currentLeaderboard.length > 0 ? currentLeaderboard[0].name : null;
+                if(top1 && top1 !== playerName) {
+                    database.ref('room_events').set({type: 'steal', by: playerName, target: top1, time: Date.now()});
+                    score += 100; updateStats();
+                    openModal("😈 THẺ BÀN TAY ĐEN", `Bạn đã cướp thành công 100 điểm từ kẻ đứng đầu bảng: <b>${top1}</b>!`, "alert");
+                } else {
+                    score += 100; updateStats();
+                    openModal("👑 THẺ VINH QUANG", "Vì bạn đang ở TOP 1, Thẻ Bàn Tay Đen không có tác dụng cướp, tặng thẳng 100 điểm!", "alert");
+                }
+                break;
+            case 4: // Điệp Viên (Leak đáp án)
+                if(document.getElementById('phase1-card').style.display !== 'none') {
+                    let correctIdx = p1Data[currentP1Index].ans;
+                    let btns = document.getElementById('p1-options').querySelectorAll('.option');
+                    btns[correctIdx].style.border = "4px solid var(--success)";
+                    btns[correctIdx].style.background = "#e6f4ea";
+                    openModal("🕵️ THẺ ĐIỆP VIÊN", "Hack thành công! Đáp án đúng của câu hiện tại đã được bôi viền xanh lục. Chọn lẹ đi!", "alert");
+                } else {
+                    score += 150; updateStats();
+                    openModal("🕵️ THẺ ĐIỆP VIÊN", "Thẻ này chỉ leak được đáp án Giai đoạn 1. Vì bạn đang ở GĐ khác nên được bồi thường +150 điểm!", "alert");
+                }
+                break;
+            case 5: // Ảo Giác (Mờ chữ đối thủ)
+                database.ref('room_events').set({type: 'curse', by: playerName, time: Date.now()});
+                openModal("👁️ THẺ ẢO GIÁC", "Ám toán thành công! Câu hỏi của tất cả đối thủ đã bị làm nhòe tịt đi trong 15 giây!", "alert");
+                break;
+        }
+    }
+
     window.addEventListener("blur", () => {
         if (!isGameActive || isGameOver) return; 
-        elapsedTime += 60; 
-        updateFirebaseData(); 
-        isCheating = true;
-        leaveTime = Date.now();
+        elapsedTime += 60; updateFirebaseData(); 
+        isCheating = true; leaveTime = Date.now();
     });
 
     window.addEventListener("focus", () => {
         if (isCheating && isGameActive && !isGameOver) {
-            let awaySecs = (Date.now() - leaveTime) / 1000;
-            let extraPenalty = Math.floor(awaySecs * 4);
-            elapsedTime += extraPenalty;
-            updateFirebaseData(); 
-            isCheating = false;
-            openModal("🚨 BẮT QUẢ TANG!", `Lách luật đi đâu đấy?<br><br>1. Phạt cảnh cáo tức thì: <b>CỘNG THÊM 60 Giây</b><br>2. Phạt vắng mặt x4: <b>CỘNG THÊM ${extraPenalty} Giây</b><br><br>Thời gian đã bị đẩy lên mức báo động!`, "alert");
+            let extraPenalty = Math.floor(((Date.now() - leaveTime) / 1000) * 4);
+            elapsedTime += extraPenalty; updateFirebaseData(); isCheating = false;
+            openModal("🚨 BẮT QUẢ TANG!", `Lách luật đi đâu đấy?<br>1. Phạt cảnh cáo: <b>+60 Giây</b><br>2. Phạt vắng mặt x4: <b>+${extraPenalty} Giây</b>`, "alert");
         }
     });
 
-    // --- LẮNG NGHE BXH LIVE ---
     database.ref('bang_xep_hang').on('value', (snapshot) => {
         const data = snapshot.val();
         let lbArray = [];
-        for (let id in data) { lbArray.push(data[id]); }
+        for (let id in data) lbArray.push(data[id]);
         
-        // CHỐNG ÂM ĐIỂM BẰNG MATH.MAX
-        lbArray.forEach(p => {
-            p.rankScore = Math.max(0, (p.score * 0.6) - (p.time * 0.4));
-        });
-
-        // XẾP HẠNG THEO ĐIỂM TỔNG HỢP CAO NHẤT LÊN ĐẦU
+        lbArray.forEach(p => p.rankScore = Math.max(0, (p.score * 0.6) - (p.time * 0.4)));
         lbArray.sort((a,b) => b.rankScore - a.rankScore);
+        currentLeaderboard = lbArray; 
 
-        // Sidebar BXH (Của Player)
         let sidebarTbody = document.getElementById('sidebar-lb-body');
-        if(sidebarTbody) {
-            sidebarTbody.innerHTML = lbArray.slice(0, 10).map((p, i) => `
-                <div class="live-lb-item" style="${p.name === playerName ? 'background: #ffe0b2; font-weight:bold;' : ''}">
-                    <span><b>${i+1}.</b> ${p.name}</span>
-                    <span style="color:var(--danger)"><b>${p.rankScore.toFixed(1)}</b>đ</span>
-                </div>
-            `).join('');
-        }
+        if(sidebarTbody) sidebarTbody.innerHTML = lbArray.slice(0, 10).map((p, i) => `<div class="live-lb-item" style="${p.name === playerName ? 'background: #ffe0b2; font-weight:bold;' : ''}"><span><b>${i+1}.</b> ${p.name}</span><span style="color:var(--danger)"><b>${p.rankScore.toFixed(1)}</b>đ</span></div>`).join('');
 
-        // BXH Máy Chiếu (Dành cho Admin)
         let adminTbody = document.getElementById('admin-lb-body');
-        if(adminTbody) {
-            adminTbody.innerHTML = lbArray.map((p, i) => `
-                <tr class="${i===0?'top-1':''}">
-                    <td>${i+1}</td>
-                    <td style="font-weight:bold; font-size: 18px;">${p.name}</td>
-                    <td style="color: var(--success); font-weight: bold;">${p.score}</td>
-                    <td style="color: #5f6368;">${Math.floor(p.time/60)}p ${p.time%60}s</td>
-                    <td style="font-weight:bold; color:var(--danger); font-size: 20px;">${p.rankScore.toFixed(1)}</td>
-                    <td style="color:${p.status==='Hoàn thành xuất sắc'?'var(--success)':'var(--warning)'}; font-weight:bold;">${p.status}</td>
-                </tr>
-            `).join('');
-        }
+        if(adminTbody) adminTbody.innerHTML = lbArray.map((p, i) => `<tr class="${i===0?'top-1':''}"><td>${i+1}</td><td style="font-weight:bold; font-size: 18px;">${p.name}</td><td style="color: var(--success); font-weight: bold;">${p.score}</td><td style="color: #5f6368;">${Math.floor(p.time/60)}p ${p.time%60}s</td><td style="font-weight:bold; color:var(--danger); font-size: 20px;">${p.rankScore.toFixed(1)}</td><td style="color:${p.status==='Hoàn thành xuất sắc'?'var(--success)':'var(--warning)'}; font-weight:bold;">${p.status}</td></tr>`).join('');
 
-        // BXH Chung Cuộc (Player khi làm xong)
         let mainTbody = document.getElementById('lb-body');
-        if(mainTbody) {
-            mainTbody.innerHTML = lbArray.map((p, i) => `
-                <tr class="${i===0?'top-1':''}" style="${p.name === playerName ? 'background: #fff3e0;' : ''}">
-                    <td>${i+1}</td>
-                    <td style="font-weight:bold;">${p.name}</td>
-                    <td style="font-weight:bold; color:var(--danger)">${p.rankScore.toFixed(1)}</td>
-                    <td style="color:${p.status==='Hoàn thành xuất sắc'?'var(--success)':'var(--warning)'}; font-weight:bold;">${p.status}</td>
-                </tr>
-            `).join('');
-        }
+        if(mainTbody) mainTbody.innerHTML = lbArray.map((p, i) => `<tr class="${i===0?'top-1':''}" style="${p.name === playerName ? 'background: #fff3e0;' : ''}"><td>${i+1}</td><td style="font-weight:bold;">${p.name}</td><td style="font-weight:bold; color:var(--danger)">${p.rankScore.toFixed(1)}</td><td style="color:${p.status==='Hoàn thành xuất sắc'?'var(--success)':'var(--warning)'}; font-weight:bold;">${p.status}</td></tr>`).join('');
     });
 
-    function updateFirebaseData() {
-        if(myPlayerRef) myPlayerRef.update({ score: score, time: elapsedTime });
-    }
+    function updateFirebaseData() { if(myPlayerRef) myPlayerRef.update({ score: score, time: elapsedTime }); }
+    function updateStats() { document.getElementById('current-score').innerText = score; document.getElementById('progress-text').innerText = `${tasksCompleted}/29`; document.getElementById('progress-bar').style.width = (tasksCompleted/29)*100 + '%'; updateFirebaseData(); }
 
-    function updateStats() {
-        document.getElementById('current-score').innerText = score;
-        document.getElementById('progress-text').innerText = `${tasksCompleted}/29`;
-        document.getElementById('progress-bar').style.width = (tasksCompleted/29)*100 + '%';
-        updateFirebaseData(); 
-    }
-
-    // --- PHASE 1 (GAME SHOW MODE) ---
     function loadP1Question() {
-        if (currentP1Index >= p1Data.length) {
-            document.getElementById('phase1-card').style.display = 'none';
-            document.getElementById('phase2-card').style.display = 'block';
-            return;
-        }
-
+        if (currentP1Index >= p1Data.length) { document.getElementById('phase1-card').style.display = 'none'; document.getElementById('phase2-card').style.display = 'block'; return; }
         const q = p1Data[currentP1Index];
         document.getElementById('p1-counter').innerText = `Câu ${currentP1Index + 1} / 15`;
         document.getElementById('p1-question').innerText = q.q;
-        
-        const optionsDiv = document.getElementById('p1-options');
-        optionsDiv.innerHTML = ""; 
+        const optionsDiv = document.getElementById('p1-options'); optionsDiv.innerHTML = ""; 
         const labels = ['A','B','C','D'];
-        
         q.opts.forEach((opt, idx) => {
-            let btn = document.createElement('div');
-            btn.className = 'option';
+            let btn = document.createElement('div'); btn.className = 'option';
             btn.innerHTML = `<span class="char-badge">${labels[idx]}</span> <span>${opt}</span>`;
-            btn.onclick = () => { if(!isInputPaused) handleP1Answer(idx, btn, q); };
-            optionsDiv.appendChild(btn);
+            btn.onclick = () => { if(!isInputPaused) handleP1Answer(idx, btn, q); }; optionsDiv.appendChild(btn);
         });
     }
 
     function handleP1Answer(selectedIdx, btn, qObj) {
-        const allBtns = document.getElementById('p1-options').querySelectorAll('.option');
-        allBtns.forEach(b => b.classList.add('locked'));
-
+        const allBtns = document.getElementById('p1-options').querySelectorAll('.option'); allBtns.forEach(b => b.classList.add('locked'));
         if(selectedIdx === qObj.ans) {
-            btn.classList.add('selected-correct');
-            score += 50;
-            tasksCompleted++;
-            updateStats();
+            btn.classList.add('selected-correct'); score += 50; tasksCompleted++; updateStats();
             setTimeout(() => { currentP1Index++; loadP1Question(); }, 1000);
         } else {
-            btn.classList.add('selected-wrong');
-            allBtns[qObj.ans].classList.add('selected-correct'); 
-            tasksCompleted++;
-            updateStats();
-            triggerRandomPenalty("Sai cơ bản!", () => {
-                currentP1Index++;
-                loadP1Question();
-            });
+            btn.classList.add('selected-wrong'); allBtns[qObj.ans].classList.add('selected-correct'); tasksCompleted++; updateStats();
+            triggerRandomPenalty("Sai cơ bản!", () => { currentP1Index++; loadP1Question(); });
         }
     }
 
-    // --- PHASE 2 (BẢN ĐỒ FORM BGD) ---
     function openMap(id) {
         if(isInputPaused || document.getElementById(`hs${id}`).classList.contains('done')) return;
-        mapActive = id;
-        let data = p2MapData[id];
+        mapActive = id; let data = p2MapData[id];
         let html = `<table class="tf-table"><thead><tr><th>Nhận định</th><th style="width:40px">Đ</th><th style="width:40px">S</th></tr></thead><tbody>`;
-        data.stmts.forEach((s, i) => {
-            html += `<tr><td>${s.t}</td>
-                     <td style="text-align:center"><input type="radio" name="tf_${i}" value="true" class="tf-radio"></td>
-                     <td style="text-align:center"><input type="radio" name="tf_${i}" value="false" class="tf-radio"></td></tr>`;
-        });
+        data.stmts.forEach((s, i) => { html += `<tr><td>${s.t}</td><td style="text-align:center"><input type="radio" name="tf_${i}" value="true" class="tf-radio"></td><td style="text-align:center"><input type="radio" name="tf_${i}" value="false" class="tf-radio"></td></tr>`; });
         html += `</tbody></table>`;
         openModal(`📍 ${data.title}`, html, "confirm", submitMap);
     }
 
     function submitMap() {
-        let data = p2MapData[mapActive];
-        let correctC = 0;
+        let data = p2MapData[mapActive], correctC = 0;
         for(let i=0; i<4; i++) {
             let r = document.querySelector(`input[name="tf_${i}"]:checked`);
             if(!r) return openModal("Lỗi", "Vui lòng chọn đủ 4 ý Đ/S!", "alert");
             if((r.value === 'true') === data.stmts[i].a) correctC++;
         }
-        
-        let earned = 0;
-        if(correctC === 4) earned = 200; else if(correctC === 3) earned = 100; else if(correctC === 2) earned = 50; else if(correctC === 1) earned = 20;
-
-        score += earned;
-        document.getElementById(`hs${mapActive}`).classList.add('done');
-        tasksCompleted++; updateStats();
-
+        let earned = 0; if(correctC === 4) earned = 200; else if(correctC === 3) earned = 100; else if(correctC === 2) earned = 50; else if(correctC === 1) earned = 20;
+        score += earned; document.getElementById(`hs${mapActive}`).classList.add('done'); tasksCompleted++; updateStats();
         let hsDone = document.querySelectorAll('.hotspot.done').length;
         if(hsDone === 5) document.getElementById('phase3-card').style.display = 'block';
-
-        if(correctC < 4) triggerRandomPenalty(`Đúng ${correctC}/4 ý. Nhận ${earned}đ. Thiếu 1 ý là bị PHẠT!`);
-        else openModal("Xuất Sắc!", `Đúng 4/4 ý! +200 Điểm.`, "alert");
+        if(correctC < 4) triggerRandomPenalty(`Đúng ${correctC}/4 ý. Nhận ${earned}đ. Thiếu 1 ý là bị PHẠT!`); else openModal("Xuất Sắc!", `Đúng 4/4 ý! +200 Điểm.`, "alert");
     }
 
-    // --- PHASE 3 (MẢNH GHÉP) ---
     function openPuzzle(id) {
         if(isInputPaused || document.getElementById(`pz${id}`).classList.contains('revealed')) return;
         pzActive = id; let data = p3PuzzleData[id];
         let html = `<div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">`;
-        data.opts.forEach((opt, i) => { html += `<button class="btn btn-secondary" onclick="checkPuzzle(${i})">${opt}</button>`; });
-        html += `</div>`;
+        data.opts.forEach((opt, i) => { html += `<button class="btn btn-secondary" onclick="checkPuzzle(${i})">${opt}</button>`; }); html += `</div>`;
         openModal(`Mảnh ghép số ${id+1}`, `<strong style="color:var(--primary)">${data.q}</strong>` + html, "none");
     }
 
     function checkPuzzle(ansIdx) {
         document.getElementById('custom-modal').classList.remove('show');
-        if(ansIdx === p3PuzzleData[pzActive].ans) {
-            document.getElementById(`pz${pzActive}`).classList.add('revealed');
-            score += 100; tasksCompleted++; updateStats();
-        } else {
-            tasksCompleted++; updateStats(); triggerRandomPenalty("Sai rồi! Mảnh ghép đã bị khóa cứng.");
-        }
+        if(ansIdx === p3PuzzleData[pzActive].ans) { document.getElementById(`pz${pzActive}`).classList.add('revealed'); score += 100; tasksCompleted++; updateStats();
+        } else { tasksCompleted++; updateStats(); triggerRandomPenalty("Sai rồi! Mảnh ghép đã bị khóa cứng."); }
     }
 
     function submitFinal() {
         if(isInputPaused) return;
         let guess = document.getElementById('finalGuess').value.toLowerCase().trim();
-        let valid = ['bến nhà rồng', 'ben nha rong', 'nha rong', 'nhà rồng', 'Bến Nhà Rồng'];
-        if(valid.includes(guess)) {
-            score += 500; updateStats(); endGame();
-        } else {
-            triggerRandomPenalty("Đoán sai tên Bức Ảnh!");
-        }
+        if(['bến nhà rồng', 'ben nha rong', 'nha rong', 'nhà rồng'].includes(guess)) { score += 500; updateStats(); endGame();
+        } else { triggerRandomPenalty("Đoán sai tên Bức Ảnh!"); }
     }
 
-    // --- HỆ THỐNG PHẠT NGẪU NHIÊN ---
     function triggerRandomPenalty(customMsg = "", callback = null) {
-        isInputPaused = true; let r = Math.random(); let msg = "", action = null;
-        if(r < 0.33) {
-            msg = "CỘNG THÊM 60 GIÂY VÀO ĐỒNG HỒ!"; action = () => { elapsedTime += 60; updateFirebaseData(); isInputPaused = false; if(callback) callback(); };
-        } else if(r < 0.66) {
-            msg = "ĐÓNG BĂNG TƯƠNG TÁC 5 GIÂY! (Giờ vẫn chạy)";
-            action = () => {
-                let freeze = document.createElement('div');
-                freeze.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(26,115,232,0.6);z-index:99999;display:flex;align-items:center;justify-content:center;font-size:50px;color:white;font-weight:bold;";
+        isInputPaused = true; let r = Math.random(), msg = "", action = null;
+        if(r < 0.33) { msg = "CỘNG THÊM 60 GIÂY VÀO ĐỒNG HỒ!"; action = () => { elapsedTime += 60; updateFirebaseData(); isInputPaused = false; if(callback) callback(); }; } 
+        else if(r < 0.66) {
+            msg = "ĐÓNG BĂNG TƯƠNG TÁC 5 GIÂY! (Giờ vẫn chạy)"; action = () => {
+                let freeze = document.createElement('div'); freeze.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(26,115,232,0.6);z-index:99999;display:flex;align-items:center;justify-content:center;font-size:50px;color:white;font-weight:bold;";
                 freeze.innerText = "❄️ ĐÓNG BĂNG ❄️"; document.body.appendChild(freeze);
                 setTimeout(() => { freeze.remove(); isInputPaused = false; if(callback) callback(); }, 5000);
             };
-        } else {
-            msg = "TRỪ 50 ĐIỂM THÀNH TÍCH!"; action = () => { score -= 50; updateStats(); isInputPaused = false; if(callback) callback(); };
-        }
+        } else { msg = "TRỪ 50 ĐIỂM THÀNH TÍCH!"; action = () => { score -= 50; updateStats(); isInputPaused = false; if(callback) callback(); }; }
         openModal("⚠️ HÌNH PHẠT SINH TỒN", `${customMsg}<br><div style="font-size:24px; color:var(--danger); font-weight:bold; margin-top:15px;">${msg}</div>`, "alert", action);
     }
 
-    // --- MODAL DÙNG CHUNG ---
     function openModal(title, content, type, onConfirm) {
-        document.getElementById('modal-title').innerText = title;
-        document.getElementById('modal-message').innerHTML = content;
-        let actions = document.getElementById('modal-actions');
-        actions.innerHTML = "";
-        if(type === "alert") {
-            actions.innerHTML = `<button class="btn btn-warning" onclick="closeModal()">Đã Hiểu</button>`;
-            document.getElementById('custom-modal').onclickConfirm = onConfirm;
-        } else if(type === "confirm") {
-            actions.innerHTML = `<button class="btn btn-secondary" onclick="closeModal()">Khoan đã</button><button class="btn btn-danger" id="confirm-btn">Chốt luôn</button>`;
-            document.getElementById('confirm-btn').onclick = () => { closeModal(); if(onConfirm) onConfirm(); };
-        }
+        document.getElementById('modal-title').innerText = title; document.getElementById('modal-message').innerHTML = content;
+        let actions = document.getElementById('modal-actions'); actions.innerHTML = "";
+        if(type === "alert") { actions.innerHTML = `<button class="btn btn-warning" onclick="closeModal()">Đã Hiểu</button>`; document.getElementById('custom-modal').onclickConfirm = onConfirm; } 
+        else if(type === "confirm") { actions.innerHTML = `<button class="btn btn-secondary" onclick="closeModal()">Khoan đã</button><button class="btn btn-danger" id="confirm-btn">Chốt luôn</button>`; document.getElementById('confirm-btn').onclick = () => { closeModal(); if(onConfirm) onConfirm(); }; }
         document.getElementById('custom-modal').classList.add('show');
     }
 
-    function closeModal() {
-        document.getElementById('custom-modal').classList.remove('show');
-        if(document.getElementById('custom-modal').onclickConfirm) { document.getElementById('custom-modal').onclickConfirm(); document.getElementById('custom-modal').onclickConfirm = null; }
-    }
+    function closeModal() { document.getElementById('custom-modal').classList.remove('show'); if(document.getElementById('custom-modal').onclickConfirm) { document.getElementById('custom-modal').onclickConfirm(); document.getElementById('custom-modal').onclickConfirm = null; } }
 
-    // --- KẾT THÚC GAME ---
     function endGame() {
         isGameOver = true; isGameActive = false; clearInterval(timerInterval);
         if(myPlayerRef) myPlayerRef.update({ status: "Hoàn thành xuất sắc", time: elapsedTime, score: score });
-        document.getElementById('quiz-section').style.display = 'none';
-        document.getElementById('leaderboard-section').style.display = 'block';
+        document.getElementById('quiz-section').style.display = 'none'; document.getElementById('leaderboard-section').style.display = 'block';
     }
 </script>
 </body>
