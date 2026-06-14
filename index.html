@@ -380,6 +380,8 @@
     const database = firebase.database();
 
     const p1Data_Original = [
+        const p1Data_Original = [
+        // 15 câu cũ
         { q: "Vào ngày tháng năm nào, người thanh niên yêu nước Nguyễn Tất Thành đã chính thức rời bến Nhà Rồng, bắt đầu hành trình bôn ba tìm đường cứu nước?", opts: ["05/06/1911", "06/05/1911", "02/09/1945", "19/05/1890"], ans: 0 },
         { q: "Con tàu buôn của Pháp đã đưa Bác Hồ rời khỏi Sài Gòn sang phương Tây năm 1911 mang tên là gì?", opts: ["Latouche-Tréville", "Amiral Latouche-Tréville", "Đô đốc Courbet", "Chasseloup-Laubat"], ans: 1 },
         { q: "Khi xin làm việc trên tàu Amiral Latouche-Tréville để được sang Pháp, Nguyễn Tất Thành đã lấy tên gọi (bí danh) là gì?", opts: ["Nguyễn Ái Quốc", "Lý Thụy", "Văn Ba", "Hồ Chí Minh"], ans: 2 },
@@ -394,7 +396,19 @@
         { q: "Hội nghị hợp nhất các tổ chức cộng sản do lãnh tụ Nguyễn Ái Quốc chủ trì đã quyết định thành lập Đảng Cộng sản Việt Nam vào ngày nào?", opts: ["03/02/1930", "02/09/1945", "19/08/1945", "07/05/1954"], ans: 0 },
         { q: "Sau 30 năm hoạt động ở nước ngoài, mùa xuân năm 1941, lãnh tụ Nguyễn Ái Quốc đã vượt biên giới Việt - Trung để trở về tỉnh nào của nước ta?", opts: ["Lạng Sơn", "Cao Bằng", "Tuyên Quang", "Hà Giang"], ans: 1 },
         { q: "Trong khoảng thời gian từ năm 1928 đến 1929, khi hoạt động cách mạng tại Thái Lan (Xiêm), Bác Hồ đã sử dụng bí danh nào để che mắt địch?", opts: ["Thầu Chín", "Vương", "Trần", "Lý Thụy"], ans: 0 },
-        { q: "Tác phẩm nổi tiếng 'Bản án chế độ thực dân Pháp' do Nguyễn Ái Quốc viết bằng tiếng Pháp được xuất bản lần đầu tiên (năm 1925) tại quốc gia nào?", opts: ["Việt Nam", "Trung Quốc", "Pháp", "Nga"], ans: 2 }
+        { q: "Tác phẩm nổi tiếng 'Bản án chế độ thực dân Pháp' do Nguyễn Ái Quốc viết bằng tiếng Pháp được xuất bản lần đầu tiên (năm 1925) tại quốc gia nào?", opts: ["Việt Nam", "Trung Quốc", "Pháp", "Nga"], ans: 2 },
+        
+        // 10 CÂU MỚI BỔ SUNG (Câu 16 -> 25)
+        { q: "Sự kiện Nguyễn Ái Quốc bỏ phiếu tán thành Quốc tế III và tham gia sáng lập Đảng Cộng sản Pháp (12/1920) diễn ra tại Đại hội nào?", opts: ["Đại hội Tours", "Đại hội Versailles", "Đại hội Paris", "Đại hội London"], ans: 0 },
+        { q: "Trong thời gian hoạt động ở Quảng Châu (Trung Quốc) những năm 1924-1925, Nguyễn Ái Quốc thường sử dụng bí danh nào?", opts: ["Vương", "Văn Ba", "Lý Thụy", "Thầu Chín"], ans: 2 },
+        { q: "Tác phẩm 'Đường Kách mệnh' - tập hợp các bài giảng của Nguyễn Ái Quốc tại Quảng Châu, được xuất bản lần đầu tiên vào năm nào?", opts: ["1925", "1927", "1930", "1941"], ans: 1 },
+        { q: "Vào những năm 1942-1943, Bác Hồ đã bị chính quyền Tưởng Giới Thạch bắt giam trái phép tại tỉnh nào của Trung Quốc?", opts: ["Quảng Đông", "Quảng Tây", "Vân Nam", "Hải Nam"], ans: 1 },
+        { q: "Tập thơ nổi tiếng 'Nhật ký trong tù' được Chủ tịch Hồ Chí Minh sáng tác bằng loại chữ nào?", opts: ["Chữ Hán", "Chữ Quốc ngữ", "Chữ Nôm", "Chữ Pháp"], ans: 0 },
+        { q: "Tháng 5/1941, Hội nghị Trung ương Đảng lần thứ 8 do Bác Hồ chủ trì tại Pác Bó đã quyết định thành lập mặt trận nào?", opts: ["Mặt trận Việt Minh", "Mặt trận Tổ quốc VN", "Mặt trận Liên Việt", "Mặt trận Dân chủ Đông Dương"], ans: 0 },
+        { q: "Ngày 2/9/1945, tại Quảng trường Ba Đình, Chủ tịch Hồ Chí Minh đã đọc bản Tuyên ngôn Độc lập khai sinh ra nước nào?", opts: ["Việt Nam Dân chủ Cộng hòa", "Cộng hòa Xã hội chủ nghĩa Việt Nam", "Quốc gia Việt Nam", "Liên bang Đông Dương"], ans: 0 },
+        { q: "'Chúng ta thà hy sinh tất cả, chứ nhất định không chịu mất nước...'. Đây là đoạn trích trong Lời kêu gọi toàn quốc kháng chiến được Bác viết vào ngày nào?", opts: ["19/12/1946", "02/09/1945", "19/08/1945", "07/05/1954"], ans: 0 },
+        { q: "Chân lý lịch sử: 'Không có gì quý hơn độc lập, tự do' được Chủ tịch Hồ Chí Minh khẳng định vào năm nào, giữa lúc kháng chiến chống Mỹ đang ác liệt?", opts: ["1965", "1966", "1968", "1969"], ans: 1 },
+        { q: "Vào năm 1987, Đại hội đồng UNESCO đã ra nghị quyết vinh danh Chủ tịch Hồ Chí Minh là 'Anh hùng giải phóng dân tộc' và danh hiệu gì?", opts: ["Nhà văn hóa kiệt xuất", "Vĩ nhân thời đại", "Danh nhân thế giới", "Lãnh tụ thiên tài"], ans: 0 }
     ];
 
     const p2MapData_Original = [
@@ -793,7 +807,7 @@
                 <button class="btn" style="background:#000;color:#fff;border:1px solid #fff;font-size:12px;padding:8px;" onclick="executeSkill(24)">Tắt Đèn</button>
                 <button class="btn" style="background:#e91e63;color:#fff;border:2px solid #000;font-size:12px;padding:8px;" onclick="executeSkill(25)">Thao Túng Tâm Lý</button>
             `;
-            openModal("👑 KHO VŨ KHÍ CỦA IDORI", `<div style="display:flex; flex-wrap:wrap; gap:8px;">${html}</div>`, "alert");
+            openModal("👑 KHO VŨ KHÍ CỦA IDORI", `<div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height: 55vh; overflow-y: auto; padding-right: 5px;">${html}</div>`, "alert");
             return;
         }
 
