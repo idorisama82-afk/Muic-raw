@@ -136,9 +136,10 @@
     </div>
 </div>
 
+<!-- MODAL SÁCH MA THUẬT (V19.0 CHÚA TỂ HỖN MANG) -->
 <div id="guide-modal" class="modal-overlay">
     <div class="modal-box">
-        <h2 class="modal-title" style="color: var(--primary);">📖 SÁCH MA THUẬT V19.0</h2>
+        <h2 class="modal-title" style="color: var(--primary);">📖 SÁCH MA THUẬT</h2>
         <div style="text-align: center; font-style: italic; color: #666; margin-bottom: 20px;">Cẩm nang Chúa Tể Hỗn Mang</div>
         
         <h3>🔥 1. CƠ CHẾ SINH TỒN CƠ BẢN</h3>
@@ -147,7 +148,7 @@
             <li><b>Phạt Anti-Cheat:</b> Rời khỏi Tab bị cộng thêm thời gian gấp 4 lần. Lông Vũ giảm nửa án phạt.</li>
         </ul>
 
-        <h3>🌪️ 2. TÍNH NĂNG KỶ NGUYÊN HỖN MANG (V19)</h3>
+        <h3>🌪️ 2. TÍNH NĂNG KỶ NGUYÊN HỖN MANG</h3>
         <ul>
             <li><b>Thức Tỉnh (Hóa Chao):</b> Đạt 100% Nộ. Hóa Chao trong 20s: Giảm nửa thời gian phạt, <b>Nhân 3 Điểm</b>, <b>MIỄN NHIỄM 100%</b> bùa chú.</li>
             <li><b>Lệnh Truy Nã 🎯:</b> Top 1 trụ quá 15s bị gắn icon. Ám toán thành công nhận ngay <b>+200đ</b>.</li>
@@ -160,6 +161,14 @@
         <h3>✨ 3. HỆ THỐNG 10 NỘI TẠI (PASSIVE)</h3>
         <ul>
             <li>Giáp Gai (Phản 50đ), Phúc Khí (30% Né), Thương Nhân (+15đ), Thời Gian Lộ (-3s), Bảo Hiểm (Không phạt sinh tồn), Tái Chế (25% giữ thẻ), Dấu Chân Tự Hào (Xong map +1 thẻ), Siêu Đạo Tặc (+50% cướp), Lông Vũ (Giảm phạt tab), Hào Quang (Sẵn 3 Thẻ).</li>
+        </ul>
+        <h3>🃏 4. KHO TÀNG 26 THẺ KỸ NĂNG</h3>
+        <ul>
+            <li><b>Nhóm Tự Cường:</b> x2 Điểm, -60s Phạt, Cân Đẩu Vân (Vượt ải free), 50/50, Thanh Tẩy (Giải bùa), Điệp Viên (Leak đáp án).</li>
+            <li><b>Nhóm Trộm Cắp:</b> Bàn Tay Đen (Cướp 100đ Top 1), Đạo Tặc (Cướp thời gian), Hút Máu (Hút 50đ cả phòng).</li>
+            <li><b>Nhóm Phá Hoại (AoE):</b> Bão Tuyết (Đóng băng 10s), Ảo Giác (Mờ chữ), Động Đất (Rung màn hình), Nấm Lùn (Teo nhỏ), Tắt Đèn (Đen thui), Ma Âm (Troll âm thanh), Hố Đen (Xóa chuỗi cả phòng), Cấm Thuật (Khóa rút thẻ 30s).</li>
+            <li><b>Nhóm Thao Túng:</b> Tráo Điểm (Chỉ định / Ngẫu nhiên), Thẻ Đỏ (Cấm thi 20s), Check VAR (Trừ 150đ), Thao Túng Tâm Lý (Ép nạn nhân chọn sai).</li>
+            <li><b>Nhóm Siêu Phẩm:</b> Robin Hood (Tráo điểm Top 1 & Bét), Hattrick (+300đ), Thay Người (+3 thẻ), Siêu Phẩm 90+ (Đổi phạt thành Điểm).</li>
         </ul>
 
         <div style="text-align: center; margin-top: 30px;">
@@ -926,38 +935,90 @@
         });
     }
 
+    let lastGachaTime = 0;
+
     function openBlackMarket() {
         if(isInputPaused) return;
-        let gachaBtn = isThanosUsed ? `<button class="btn" style="background:#555;color:#aaa;" disabled>🎰 Rương Vô Cực (Đã có người mở)</button>` : `<button class="btn" style="background:linear-gradient(45deg, #9c27b0, #ffeb3b);color:#000;border:2px solid #000;" onclick="buyItem('gacha', 50)">🎰 Mở Rương Vô Cực (50đ)</button>`;
+        let now = Date.now();
+        let remain = Math.max(0, Math.ceil((10000 - (now - lastGachaTime))/1000));
+        
+        let gachaBtn = remain > 0 
+            ? `<button class="btn" style="background:#555;color:#aaa; cursor:not-allowed;" disabled>⏳ Mở tiếp sau ${remain}s</button>` 
+            : `<button class="btn" style="background:linear-gradient(45deg, #ff9800, #e91e63); color:#fff; font-size:18px; padding:15px; border:2px solid #fff; animation: pulse 1s infinite;" onclick="rollGacha()">🎁 QUAY GACHA (100đ)</button>`;
+
         let html = `
-            <div style="display:grid; grid-template-columns: 1fr; gap:10px;">
-                <button class="btn" style="background:#e65100;color:#fff;border:2px solid #fff;grid-column: span 1;" onclick="buyItem('arena', 500)">⚔️ Thách Đấu La Mã (500đ)</button>
+            <div style="text-align:center;">
+                <p style="color:#5f6368; font-size:14px; margin-bottom:15px;">Hệ thống rủi ro cực cao. Càng OP tỷ lệ rớt càng thấp!</p>
+                <table style="width:100%; border-collapse:collapse; margin-bottom:15px; font-size:14px; text-align:left;">
+                    <tr style="background:#f1f3f4;"><td style="padding:8px;">⚪ <b>Rác (30%)</b></td><td>Bị hệ thống vả trừ 50đ</td></tr>
+                    <tr><td style="padding:8px;">🟢 <b>Thường (40%)</b></td><td>+1 Thẻ ngẫu nhiên</td></tr>
+                    <tr style="background:#f1f3f4;"><td style="padding:8px;">🔵 <b>Hiếm (20%)</b></td><td>Thẻ Đỏ, Tắt Đèn, Bùa Lú, Thao Túng</td></tr>
+                    <tr><td style="padding:8px; color:var(--danger);">🟣 <b>Siêu Hiếm (8%)</b></td><td>Hattrick, CR7, ⚔️ La Mã</td></tr>
+                    <tr style="background:#fff3e0;"><td style="padding:8px; color:#ff9800; font-weight:bold;">🟡 <b>Jackpot (2%)</b></td><td>💥 Găng Tay Thanos</td></tr>
+                </table>
                 ${gachaBtn}
-                <button class="btn" style="background:#607d8b;color:#fff;" onclick="buyItem('random', 100)">🎲 1 Thẻ Ngẫu Nhiên (100đ)</button>
-                <button class="btn" style="background:#e91e63;color:#fff;" onclick="buyItem('mind_control', 200)">😵 Thẻ Thao Túng Tâm Lý (200đ)</button>
-                <button class="btn" style="background:#d32f2f;color:#fff;" onclick="buyItem('red_card', 250)">🟥 Thẻ Đỏ 20s (250đ)</button>
-                <button class="btn" style="background:#000;color:#fff;border:1px solid #fff;" onclick="buyItem('blackout', 300)">🌑 Thẻ Tắt Đèn (300đ)</button>
-                <button class="btn" style="background:#00e5ff;color:#000;" onclick="buyItem('cr7', 400)">🐐 Thẻ Siêu Phẩm 90+ (400đ)</button>
             </div>
-            <p style="color:#5f6368; font-size:14px; margin-top:15px;">*Mua xong hệ thống sẽ ép xài luôn lập tức!</p>
         `;
-        openModal("🛒 CHỢ ĐEN CHIẾN THUẬT", html, "alert");
+        openModal("🎰 HỘP GACHA CHỢ ĐEN", html, "alert");
     }
 
-    function buyItem(item, cost) {
-        if(item === 'arena') {
-            if(score < 500) return showToast("❌ Cần 500đ (200đ vé + 300đ cược)!", "danger");
-            let selectHTMLA = getTargetSelectHTML(); 
-            if(!selectHTMLA) return showToast("Phòng chưa có ai để thách đấu!", "danger");
-            closeModal();
-            openModal("⚔️ THÁCH ĐẤU LA MÃ", `Vé vào cửa 200đ + Cược 300đ.<br>Chọn đối thủ khô máu:<br>${selectHTMLA}`, "confirm", () => {
-                let targetName = document.getElementById('target-player-select').value;
-                score -= 200; updateStats(); 
-                let a = Math.floor(Math.random()*50)+10, b = Math.floor(Math.random()*50)+10;
-                database.ref('room_events').set({type: 'arena_start', by: playerName, target: targetName, q: `${a} + ${b} = ?`, ans: a+b, time: Date.now()});
-            });
-            return;
+    function rollGacha() {
+        if(score < 100) return showToast("❌ Nghèo mà đòi chơi Gacha?", "danger");
+        score -= 100; lastGachaTime = Date.now(); updateStats();
+        closeModal();
+        pushLocalLog("đã cúng 100đ cho Gacha Chợ Đen 🎰");
+        
+        let rand = Math.random() * 100;
+        
+        if (rand < 30) {
+            // Rác
+            score = Math.max(0, score - 50); updateStats();
+            showToast("😂 ĐEN THUI! Bốc trúng rác, bị trừ 50đ!", "danger");
+        } 
+        else if (rand < 70) {
+            // Thường
+            skillCount++; updateStats();
+            showToast("🎁 THƯỜNG! Mở ra được +1 Thẻ Ngẫu Nhiên!", "success");
+        } 
+        else if (rand < 90) {
+            // Hiếm (Tự động kích hoạt thẻ hắc ám)
+            let rares = [18, 24, 21, 25, 26]; 
+            let r = rares[Math.floor(Math.random()*rares.length)];
+            showToast("🔥 HIẾM! Bài ca ám toán bắt đầu!", "warning");
+            setTimeout(() => executeSkill(r), 800);
+        } 
+        else if (rand < 98) {
+            // Siêu Hiếm
+            let epics = [17, 23, 'arena']; 
+            let r = epics[Math.floor(Math.random()*epics.length)];
+            if(r === 'arena') {
+                showToast("⚔️ SIÊU HIẾM! ĐÃ QUAY TRÚNG VÉ ĐẤU TRƯỜNG LA MÃ!", "success");
+                setTimeout(() => {
+                    let selectHTMLA = getTargetSelectHTML(); 
+                    if(!selectHTMLA) return showToast("Phòng chưa có ai để thách đấu!", "danger");
+                    openModal("⚔️ THÁCH ĐẤU LA MÃ", `Miễn phí vé từ Gacha!<br>Chọn đối thủ khô máu:<br>${selectHTMLA}`, "confirm", () => {
+                        let targetName = document.getElementById('target-player-select').value;
+                        let a = Math.floor(Math.random()*50)+10, b = Math.floor(Math.random()*50)+10;
+                        database.ref('room_events').set({type: 'arena_start', by: playerName, target: targetName, q: `${a} + ${b} = ?`, ans: a+b, time: Date.now()});
+                    });
+                }, 1000);
+            } else {
+                showToast("⚡ SIÊU HIẾM! Nhận Thẻ Khủng!", "success");
+                setTimeout(() => executeSkill(r), 800);
+            }
+        } 
+        else {
+            // Thần Thoại 2%
+            if(!isThanosUsed) {
+                database.ref('game_meta/thanosUsed').set(true);
+                database.ref('room_events').set({type: 'thanos_snap', by: playerName, time: Date.now()});
+                showToast("💥 JACKPOT THẦN THOẠI! GĂNG TAY THANOS ĐÃ KÍCH HOẠT!", "danger");
+            } else {
+                score += 800; updateStats();
+                showToast("💥 THẦN THOẠI! Thanos đã búng rồi, hệ thống đền bù 800đ!", "success");
+            }
         }
+    }
 
         if(score < cost) return showToast("❌ Không đủ điểm mua hàng!", "danger");
         score -= cost; updateStats(); closeModal();
