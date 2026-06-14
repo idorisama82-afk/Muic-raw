@@ -472,7 +472,9 @@
         else if (state === 'waiting') { isGameActive = false; }
         else if (state === 'ended' && isGameActive && !isGameOver) {
             isInputPaused = true;
-            openModal("🛑 HẾT GIỜ!", "Admin đã thổi còi kết thúc trận đấu! Hệ thống đang tự động tổng kết điểm số...", "alert", () => { endGame("Hết giờ (Admin chốt)"); });
+            // Ép hệ thống khóa sổ THU BÀI NGAY LẬP TỨC, không cần đợi tụi nó bấm nút!
+            endGame("Hết giờ (Admin chốt)"); 
+            openModal("🛑 HẾT GIỜ!", "Admin đã thổi còi kết thúc trận đấu! Toàn bộ hệ thống đã bị đóng băng và tự động nộp bài.", "alert");
         }
     });
 
@@ -923,16 +925,44 @@
         }, 1000);
     }
 
-    function handleWrongDevil() {
+    function handleWrongDevil(callback) {
         if(hasDevilContract) {
             hasDevilContract = false; clearInterval(devilInterval);
             score = 0; currentStreak = 0; updateStats();
             openModal("🔥 LINH HỒN BỊ NUỐT CHỬNG", "Bạn đã làm sai và vi phạm Khế Ước Ác Quỷ!<br><br><b>Toàn bộ điểm số VỀ 0. Phong ấn làm bài 30 giây!</b>", "alert");
+            
             isInputPaused = true;
-            setTimeout(()=> { isInputPaused = false; }, 30000);
+            
+            // Giao diện Phong ấn che kín màn hình để tụi nó không hoang mang tưởng game lag
+            let freezeUi = document.createElement('div'); freezeUi.id = 'devil-freeze';
+            freezeUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:45px;color:#ff5252;font-weight:bold;text-shadow: 0 0 20px #ff5252;";
+            freezeUi.innerHTML = `🔥 ÁC QUỶ PHONG ẤN (30s) 🔥<br><span style="font-size:20px; color:#fff; margin-top:20px;">Trừ sạch điểm. Ngồi im nhìn thiên hạ leo rank đi!</span>`; 
+            document.body.appendChild(freezeUi);
+
+            setTimeout(()=> { 
+                isInputPaused = false; 
+                if(document.getElementById('devil-freeze')) document.getElementById('devil-freeze').remove();
+                if(callback) callback(); // Cực kỳ quan trọng: Mở khóa xong phải nhảy qua câu mới!
+            }, 30000);
             return true;
         }
         return false;
+    }
+
+    function handleP1Answer(selectedIdx, btn, qObj) {
+        const allBtns = document.getElementById('p1-options').querySelectorAll('.option'); allBtns.forEach(b => b.classList.add('locked'));
+        if(selectedIdx === qObj.ans) {
+            btn.classList.add('selected-correct'); tasksCompleted++; 
+            if(myPassive === 2) score += 15; if(myPassive === 3) reduceTime(3);
+            addRage(10); addScoreWithStreak(50); setTimeout(() => { currentP1Index++; loadP1Question(); }, 1000);
+        } else {
+            btn.classList.add('selected-wrong'); allBtns[qObj.ans].classList.add('selected-correct'); tasksCompleted++; currentStreak = 0; updateStats(); 
+            
+            // Bơm cái lệnh chuyển câu vào trong Khế Ước Ác Quỷ để hết 30s nó tự qua câu
+            if(handleWrongDevil(() => { currentP1Index++; loadP1Question(); })) return; 
+            
+            triggerRandomPenalty("Sai cơ bản! Đứt chuỗi rồi!", () => { currentP1Index++; loadP1Question(); });
+        }
     }
 
     function contributeFund() {
@@ -1253,19 +1283,6 @@
 
             btn.onclick = () => { if(!isInputPaused) handleP1Answer(idx, btn, q); }; optionsDiv.appendChild(btn);
         });
-    }
-
-    function handleP1Answer(selectedIdx, btn, qObj) {
-        const allBtns = document.getElementById('p1-options').querySelectorAll('.option'); allBtns.forEach(b => b.classList.add('locked'));
-        if(selectedIdx === qObj.ans) {
-            btn.classList.add('selected-correct'); tasksCompleted++; 
-            if(myPassive === 2) score += 15; if(myPassive === 3) reduceTime(3);
-            addRage(10); addScoreWithStreak(50); setTimeout(() => { currentP1Index++; loadP1Question(); }, 1000);
-        } else {
-            btn.classList.add('selected-wrong'); allBtns[qObj.ans].classList.add('selected-correct'); tasksCompleted++; currentStreak = 0; updateStats(); 
-            if(handleWrongDevil()) return; // V19 check
-            triggerRandomPenalty("Sai cơ bản! Đứt chuỗi rồi!", () => { currentP1Index++; loadP1Question(); });
-        }
     }
 
     function openMap(id) {
