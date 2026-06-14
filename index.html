@@ -64,6 +64,10 @@
         .combo-box { font-size: 1.2rem; font-weight: bold; color: #ff6d00; text-align: center; background: #fff3e0; padding: 8px; border-radius: 8px; animation: none;}
         .combo-box.active { animation: pulse 0.5s infinite alternate; border: 2px solid #ff6d00; }
         
+        /* BOX NỘI TẠI MỚI */
+        .passive-box { font-size: 13px; font-weight: bold; color: #fff; background: linear-gradient(45deg, #673ab7, #3f51b5); text-align: center; padding: 10px; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #e1bee7;}
+        .passive-box:hover { filter: brightness(1.1); }
+
         .progress-container { width: 100%; background: #e0e0e0; border-radius: 8px; height: 10px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s ease; }
         
@@ -115,6 +119,959 @@
         .top-1 { font-weight: bold; color: var(--danger); background: #fce8e6;}
         
         #music-btn { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; border: none; border-radius: 50px; padding: 12px 20px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 9999; }
+
+        @media (max-width: 768px) {
+            .options-grid { grid-template-columns: 1fr; }
+            .container { flex-direction: column; }
+            .sidebar { position: static; margin-bottom: 20px;}
+        }
+        
+        #admin-event-log::-webkit-scrollbar { width: 8px; }
+        #admin-event-log::-webkit-scrollbar-track { background: #333; }
+        #admin-event-log::-webkit-scrollbar-thumb { background: #00ff00; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<audio id="bgMusic" loop><source src="Thịnh Vượng Việt Nam Sáng Ngời _ buitruonglinh - buitruonglinh.mp3" type="audio/mpeg"></audio>
+<button id="music-btn" onclick="toggleMusic()">🎵 Bật Nhạc</button>
+
+<div id="custom-modal" class="modal-overlay">
+    <div class="modal-box">
+        <h2 id="modal-title" class="modal-title">Tiêu đề</h2>
+        <div id="modal-message" class="modal-message">Nội dung</div>
+        <div class="modal-actions" id="modal-actions"></div>
+    </div>
+</div>
+
+<div id="setup-section" class="card">
+    <img src="stock-vector-seamless-puzzles-grid-blank-template-jigsaw-puzzle-pieces-seamless-pattern-mosaic-background-2747017317.jpg" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+    
+    <h1 style="color: var(--danger); user-select: none;">THEO DẤU CHÂN NGƯỜI</h1>
+    
+    <div class="meta-info" style="font-size: 14px; background: #fce8e6; color: var(--danger); padding: 10px; border-radius: 8px; margin-bottom: 20px; font-weight: bold;">
+        ⚠️ COMBO CHUỖI CÀNG CAO CÀNG ĐƯỢC +% ĐIỂM.<br>MỖI NGƯỜI NHẬN 1 NỘI TẠI NGẪU NHIÊN VÀ 1 THẺ KỸ NĂNG!
+    </div>
+    <input type="text" id="playerName" placeholder="Nhập Tên / Mã Sinh Viên...">
+    <button class="btn btn-danger" onclick="joinLobby()">🚀 VÀO PHÒNG CHỜ</button>
+    <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
+
+    <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
+        Phiên bản v13.0.0 (Kỷ Nguyên Nội Tại) <br>
+        Copyright © 2026 by Idori
+    </div>
+</div>
+
+<div id="waiting-section" class="card" style="display: none;">
+    <h1 style="color: var(--primary);">PHÒNG CHỜ TẬP KẾT</h1>
+    <div class="loader"></div>
+    <h2 style="color: #5f6368;" id="waiting-msg">Đang chờ người chơi khác phát lệnh...</h2>
+    <div style="background: #e8f0fe; padding: 15px; border-radius: 8px; margin-top: 20px;">
+        <h3 style="margin: 0; color: var(--primary);">Sĩ số hiện tại: <span id="lobby-count" style="font-size: 24px; color: var(--danger);">0</span> chiến binh</h3>
+    </div>
+</div>
+
+<div id="admin-section" class="card" style="display: none;">
+    <h1 style="color: var(--warning);">TRẠM ĐIỀU KHIỂN (MÁY CHIẾU)</h1>
+    <div id="admin-login-div">
+        <input type="password" id="adminPass" placeholder="Nhập mật khẩu Admin...">
+        <button class="btn btn-warning" onclick="unlockAdmin()">Mở Khóa</button>
+    </div>
+    
+    <div id="admin-controls-div" style="display: none;">
+        <h3 style="color: var(--primary);">Sĩ số phòng chờ: <span id="admin-lobby-count" style="font-size: 24px; color: var(--danger);">0</span> người</h3>
+        <div id="admin-player-list" style="max-height: 200px; overflow-y: auto; text-align: center; margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 8px;"></div>
+        
+        <button class="btn btn-danger" style="padding: 15px; font-size: 20px;" onclick="adminStartGame()">🚀 KHỞI ĐỘNG GAME & CHIẾU BXH</button>
+        <button class="btn btn-secondary" onclick="adminResetRoom()" style="margin-top: 15px;">🔄 Reset & Dọn Dẹp Phòng</button>
+    </div>
+</div>
+
+<div id="admin-live-section" class="card" style="display: none; max-width: 1000px;">
+    <h1 style="color: var(--danger); text-transform: uppercase;">🖥️ MÀN HÌNH MÁY CHIẾU</h1>
+    <h2 style="color: var(--primary);">🏆 BẢNG XẾP HẠNG TRỰC TIẾP 🏆</h2>
+    <p style="font-size: 15px; font-weight: bold; color: var(--warning); background: #333; padding: 10px; border-radius: 8px;">
+        CÔNG THỨC: ĐIỂM XẾP HẠNG = ĐIỂM THỰC - (THỜI GIAN (giây) x 0.1)
+    </p>
+    <table class="lb-table">
+        <thead>
+            <tr>
+                <th>Hạng</th>
+                <th>Chiến Binh</th>
+                <th>Điểm Thực</th>
+                <th>Thời Gian</th>
+                <th style="background: var(--warning); color: #000;">ĐIỂM XẾP HẠNG</th>
+                <th>Trạng Thái</th>
+            </tr>
+        </thead>
+        <tbody id="admin-lb-body"></tbody>
+    </table>
+    
+    <div id="admin-event-log" style="height: 250px; overflow-y: auto; background: #1e1e1e; color: #00ff00; text-align: left; padding: 15px; font-family: monospace; border-radius: 8px; margin-top: 20px; border: 2px solid #333; box-shadow: inset 0 0 10px #000;">
+        <div id="log-title-anchor" style="color: #ffeb3b; font-weight: bold; margin-bottom: 10px; border-bottom: 1px dashed #555; padding-bottom: 5px;">--- HỆ THỐNG GIÁM SÁT KỸ NĂNG (MẮT THẦN VAR) ---</div>
+        <div id="log-content-area"></div>
+    </div>
+    
+    <div style="display: flex; gap: 15px; margin-top: 20px;">
+        <button class="btn btn-danger" onclick="adminEndGame()" style="flex: 2; padding: 15px; font-size: 18px; background: #d32f2f;">🛑 KẾT THÚC & TỔNG KẾT TRẬN</button>
+        <button class="btn btn-secondary" onclick="adminResetRoom()" style="flex: 1; padding: 15px; font-size: 16px;">🔄 Xóa Data</button>
+    </div>
+</div>
+
+<div id="quiz-section" class="container">
+    <div class="sidebar">
+        <h3 style="margin: 0; text-align: center; color: #5f6368; cursor: pointer; user-select: none;" id="player-display-name" ondblclick="triggerVIP()">Tên</h3>
+        
+        <div class="timer-box" id="timer-display">00:00</div>
+        <div class="score-box">ĐIỂM: <span id="current-score">0</span></div>
+        <div class="combo-box" id="combo-display">🔥 CHUỖI: 0</div>
+        
+        <!-- BẢNG HIỂN THỊ NỘI TẠI -->
+        <div class="passive-box" id="passive-display" onclick="showPassiveDesc()" style="margin-top: 10px;">✨ NỘI TẠI: Đang Random...</div>
+        
+        <div style="font-weight: bold; color: #5f6368; font-size: 14px; margin-top: 10px;">Tiến độ hành trình: <span id="progress-text">0/29</span></div>
+        <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
+        
+        <button class="btn btn-warning" id="skill-btn" onclick="drawSkill()" style="margin-top: 15px; font-size: 15px; font-weight: 900; background: linear-gradient(45deg, #fbbc04, #ff6d00); color: white; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(255, 109, 0, 0.5); animation: pulse 1s infinite;">🃏 RÚT THẺ KỸ NĂNG</button>
+        
+        <div class="live-lb-box">
+            <h4 class="live-lb-title">🏆 TOP CHIẾN BINH LIVE</h4>
+            <div class="live-lb-list" id="sidebar-lb-body">
+                <i style="color:#757575;">Đang tải dữ liệu...</i>
+            </div>
+        </div>
+
+        <div style="background: #fce8e6; padding: 10px; border-radius: 8px; font-size: 13px; text-align: center; color: var(--danger); font-weight: bold; margin-top: 10px;">
+            🚨 RADAR ANTI-CHEAT ĐANG BẬT
+        </div>
+    </div>
+
+    <div class="main-content" id="game-main-area">
+        <div class="card q-card" id="phase1-card">
+            <h2 style="color: var(--primary); margin-bottom: 5px;">GĐ 1: TÌM ĐƯỜNG CỨU NƯỚC</h2>
+            <div class="q-number" id="p1-counter">Câu 1 / 15</div>
+            <div class="q-text" id="p1-question">Nội dung câu hỏi...</div>
+            <div class="options-grid" id="p1-options"></div>
+        </div>
+
+        <div class="card" id="phase2-card" style="border-top: 6px solid var(--warning); display: none;">
+            <h2 style="color: var(--warning); margin-bottom: 5px;">GĐ 2: DẤU CHÂN LỊCH SỬ (Form BGD)</h2>
+            <p style="color: #5f6368; font-size: 14px; text-align: center;">*Bấm vào 5 địa danh. Trả lời Đúng/Sai.</p>
+            <div class="map-wrapper">
+                <div class="hotspot" id="hs0" onclick="openMap(0)">1</div>
+                <div class="hotspot" id="hs1" onclick="openMap(1)">2</div>
+                <div class="hotspot" id="hs2" onclick="openMap(2)">3</div>
+                <div class="hotspot" id="hs3" onclick="openMap(3)">4</div>
+                <div class="hotspot" id="hs4" onclick="openMap(4)">5</div>
+            </div>
+        </div>
+
+        <div class="card" id="phase3-card" style="border-top: 6px solid var(--danger); display: none;">
+            <h2 style="color: var(--danger); margin-bottom: 5px;">GĐ 3: GIẢI MÃ HÌNH ẢNH</h2>
+            <p style="color: #5f6368; font-size: 14px; text-align: center;">*Lật mảnh ghép trả lời câu hỏi. Đoán đúng hình chốt +500đ.</p>
+            <div class="puzzle-grid" id="puzzle-grid"></div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <input type="text" id="finalGuess" placeholder="Nhập tên địa danh/nhân vật bức ảnh..." style="flex: 2; padding: 12px; border: 2px solid #ccc; border-radius: 8px;">
+                <button class="btn btn-danger" style="flex: 1; margin: 0; padding: 15px; font-size: 18px;" onclick="submitFinal()">ĐOÁN NGAY</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="leaderboard-section" class="card" style="display: none;">
+    <h2>🏆 KẾT QUẢ CHUNG CUỘC 🏆</h2>
+    <table class="lb-table">
+        <thead><tr><th>Hạng</th><th>Chiến Binh</th><th>Điểm Xếp Hạng</th><th>Trạng Thái</th></tr></thead>
+        <tbody id="lb-body"></tbody>
+    </table>
+    <button class="btn btn-secondary" style="margin-top: 20px;" onclick="location.reload()">Quay Về Trang Chủ</button>
+</div>
+
+<script>
+    let isMusicPlaying = false;
+    let bgAudio = document.getElementById('bgMusic');
+    bgAudio.volume = 0.5;
+
+    function toggleMusic() {
+        let musicBtn = document.getElementById('music-btn');
+        if(isMusicPlaying) { bgAudio.pause(); musicBtn.innerText = "🎵 Bật Nhạc"; isMusicPlaying = false;
+        } else { bgAudio.play().then(() => { musicBtn.innerText = "🔇 Tắt Nhạc"; isMusicPlaying = true; }).catch(e => console.log(e)); }
+    }
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBRnH3_tCHtim-KiD7pYELmXotsuI5EZiE",
+        authDomain: "chiendichthang6.firebaseapp.com",
+        databaseURL: "https://chiendichthang6-default-rtdb.firebaseio.com",
+        projectId: "chiendichthang6",
+        storageBucket: "chiendichthang6.firebasestorage.app",
+        messagingSenderId: "938706247516",
+        appId: "1:938706247516:web:cfa857221f910edc792b99"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    const p1Data_Original = [
+        { q: "Vào ngày tháng năm nào, người thanh niên yêu nước Nguyễn Tất Thành đã chính thức rời bến Nhà Rồng, bắt đầu hành trình bôn ba tìm đường cứu nước?", opts: ["05/06/1911", "06/05/1911", "02/09/1945", "19/05/1890"], ans: 0 },
+        { q: "Con tàu buôn của Pháp đã đưa Bác Hồ rời khỏi Sài Gòn sang phương Tây năm 1911 mang tên là gì?", opts: ["Latouche-Tréville", "Amiral Latouche-Tréville", "Đô đốc Courbet", "Chasseloup-Laubat"], ans: 1 },
+        { q: "Khi xin làm việc trên tàu Amiral Latouche-Tréville để được sang Pháp, Nguyễn Tất Thành đã lấy tên gọi (bí danh) là gì?", opts: ["Nguyễn Ái Quốc", "Lý Thụy", "Văn Ba", "Hồ Chí Minh"], ans: 2 },
+        { q: "Để có thể trụ lại trên chuyến tàu hành trình sang Pháp, công việc đầu tiên vô cùng vất vả mà Bác Hồ phải làm là gì?", opts: ["Phụ bếp", "Đốt lò", "Quét dọn", "Phục vụ"], ans: 0 },
+        { q: "Mức lương bèo bọt mà người thanh niên Văn Ba nhận được trong tháng làm việc đầu tiên trên tàu là bao nhiêu?", opts: ["40 franc", "45 franc", "50 franc", "100 franc"], ans: 1 },
+        { q: "Địa danh lịch sử nào là nơi đã in dấu chân cuối cùng của Bác trước khi rời xa Tổ quốc suốt 30 năm dài đằng đẵng?", opts: ["Hải Phòng", "Bến Nhà Rồng", "Đà Nẵng", "Cảng Cát Lái"], ans: 1 },
+        { q: "Hiện nay, di tích lịch sử Bến Nhà Rồng (Bảo tàng Hồ Chí Minh) tọa lạc tại quận nào của Thành phố Hồ Chí Minh?", opts: ["Quận 1", "Quận 3", "Quận 4", "Quận 7"], ans: 2 },
+        { q: "Năm 1919, thay mặt những người Việt Nam yêu nước tại Pháp, Nguyễn Ái Quốc đã gửi văn kiện nào tới Hội nghị Versailles?", opts: ["Tuyên ngôn độc lập", "Đường Kách mệnh", "Yêu sách nhân dân An Nam", "Bản án chế độ thực dân Pháp"], ans: 2 },
+        { q: "Vào năm nào, Nguyễn Ái Quốc đã đọc được 'Sơ thảo lần thứ nhất những luận cương về vấn đề dân tộc và vấn đề thuộc địa' của V.I. Lenin?", opts: ["1919", "1920", "1921", "1925"], ans: 1 },
+        { q: "Tháng 6 năm 1925, tổ chức Hội Việt Nam Cách mạng Thanh niên do Nguyễn Ái Quốc sáng lập được ra đời tại địa điểm nào?", opts: ["Paris", "Moscow", "Quảng Châu", "Hương Cảng"], ans: 2 },
+        { q: "Cơ quan ngôn luận của Hội Việt Nam Cách mạng Thanh niên - tờ Báo Thanh niên, đã xuất bản số đầu tiên vào ngày tháng năm nào?", opts: ["21/06/1925", "03/02/1930", "02/09/1945", "19/05/1890"], ans: 0 },
+        { q: "Hội nghị hợp nhất các tổ chức cộng sản do lãnh tụ Nguyễn Ái Quốc chủ trì đã quyết định thành lập Đảng Cộng sản Việt Nam vào ngày nào?", opts: ["03/02/1930", "02/09/1945", "19/08/1945", "07/05/1954"], ans: 0 },
+        { q: "Sau 30 năm hoạt động ở nước ngoài, mùa xuân năm 1941, lãnh tụ Nguyễn Ái Quốc đã vượt biên giới Việt - Trung để trở về tỉnh nào của nước ta?", opts: ["Lạng Sơn", "Cao Bằng", "Tuyên Quang", "Hà Giang"], ans: 1 },
+        { q: "Trong khoảng thời gian từ năm 1928 đến 1929, khi hoạt động cách mạng tại Thái Lan (Xiêm), Bác Hồ đã sử dụng bí danh nào để che mắt địch?", opts: ["Thầu Chín", "Vương", "Trần", "Lý Thụy"], ans: 0 },
+        { q: "Tác phẩm nổi tiếng 'Bản án chế độ thực dân Pháp' do Nguyễn Ái Quốc viết bằng tiếng Pháp được xuất bản lần đầu tiên (năm 1925) tại quốc gia nào?", opts: ["Việt Nam", "Trung Quốc", "Pháp", "Nga"], ans: 2 }
+    ];
+
+    const p2MapData_Original = [
+        { title: "Pác Bó - Cao Bằng", stmts: [{t: "Ngày 28/1/1941, lãnh tụ Nguyễn Ái Quốc đã trở về Tổ quốc qua cột mốc 108 tại Pác Bó.", a: true}, {t: "Khi Bác trở về, phong trào cách mạng ở khu vực Pác Bó (Cao Bằng) còn rất yếu kém và chưa phát triển.", a: false}, {t: "Trong thời gian hoạt động bí mật tại Pác Bó, Bác Hồ đã sử dụng bí danh là Thầu Chín.", a: false}, {t: "Sự kiện Bác Hồ trở về Pác Bó năm 1941 đã đánh dấu mốc quan trọng sau trọn 30 năm Người bôn ba tìm đường cứu nước.", a: true}] },
+        { title: "Làng Sen - Nghệ An", stmts: [{t: "Làng Sen (hay còn gọi là làng Kim Liên) là quê ngoại của Bác, nơi Người cất tiếng khóc chào đời.", a: false}, {t: "Tên khai sinh thuở nhỏ của Chủ tịch Hồ Chí Minh khi sống cùng gia đình tại quê nhà là Nguyễn Sinh Cung.", a: true}, {t: "Bác Hồ sinh ra và lớn lên trong một gia đình nhà nho nghèo nhưng có truyền thống yêu nước nồng nàn.", a: true}, {t: "Thân phụ (cha ruột) của Bác Hồ là nhà cách mạng lỗi lạc - cụ Phan Bội Châu.", a: false}] },
+        { title: "Trường Quốc Học - Huế", stmts: [{t: "Chủ tịch Hồ Chí Minh (lúc bấy giờ tên là Nguyễn Tất Thành) từng có thời gian theo học tại trường Quốc Học Huế.", a: true}, {t: "Trong thời gian ở Huế, Người đã trực tiếp tham gia vào phong trào đấu tranh chống thuế của nông dân Trung Kỳ năm 1908.", a: true}, {t: "Chính tại trường Quốc Học Huế, Bác đã có cơ hội gặp gỡ và tiếp xúc với các đảng viên của Đảng Cộng sản Pháp.", a: false}, {t: "Khi rời trường Quốc Học Huế để tiếp tục hành trình vào phía Nam, Bác đã quyết định đổi tên mình thành Văn Ba.", a: false}] },
+        { title: "Trường Dục Thanh - Bình Thuận", stmts: [{t: "Trường Dục Thanh được sáng lập vào năm 1907 bởi các sĩ phu yêu nước nhằm hưởng ứng phong trào Duy Tân.", a: true}, {t: "Tại ngôi trường này, thầy giáo thanh niên Nguyễn Tất Thành đã đảm nhận việc dạy môn Thể dục và chữ Quốc ngữ.", a: true}, {t: "Trong suốt thời gian giảng dạy tại trường Dục Thanh, Nguyễn Tất Thành đã giữ chức vụ Hiệu trưởng của trường.", a: false}, {t: "Vào tháng 2 năm 1911, thầy giáo Nguyễn Tất Thành đã rời trường Dục Thanh để tiếp tục hành trình vào Sài Gòn.", a: true}] },
+        { title: "Bến Nhà Rồng - TP.HCM", stmts: [{t: "Ngày 5/6/1911, Bác đã lên con tàu buôn mang tên Amiral Latouche-Tréville để bắt đầu rời khỏi Việt Nam.", a: true}, {t: "Công việc đầu tiên Bác làm để kiếm sống trên con tàu này là làm nghề thợ chụp ảnh.", a: false}, {t: "Mục đích lớn nhất của Người khi quyết định ra đi là tìm ra con đường cứu nước, giải phóng dân tộc khỏi ách đô hộ.", a: true}, {t: "Ban đầu, dự định của Bác là sẽ đi sang Châu Á (như Nhật Bản) để học hỏi kinh nghiệm từ phong trào Đông Du.", a: false}] }
+    ];
+
+    const p3PuzzleData_Original = [
+        { q: "Người cha ruột của Chủ tịch Hồ Chí Minh, một nhà nho nghèo yêu nước và từng đỗ Phó bảng, tên là gì?", opts: ["Nguyễn Sinh Sắc", "Nguyễn Sinh Khiêm", "Phan Bội Châu", "Hoàng Hoa Thám"], ans: 0 },
+        { q: "Người mẹ tần tảo, hết lòng vì chồng con của Bác Hồ, người đã qua đời khi Bác còn rất nhỏ tại Huế, tên là gì?", opts: ["Hoàng Thị Loan", "Nguyễn Thị Thanh", "Hoàng Thị Cúc", "Lê Thị Tú"], ans: 0 },
+        { q: "Chủ tịch Hồ Chí Minh có một người anh trai ruột cũng là một người yêu nước, tên của ông là gì?", opts: ["Nguyễn Sinh Khiêm", "Nguyễn Sinh Sắc", "Nguyễn Sinh Xin", "Nguyễn Tất Đạt"], ans: 0 },
+        { q: "Người chị gái ruột duy nhất của Bác Hồ (còn được gọi là cô Bạch Liên), người từng bị thực dân Pháp bắt giam, tên là gì?", opts: ["Nguyễn Thị Thanh", "Hoàng Thị Loan", "Nguyễn Thị Bạch Liên", "Lê Thị Thanh"], ans: 0 },
+        { q: "Bài thơ 'Ngắm Trăng' (Vọng nguyệt) nổi tiếng của Chủ tịch Hồ Chí Minh được trích từ tập thơ nào do Người sáng tác khi bị giam ở Quảng Tây?", opts: ["Nhật ký trong tù", "Thơ chúc Tết", "Từ ấy", "Nhật ký chìm tàu"], ans: 0 },
+        { q: "Nhờ quá trình bôn ba tìm đường cứu nước và tự học không ngừng nghỉ, Bác Hồ được cho là có thể sử dụng thông thạo khoảng bao nhiêu ngoại ngữ?", opts: ["Trên 20", "Khoảng 10", "Khoảng 15", "Dưới 5"], ans: 0 },
+        { q: "Nhân dịp kỷ niệm 100 năm ngày sinh của Chủ tịch Hồ Chí Minh (1990), Tổ chức UNESCO đã vinh danh Người với danh hiệu cao quý nào?", opts: ["Danh nhân văn hóa", "Vĩ nhân thời đại", "Lãnh tụ kiệt xuất", "Nhà quân sự"], ans: 0 },
+        { q: "'Chúng ta thà hy sinh tất cả, chứ nhất định không chịu mất nước...'. Lời kêu gọi toàn quốc kháng chiến này được Bác viết vào năm nào?", opts: ["1946", "1945", "1954", "1960"], ans: 0 },
+        { q: "Bản Di chúc thiêng liêng để lại cho toàn Đảng, toàn dân được Chủ tịch Hồ Chí Minh bắt đầu viết những dòng đầu tiên vào năm nào?", opts: ["1965", "1968", "1969", "1960"], ans: 0 }
+    ];
+
+    // --- BỘ NỘI TẠI (PASSIVE SKILLS) ---
+    const passivesInfo = [
+        {id: 0, icon: "🦔", name: "Giáp Gai", desc: "Phản lại 50 điểm cho bất kỳ kẻ nào dùng kỹ năng chỉ định ám toán bạn (Cướp, Tráo, Thẻ đỏ...)."},
+        {id: 1, icon: "🍀", name: "Phúc Khí", desc: "Có 30% tỷ lệ né tránh hoàn toàn bất kỳ kỹ năng hắc ám nào từ đối thủ tung ra."},
+        {id: 2, icon: "💰", name: "Thương Nhân", desc: "Mỗi khi trả lời đúng câu Trắc Nghiệm, tự động nhận thêm 15 điểm (Không cần chuỗi)."},
+        {id: 3, icon: "⏱️", name: "Thời Gian Lộ", desc: "Mỗi câu trả lời đúng (bất kỳ phần nào) sẽ giảm 3 giây thời gian phạt tổng."},
+        {id: 4, icon: "🛡️", name: "Bảo Hiểm", desc: "Khi trả lời sai, bạn vẫn bị đứt chuỗi nhưng sẽ KHÔNG bao giờ bị kích hoạt Hình Phạt Sinh Tồn."},
+        {id: 5, icon: "♻️", name: "Tái Chế", desc: "Mỗi lần sử dụng 1 Thẻ Kỹ Năng, có 25% tỷ lệ giữ lại được thẻ đó (không bị trừ)."},
+        {id: 6, icon: "🗺️", name: "Dấu Chân Tự Hào", desc: "Mỗi khi hoàn thành 1 địa danh Bản Đồ, tự động được thưởng 1 Thẻ Kỹ Năng (Tối đa 5 thẻ)."},
+        {id: 7, icon: "🥷", name: "Siêu Đạo Tặc", desc: "Kỹ năng Cướp Điểm và Hút Máu Server tăng 50% hiệu quả (Cướp 150đ, Hút 75đ mỗi người)."},
+        {id: 8, icon: "🕊️", name: "Lông Vũ", desc: "Nếu lỡ bị hệ thống bắt quả tang rời tab, thời gian phạt vắng mặt sẽ được giảm đi một nửa."},
+        {id: 9, icon: "🌟", name: "Hào Quang", desc: "Sinh ra ở vạch đích! Bắt đầu game với 3 Thẻ Kỹ Năng thay vì 1."}
+    ];
+
+    let p1Data = [], p2MapData = [], p3PuzzleData = [];
+    let playerName = "";
+    let score = 0, elapsedTime = 0, timerInterval;
+    let isGameActive = false, isGameOver = false, isInputPaused = false; 
+    let tasksCompleted = 0, currentP1Index = 0, mapActive = null, pzActive = null;
+    let myPlayerRef = null, isCheating = false, leaveTime = 0;
+    
+    // --- BIẾN COMBO & KỸ NĂNG & NỘI TẠI ---
+    let currentStreak = 0;
+    let skillCount = 1; 
+    let currentLeaderboard = [];
+    let isVIP = false;
+    let isSilenced = false; 
+    let myPassive = -1;
+
+    database.ref('room_state').on('value', (snapshot) => {
+        let state = snapshot.val();
+        if(state === 'playing' && playerName !== "" && !isGameActive && !isGameOver) { initiateGame(); } 
+        else if (state === 'waiting') { isGameActive = false; }
+        else if (state === 'ended' && isGameActive && !isGameOver) {
+            isInputPaused = true;
+            openModal("🛑 HẾT GIỜ!", "Admin đã thổi còi kết thúc trận đấu! Hệ thống đang tự động tổng kết điểm số...", "alert", () => { endGame("Hết giờ (Admin chốt)"); });
+        }
+    });
+
+    database.ref('room_players').on('value', (snapshot) => {
+        let players = snapshot.val();
+        let count = players ? Object.keys(players).length : 0;
+        document.getElementById('lobby-count').innerText = count;
+        document.getElementById('admin-lobby-count').innerText = count;
+        let adminList = document.getElementById('admin-player-list');
+        if(players && adminList) {
+            let html = ""; for (let id in players) html += `<span class="player-tag">${players[id].name}</span>`;
+            adminList.innerHTML = html;
+        } else if (adminList) adminList.innerHTML = "<i>Chưa có ai vào phòng...</i>";
+    });
+
+    // MẮT THẦN VAR VÀ XỬ LÝ SỰ KIỆN KỸ NĂNG
+    database.ref('room_events').on('value', (snapshot) => {
+        if(!isGameActive && !document.getElementById('admin-live-section').style.display === 'block') return;
+        let ev = snapshot.val();
+        if(!ev || (Date.now() - ev.time > 15000)) return; 
+
+        // 1. UPDATE LOG CHO ADMIN
+        let logDivArea = document.getElementById('log-content-area');
+        if(logDivArea && document.getElementById('admin-live-section').style.display === 'block') {
+            let t = new Date(ev.time).toLocaleTimeString();
+            let actionText = "đã dùng một kỹ năng bí ẩn";
+            
+            if(ev.type === 'freeze') actionText = "đóng băng toàn bản đồ ❄️";
+            else if(ev.type === 'red_card') actionText = `rút Thẻ Đỏ đuổi <span style='color:var(--danger)'>${ev.target}</span> khỏi sân 🟥`;
+            else if(ev.type === 'curse') actionText = "tung bùa Ảo Giác làm mờ chữ 👁️";
+            else if(ev.type === 'earthquake') actionText = "tạo Động Đất rung chuyển 🌋";
+            else if(ev.type === 'shrink') actionText = "ném bùa Nấm Lùn teo nhỏ 🍄";
+            else if(ev.type === 'time_steal') actionText = `đánh cắp 60s của <span style='color:var(--danger)'>${ev.target}</span> ⏳`;
+            else if(ev.type === 'steal') actionText = `cướp ${ev.amount} điểm của <span style='color:var(--danger)'>${ev.target}</span> 😈`;
+            else if(ev.type === 'var_check') actionText = `báo VAR tước 150đ của <span style='color:var(--danger)'>${ev.target}</span> 📺`;
+            else if(ev.type === 'swap') actionText = `tráo điểm với <span style='color:var(--danger)'>${ev.target}</span> 🔄`;
+            else if(ev.type === 'black_hole') actionText = "triệu hồi Hố Đen phá sạch chuỗi 🕳️";
+            else if(ev.type === 'robin_hood') actionText = `kích hoạt Robin Hood tráo điểm Top 1 và Bét bảng 🏹`;
+            else if(ev.type === 'spooky_sound') actionText = "phát Ma Âm Troll phá màng nhĩ 🔊";
+            else if(ev.type === 'aoe_steal') actionText = `hút ${ev.amount} điểm của TOÀN SERVER 🦇`;
+            else if(ev.type === 'silence') actionText = "tung Cấm Thuật khóa mõm toàn phòng 🤫";
+            else if(ev.type === 'blackout') actionText = "tắt điện che mù mắt 🌑";
+            else if(ev.type === 'log') actionText = ev.action; 
+
+            let logLine = `<div style="margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:5px;">[${t}] <b><span style='color:#fff'>${ev.by}</span></b>: <span style='color:var(--warning)'>${actionText}</span></div>`;
+            if(logDivArea.dataset.lastLog !== ev.time.toString()) {
+                logDivArea.innerHTML = logLine + logDivArea.innerHTML;
+                logDivArea.dataset.lastLog = ev.time.toString();
+            }
+        }
+
+        if(!isGameActive || isGameOver) return;
+
+        // NỘI TẠI 2: PHÚC KHÍ (30% Né tránh hoàn toàn)
+        let negativeEvents = ['freeze', 'red_card', 'curse', 'earthquake', 'shrink', 'time_steal', 'steal', 'aoe_steal', 'var_check', 'swap', 'black_hole', 'spooky_sound', 'silence', 'blackout'];
+        if (negativeEvents.includes(ev.type) && ev.by !== playerName) {
+            // Chiêu AoE hoặc đích danh nhắm vào mình
+            if (!ev.target || ev.target === playerName) { 
+                if (myPassive === 1 && Math.random() < 0.30) {
+                    pushLocalLog(`đã né tránh thành công kỹ năng của ${ev.by} nhờ Phúc Khí 🍀`);
+                    openModal("🍀 NỘI TẠI: PHÚC KHÍ", `Tỏa sáng! Bạn vừa né tránh hoàn toàn kỹ năng hắc ám của <b>${ev.by}</b>!`, "alert");
+                    return; // Vô hiệu hóa hiệu ứng
+                }
+            }
+        }
+
+        // NỘI TẠI 1: GIÁP GAI (Phản 50đ khi bị ám toán)
+        let targetEvents = ['red_card', 'time_steal', 'steal', 'var_check', 'swap'];
+        if (targetEvents.includes(ev.type) && ev.target === playerName && ev.by !== playerName) {
+            if (myPassive === 0) {
+                database.ref('room_events').set({type: 'thorns', by: playerName, target: ev.by, time: Date.now()});
+            }
+        }
+        if (ev.type === 'thorns' && ev.target === playerName) {
+            score = Math.max(0, score - 50); updateStats();
+            openModal("🦔 BỊ PHẢN ĐÒN!", `Kẻ bạn vừa ám toán (<b>${ev.by}</b>) có Nội Tại Giáp Gai! Bạn bị đâm mất 50 điểm!`, "alert");
+        }
+
+        // 2. XỬ LÝ HIỆU ỨNG TỚI NGƯỜI CHƠI
+        if(ev.type === 'freeze' && ev.by !== playerName) {
+            isInputPaused = true;
+            let freezeUi = document.createElement('div'); freezeUi.id = 'global-freeze';
+            freezeUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,180,255,0.85);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:45px;color:white;font-weight:bold;text-shadow: 0 5px 15px rgba(0,0,0,0.5);";
+            freezeUi.innerHTML = `❄️ BẠN BỊ ĐÓNG BĂNG 10s ❄️<br><span style="font-size:22px;margin-top:15px;background:#000;padding:5px 15px;border-radius:10px;">Thủ phạm: ${ev.by}</span>`;
+            document.body.appendChild(freezeUi);
+            setTimeout(() => { if(document.getElementById('global-freeze')) document.getElementById('global-freeze').remove(); isInputPaused = false; }, 10000);
+        }
+
+        if(ev.type === 'red_card' && ev.target === playerName) {
+            isInputPaused = true;
+            let freezeUi = document.createElement('div'); freezeUi.id = 'global-freeze';
+            freezeUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(229,57,53,0.9);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:45px;color:white;font-weight:bold;text-shadow: 0 5px 15px rgba(0,0,0,0.5);";
+            freezeUi.innerHTML = `🟥 BẠN ĐÃ ĂN THẺ ĐỎ (20s) 🟥<br><span style="font-size:22px;margin-top:15px;background:#000;padding:5px 15px;border-radius:10px;">Trọng tài: ${ev.by}</span>`;
+            document.body.appendChild(freezeUi);
+            setTimeout(() => { if(document.getElementById('global-freeze')) document.getElementById('global-freeze').remove(); isInputPaused = false; }, 20000);
+        }
+
+        if(ev.type === 'blackout' && ev.by !== playerName) {
+            let blackUi = document.createElement('div'); blackUi.id = 'global-blackout';
+            blackUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;";
+            document.body.appendChild(blackUi); openModal("🌑 TRỜI TỐI THUI", `<b>${ev.by}</b> đã tung chiêu Tắt Đèn! Lạc trôi trong bóng tối 10s nhé!`, "alert");
+            setTimeout(() => { if(document.getElementById('global-blackout')) document.getElementById('global-blackout').remove(); }, 10000);
+        }
+
+        if(ev.type === 'silence' && ev.by !== playerName) {
+            isSilenced = true; openModal("🤫 BỊ CẤM THUẬT", `<b>${ev.by}</b> đã xài thẻ Cấm Thuật. Bạn bị khóa khả năng rút thẻ trong 30 giây!`, "alert");
+            setTimeout(() => { isSilenced = false; }, 30000);
+        }
+
+        if(ev.type === 'curse' && ev.by !== playerName) {
+            let mainArea = document.getElementById('game-main-area'); mainArea.classList.add('cursed-vision');
+            openModal("👁️ TRÚNG BÙA ẢO GIÁC!", `Tên phù thủy <b>${ev.by}</b> đã dùng thẻ Ảo Giác. Đọc chữ bằng niềm tin trong 15 giây nhé!`, "alert");
+            setTimeout(() => { mainArea.classList.remove('cursed-vision'); }, 15000);
+        }
+
+        if(ev.type === 'earthquake' && ev.by !== playerName) {
+            let mainArea = document.getElementById('game-main-area'); mainArea.classList.add('shaking-vision');
+            openModal("🌋 ĐỘNG ĐẤT!", `<b>${ev.by}</b> đã kích hoạt động đất! Giữ chặt chuột!`, "alert");
+            setTimeout(() => { mainArea.classList.remove('shaking-vision'); }, 10000);
+        }
+
+        if(ev.type === 'shrink' && ev.by !== playerName) {
+            let mainArea = document.getElementById('game-main-area'); mainArea.classList.add('shrunk-vision');
+            openModal("🍄 BÙA TEO NHỎ!", `Pháp sư <b>${ev.by}</b> đã làm teo nhỏ màn hình của bạn! Kéo mắt vào mà đọc!`, "alert");
+            setTimeout(() => { mainArea.classList.remove('shrunk-vision'); }, 15000);
+        }
+
+        if(ev.type === 'time_steal' && ev.target === playerName) {
+            elapsedTime += 60; updateStats(); openModal("⏳ MẤT THỜI GIAN!", `Tên giặc <b>${ev.by}</b> đã ném cho bạn 60 giây thời gian phạt!`, "alert");
+        }
+
+        if(ev.type === 'steal' && ev.target === playerName) {
+            let amt = ev.amount || 100;
+            score = Math.max(0, score - amt); updateStats();
+            openModal("🚨 MẤT TRỘM!", `Tên giặc <b>${ev.by}</b> đã dùng Bàn Tay Đen cướp mất ${amt} điểm của bạn!`, "alert");
+        }
+        
+        if(ev.type === 'aoe_steal' && ev.by !== playerName) {
+            let amt = ev.amount || 50;
+            score = Math.max(0, score - amt); updateStats();
+            openModal("🦇 BỊ HÚT MÁU!", `Ác quỷ <b>${ev.by}</b> vừa hút ${amt} điểm của bạn và cả server!`, "alert");
+        }
+
+        if(ev.type === 'var_check' && ev.target === playerName) {
+            score = Math.max(0, score - 150); updateStats(); openModal("📺 CÔNG NGHỆ VAR", `Trọng tài <b>${ev.by}</b> check VAR và tước 150 điểm của bạn vì lỗi việt vị!`, "alert");
+        }
+
+        if(ev.type === 'swap' && ev.target === playerName) {
+            score = ev.targetNewScore; updateStats(); openModal("🔄 TRỜI ƠI!", `Pháp sư <b>${ev.by}</b> đã tráo điểm với bạn! Điểm của bạn bị đổi thành ${score}.`, "alert");
+        }
+
+        if(ev.type === 'black_hole' && ev.by !== playerName) {
+            currentStreak = 0; updateStats(); openModal("🕳️ HỐ ĐEN TỬ THẦN!", `Thảm họa từ <b>${ev.by}</b>! Toàn bộ chuỗi Combo của bạn đã bị nghiền nát về 0!`, "alert");
+        }
+
+        if(ev.type === 'robin_hood') {
+            if (playerName === ev.top1) {
+                score = ev.bot1Score; updateStats(); openModal("🏹 ROBIN HOOD!", `Bạn đang Top 1, nhưng đã bị tước đoạt điểm để san sẻ cho người nghèo!`, "alert");
+            } else if (playerName === ev.bot1) {
+                score = ev.top1Score; updateStats(); openModal("🏹 ROBIN HOOD!", `Phép màu! Bạn đang bét bảng và được nhận toàn bộ điểm của Top 1!`, "alert");
+            }
+        }
+
+        if(ev.type === 'spooky_sound' && ev.by !== playerName) {
+            let audio = new Audio('https://www.myinstants.com/media/sounds/vine-boom.mp3'); audio.play().catch(e=>{});
+            openModal("🔊 MA ÂM TROLL!", `Đòn tâm lý âm thanh từ <b>${ev.by}</b>!`, "alert");
+        }
+    });
+
+    function joinLobby() {
+        let rawName = document.getElementById("playerName").value.trim();
+        if(!rawName) return alert("Nhập mã định danh trước khi lên tàu!");
+        
+        if(rawName.toLowerCase() === 'idori') {
+            let pass = prompt("HỆ THỐNG BẢO MẬT: Nhập mật khẩu quyền năng của Lớp trưởng Idori:");
+            if(pass === "DLTV15halam@drid") {
+                isVIP = true;
+                alert("Đã xác thực Lớp trưởng Idori! Kích hoạt chế độ Thần Thánh!");
+            } else { return alert("Sai mật khẩu! Ngươi không phải Idori thật!"); }
+        }
+        
+        database.ref('room_players').once('value').then((snapshot) => {
+            let nameExists = false;
+            snapshot.forEach((child) => { if(child.val().name.toLowerCase() === rawName.toLowerCase()) nameExists = true; });
+            if(nameExists && !isVIP) return openModal("⛔ BÁO ĐỘNG TRÙNG TÊN!", "Cái tên <b>" + rawName + "</b> này đã có người đăng ký. Hãy chọn tên khác!", "alert");
+
+            playerName = rawName;
+            if(!isMusicPlaying) toggleMusic(); 
+            document.getElementById('setup-section').style.display = 'none';
+            document.getElementById('waiting-section').style.display = 'block';
+            database.ref('room_players').push({ name: playerName });
+        });
+    }
+
+    function triggerVIP() {
+        if(isVIP) { openModal("👑 HỆ THỐNG", "Bạn đã là Admin Thần Thánh rồi!", "alert"); return; }
+        let pass = prompt("HỆ THỐNG BẢO MẬT: Nhập mật khẩu quyền năng của Lớp trưởng Idori:");
+        if(pass === "DLTV15halam@drid") {
+            isVIP = true; skillCount = 9999;
+            document.getElementById('player-display-name').innerText = "👑 ADMIN: " + playerName;
+            document.getElementById('player-display-name').style.color = "var(--danger)";
+            updateStats(); alert("Đã xác thực Lớp trưởng Idori! Vô hạn thẻ, miễn nhiễm sát thương!");
+        } else { alert("Sai mật khẩu! Ngươi không phải Idori thật!"); }
+    }
+
+    function unlockAdmin() {
+        if(document.getElementById('adminPass').value === "DLTV15halam@drid") {
+            document.getElementById('admin-login-div').style.display = 'none'; document.getElementById('admin-controls-div').style.display = 'block';
+        } else alert("Sai pass Admin!");
+    }
+
+    function adminStartGame() {
+        database.ref('room_state').set('playing');
+        document.getElementById('admin-section').style.display = 'none'; document.getElementById('admin-live-section').style.display = 'block';
+    }
+
+    function adminEndGame() { if(confirm("🛑 Bạn có CHẮC CHẮN muốn kết thúc trò chơi ngay bây giờ?")) database.ref('room_state').set('ended'); }
+    function adminResetRoom() { if(confirm("XÓA SẠCH MỌI THỨ VÀ QUAY VỀ 0?")) { database.ref('room_state').set('waiting'); database.ref('room_players').remove(); database.ref('bang_xep_hang').remove(); database.ref('room_events').remove(); location.reload(); } }
+    
+    function shuffleArray(array) { let shuffled = [...array]; for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; } return shuffled; }
+
+    function deepShuffleData() {
+        p1Data = p1Data_Original.map(q => {
+            let optsObj = q.opts.map((text, i) => ({ text: text, isCorrect: (i === q.ans) })); optsObj = shuffleArray(optsObj);
+            let newAnsIdx = optsObj.findIndex(o => o.isCorrect); return { q: q.q, opts: optsObj.map(o => o.text), ans: newAnsIdx };
+        }); p1Data = shuffleArray(p1Data); 
+        p2MapData = p2MapData_Original.map(loc => { return { title: loc.title, stmts: shuffleArray(loc.stmts) }; });
+        p3PuzzleData = shuffleArray(p3PuzzleData_Original);
+    }
+
+    function initiateGame() {
+        document.getElementById('waiting-section').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'flex';
+        
+        let pNameText = "Chiến binh: " + playerName;
+        if(isVIP) { pNameText = "👑 ADMIN: " + playerName; }
+        document.getElementById('player-display-name').innerText = pNameText;
+        
+        // --- RANDOM NỘI TẠI ---
+        myPassive = Math.floor(Math.random() * 10); // Lấy ngẫu nhiên từ 0 đến 9
+        let pInfo = passivesInfo[myPassive];
+        let pBox = document.getElementById('passive-display');
+        pBox.innerText = `✨ NỘI TẠI: ${pInfo.icon} ${pInfo.name}`;
+        
+        // Nội tại 9: Hào Quang (Tặng thêm 2 thẻ ban đầu)
+        if(myPassive === 9) skillCount += 2;
+
+        deepShuffleData();
+        isGameActive = true; 
+
+        myPlayerRef = database.ref('bang_xep_hang').push();
+        myPlayerRef.set({ name: playerName, score: score, time: elapsedTime, status: "Đang chiến đấu..." });
+
+        loadP1Question(); 
+        const grid = document.getElementById('puzzle-grid');
+        for(let i=0; i<9; i++) grid.innerHTML += `<div class="piece" id="pz${i}" onclick="openPuzzle(${i})">${i+1}</div>`;
+
+        timerInterval = setInterval(() => {
+            if(isGameOver) return;
+            elapsedTime++;
+            let m = Math.floor(elapsedTime / 60), s = elapsedTime % 60;
+            document.getElementById('timer-display').innerText = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
+        }, 1000);
+        
+        updateStats(); 
+    }
+
+    function showPassiveDesc() {
+        if(myPassive === -1) return;
+        let pInfo = passivesInfo[myPassive];
+        openModal(`${pInfo.icon} ${pInfo.name}`, pInfo.desc, "alert");
+    }
+
+    function pushLocalLog(actionStr) { database.ref('room_events').set({type: 'log', by: playerName, action: actionStr, time: Date.now()}); }
+    function reduceTime(sec) { elapsedTime = Math.max(0, elapsedTime - sec); }
+
+    function drawSkill() {
+        if(isInputPaused) return;
+        if(isSilenced && !isVIP) { openModal("🤫 CẤM THUẬT", "Bạn đang bị cấm xài thẻ kỹ năng!", "alert"); return; }
+        
+        if(isVIP) {
+            let html = `
+                <button class="btn btn-primary" style="font-size:12px;padding:8px;" onclick="executeSkill(0)">x2 Điểm</button>
+                <button class="btn btn-success" style="font-size:12px;padding:8px;" onclick="executeSkill(1)">-60s thời gian</button>
+                <button class="btn btn-info" style="font-size:12px;padding:8px;" onclick="executeSkill(2)">Bão Tuyết</button>
+                <button class="btn btn-danger" style="font-size:12px;padding:8px;" onclick="executeSkill(3)">Cướp 100đ Top 1</button>
+                <button class="btn btn-warning" style="font-size:12px;padding:8px;color:#000" onclick="executeSkill(4)">Leak Đáp Án</button>
+                <button class="btn" style="background:#9c27b0;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(5)">Ảo Giác</button>
+                <button class="btn" style="background:#e91e63;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(6)">Tráo Chỉ Định</button>
+                <button class="btn" style="background:#607d8b;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(7)">Tráo Random</button>
+                <button class="btn" style="background:#00bcd4;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(8)">Thẻ 50/50</button>
+                <button class="btn" style="background:#795548;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(9)">Đạo tặc tgian</button>
+                <button class="btn" style="background:#ff5722;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(10)">Động Đất</button>
+                <button class="btn" style="background:#8bc34a;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(11)">Nấm Lùn</button>
+                <button class="btn btn-dark" style="font-size:12px;padding:8px;" onclick="executeSkill(12)">Hố Đen</button>
+                <button class="btn" style="background:#ffeb3b;color:#000;font-size:12px;padding:8px;" onclick="executeSkill(13)">Robin Hood</button>
+                <button class="btn" style="background:#fff;color:#000;border:2px solid #000;font-size:12px;padding:8px;" onclick="executeSkill(14)">Thanh Tẩy</button>
+                <button class="btn" style="background:#3f51b5;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(15)">Cân Đẩu Vân</button>
+                <button class="btn" style="background:#f44336;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(16)">Ma Âm Troll</button>
+                <button class="btn" style="background:#d4af37;color:#000;font-size:12px;padding:8px;" onclick="executeSkill(17)">Hattrick (+300đ)</button>
+                <button class="btn" style="background:#d32f2f;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(18)">Thẻ Đỏ 20s</button>
+                <button class="btn" style="background:#2196f3;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(19)">Check VAR Top 1</button>
+                <button class="btn" style="background:#4caf50;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(20)">Thay Người (+3 thẻ)</button>
+                <button class="btn" style="background:#673ab7;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(21)">Hút Máu Server</button>
+                <button class="btn" style="background:#000;color:#f44336;border:1px solid #f44336;font-size:12px;padding:8px;" onclick="executeSkill(22)">Cấm Thuật 30s</button>
+                <button class="btn" style="background:#00e5ff;color:#000;font-size:12px;padding:8px;" onclick="executeSkill(23)">Siêu Phẩm 90+ (CR7)</button>
+                <button class="btn" style="background:#000;color:#fff;border:1px solid #fff;font-size:12px;padding:8px;" onclick="executeSkill(24)">Tắt Đèn</button>
+            `;
+            openModal("👑 KHO VŨ KHÍ CỦA IDORI", `<div style="display:flex; flex-wrap:wrap; gap:8px;">${html}</div>`, "alert");
+            return;
+        }
+
+        if(skillCount <= 0) return;
+        
+        // NỘI TẠI 5: TÁI CHẾ
+        if (myPassive === 5 && Math.random() < 0.25) {
+            pushLocalLog("kích hoạt Tái Chế không mất thẻ ♻️");
+            // Không trừ thẻ
+        } else {
+            skillCount--; 
+        }
+        updateStats();
+        executeSkill(Math.floor(Math.random() * 25)); 
+    }
+
+    function executeSkill(r) {
+        if(isVIP) document.getElementById('custom-modal').classList.remove('show');
+        
+        switch(r) {
+            case 0: score *= 2; updateStats(); pushLocalLog("nhân đôi điểm số bản thân 🃏"); openModal("🃏 THẺ NHÂN ĐÔI", "Bùm! Toàn bộ điểm hiện tại của bạn đã được x2!", "alert"); break;
+            case 1: reduceTime(60); updateStats(); pushLocalLog("giảm 60s thời gian phạt 🃏"); openModal("🃏 THẺ XUYÊN KHÔNG", "Trừ đi 60 giây thời gian làm bài. Bạn đang leo rank thần tốc!", "alert"); break;
+            case 2: database.ref('room_events').set({type: 'freeze', by: playerName, time: Date.now()}); openModal("❄️ THẺ BÃO TUYẾT", "Đã tung bão tuyết! Toàn bộ đối thủ trong phòng sẽ bị đóng băng 10 giây!", "alert"); break;
+            case 3: 
+                let top1 = currentLeaderboard.length > 0 ? currentLeaderboard[0].name : null;
+                if(top1 && top1 !== playerName) {
+                    let sAmt = (myPassive === 7) ? 150 : 100; // NỘI TẠI 7: SIÊU ĐẠO TẶC
+                    database.ref('room_events').set({type: 'steal', by: playerName, target: top1, amount: sAmt, time: Date.now()}); 
+                    score += sAmt; updateStats(); openModal("😈 THẺ BÀN TAY ĐEN", `Bạn đã cướp ${sAmt} điểm từ kẻ đứng đầu bảng: <b>${top1}</b>!`, "alert");
+                } else { score += 100; updateStats(); pushLocalLog("nhận 100đ Vinh Quang 👑"); openModal("👑 THẺ VINH QUANG", "Bạn đang TOP 1, tặng thẳng 100 điểm!", "alert"); }
+                break;
+            case 4: 
+                if(document.getElementById('phase1-card').style.display !== 'none') {
+                    let correctIdx = p1Data[currentP1Index].ans; let btns = document.getElementById('p1-options').querySelectorAll('.option');
+                    btns[correctIdx].style.border = "4px solid var(--success)"; btns[correctIdx].style.background = "#e6f4ea";
+                    pushLocalLog("leak đáp án câu trắc nghiệm 🕵️"); openModal("🕵️ THẺ ĐIỆP VIÊN", "Hack thành công! Đáp án đúng đã được bôi xanh lục.", "alert");
+                } else { score += 150; updateStats(); pushLocalLog("nhận 150đ bồi thường 🕵️"); openModal("🕵️ THẺ ĐIỆP VIÊN", "Chỉ xài được GĐ1, bồi thường +150 điểm!", "alert"); }
+                break;
+            case 5: database.ref('room_events').set({type: 'curse', by: playerName, time: Date.now()}); openModal("👁️ THẺ ẢO GIÁC", "Ám toán đối thủ! Làm nhòe tịt màn hình bọn họ trong 15 giây!", "alert"); break;
+            case 6: 
+                let htmlInput = `<input type='text' id='swap-target-name' placeholder='Nhập chính xác tên nạn nhân...' style='width:90%; padding:10px; border-radius:5px; margin-top:10px; font-weight:bold; text-align:center;'>`;
+                openModal("🔄 TRÁO ĐIỂM CHỈ ĐỊNH", `Nhập tên người bạn muốn tráo điểm:<br>${htmlInput}`, "confirm", () => {
+                    let rawName = document.getElementById('swap-target-name').value.trim().toLowerCase();
+                    let targetData = currentLeaderboard.find(p => p.name.toLowerCase() === rawName);
+                    if (targetData && targetData.name !== playerName) {
+                        let myOldScore = score; score = targetData.score; updateStats();
+                        database.ref('room_events').set({type: 'swap', by: playerName, target: targetData.name, targetNewScore: myOldScore, time: Date.now()});
+                        setTimeout(() => openModal("🔄 THÀNH CÔNG", `Tráo điểm với <b>${targetData.name}</b> thành công!`, "alert"), 400);
+                    } else { setTimeout(() => openModal("❌ THẤT BẠI", "Không tìm thấy người này, mất thẻ!", "alert"), 400); }
+                }); break;
+            case 7: 
+                let others = currentLeaderboard.filter(p => p.name !== playerName);
+                if (others.length > 0) {
+                    let rndTarget = others[Math.floor(Math.random() * others.length)];
+                    let myOldScore = score; score = rndTarget.score; updateStats();
+                    database.ref('room_events').set({type: 'swap', by: playerName, target: rndTarget.name, targetNewScore: myOldScore, time: Date.now()});
+                    openModal("🎲 THẺ ĐỊNH MỆNH", `Bạn đã tráo điểm với <b>${rndTarget.name}</b> ngẫu nhiên!`, "alert");
+                } else { score += 100; updateStats(); pushLocalLog("nhận 100đ an ủi 🎲"); openModal("🎲 THẺ ĐỊNH MỆNH", "Phòng có mình bạn, tặng an ủi 100 điểm!", "alert"); }
+                break;
+            case 8: 
+                if(document.getElementById('phase1-card').style.display !== 'none') {
+                    let correctIdx = p1Data[currentP1Index].ans; let btns = document.getElementById('p1-options').querySelectorAll('.option');
+                    let wrongIndices = [0,1,2,3].filter(i => i !== correctIdx); wrongIndices = shuffleArray(wrongIndices);
+                    btns[wrongIndices[0]].classList.add('selected-wrong', 'locked'); btns[wrongIndices[1]].classList.add('selected-wrong', 'locked');
+                    pushLocalLog("loại 2 đáp án sai 💡"); openModal("💡 THẺ 50/50", "Hệ thống đã gạch bỏ 2 phương án sai!", "alert");
+                } else { score += 100; updateStats(); pushLocalLog("nhận đền bù 100đ 💡"); openModal("💡 THẺ 50/50", "Thẻ này chỉ dùng ở Trắc nghiệm. Tặng 100 điểm!", "alert"); }
+                break;
+            case 9: 
+                let top1_time = currentLeaderboard.length > 0 ? currentLeaderboard[0].name : null;
+                if(top1_time && top1_time !== playerName) {
+                    database.ref('room_events').set({type: 'time_steal', by: playerName, target: top1_time, time: Date.now()});
+                    reduceTime(60); updateStats();
+                    openModal("⏳ ĐẠO TẶC THỜI GIAN", `Bạn trừ 60s phạt và ném 60s phạt đó sang cho TOP 1 (${top1_time})!`, "alert");
+                } else { reduceTime(60); updateStats(); pushLocalLog("giảm 60s phạt ⏳"); openModal("⏳ THẺ THỜI GIAN", "Bạn đang TOP 1, tự giảm mình 60s!", "alert"); }
+                break;
+            case 10: database.ref('room_events').set({type: 'earthquake', by: playerName, time: Date.now()}); openModal("🌋 THẺ ĐỘNG ĐẤT", "Kích hoạt rung lắc màn hình toàn server 10s!", "alert"); break;
+            case 11: database.ref('room_events').set({type: 'shrink', by: playerName, time: Date.now()}); openModal("🍄 THẺ NẤM LÙN", "Ám toán làm teo nhỏ màn hình đối thủ trong 15s!", "alert"); break;
+            case 12: database.ref('room_events').set({type: 'black_hole', by: playerName, time: Date.now()}); openModal("🕳️ THẺ HỐ ĐEN", "Hủy diệt chuỗi Combo của tất cả đối thủ về 0!", "alert"); break;
+            case 13: 
+                if(currentLeaderboard.length > 1) {
+                    let top = currentLeaderboard[0], bot = currentLeaderboard[currentLeaderboard.length - 1];
+                    if(top.name !== bot.name) {
+                        database.ref('room_events').set({type: 'robin_hood', by: playerName, top1: top.name, bot1: bot.name, top1Score: top.score, bot1Score: bot.score, time: Date.now()});
+                        openModal("🏹 ROBIN HOOD", "Đã ép Top 1 và Bét Bảng tráo điểm cho nhau!", "alert");
+                    } else openModal("🏹 ROBIN HOOD", "BXH chưa đủ biến động để chia chác!", "alert");
+                } else openModal("🏹 ROBIN HOOD", "Cần ít nhất 2 người để chơi chiêu này!", "alert");
+                break;
+            case 14: 
+                let mainArea = document.getElementById('game-main-area'); mainArea.className = 'main-content'; 
+                if(document.getElementById('global-freeze')) document.getElementById('global-freeze').remove();
+                if(document.getElementById('global-blackout')) document.getElementById('global-blackout').remove();
+                isInputPaused = false; isSilenced = false; pushLocalLog("giải trừ bùa chú 🛡️"); openModal("🛡️ THANH TẨY", "Giải trừ mọi bùa chú bất lợi trên người!", "alert"); break;
+            case 15: 
+                if(document.getElementById('phase1-card').style.display !== 'none') {
+                    let correctIdx = p1Data[currentP1Index].ans; let btns = document.getElementById('p1-options').querySelectorAll('.option');
+                    pushLocalLog("cưỡi mây qua ải 🚀"); openModal("🚀 CÂN ĐẨU VÂN", "Đã cưỡi mây vượt ải! Câu này tự động đúng!", "alert");
+                    handleP1Answer(correctIdx, btns[correctIdx], p1Data[currentP1Index]);
+                } else { score += 200; updateStats(); pushLocalLog("nhận 200đ Cân Đẩu Vân 🚀"); openModal("🚀 CÂN ĐẨU VÂN", "Chỉ dùng để qua ải Trắc Nghiệm. Tặng bù 200 điểm bay lên trời!", "alert"); }
+                break;
+            case 16: database.ref('room_events').set({type: 'spooky_sound', by: playerName, time: Date.now()}); openModal("🔊 THẺ MA ÂM", "Âm thanh Troll chói tai đã phát đến các đối thủ!", "alert"); break;
+            case 17: score += 300; updateStats(); pushLocalLog("ghi Hattrick 300đ ⚽"); openModal("⚽ SIÊU PHẨM HATTRICK", "Một cú hattrick mang về cho bạn 300 điểm!", "alert"); break;
+            case 18: 
+                let htmlRedCard = `<input type='text' id='red-target-name' placeholder='Nhập tên cầu thủ bị đuổi...' style='width:90%; padding:10px; border-radius:5px; margin-top:10px; font-weight:bold; text-align:center;'>`;
+                openModal("🟥 THẺ ĐỎ TRỰC TIẾP", `Chọn nạn nhân phải rời sân 20s:<br>${htmlRedCard}`, "confirm", () => {
+                    let rawName = document.getElementById('red-target-name').value.trim().toLowerCase();
+                    let targetData = currentLeaderboard.find(p => p.name.toLowerCase() === rawName);
+                    if (targetData && targetData.name !== playerName) {
+                        database.ref('room_events').set({type: 'red_card', by: playerName, target: targetData.name, time: Date.now()});
+                        setTimeout(() => openModal("🟥 ĐUỔI KHỎI SÂN", `Cầu thủ <b>${targetData.name}</b> đã ăn thẻ đỏ cấm túc 20s!`, "alert"), 400);
+                    } else { setTimeout(() => openModal("❌ THẤT BẠI", "Trọng tài mù! Không thấy cầu thủ này.", "alert"), 400); }
+                }); break;
+            case 19: 
+                let top1VAR = currentLeaderboard.length > 0 ? currentLeaderboard[0].name : null;
+                if(top1VAR && top1VAR !== playerName) {
+                    database.ref('room_events').set({type: 'var_check', by: playerName, target: top1VAR, time: Date.now()});
+                    openModal("📺 CHECK VAR THÀNH CÔNG", `Bàn thắng của <b>${top1VAR}</b> đã bị hủy vì lỗi việt vị! Đối phương mất 150 điểm!`, "alert");
+                } else { score += 150; updateStats(); pushLocalLog("nhận 150đ từ VAR 📺"); openModal("📺 CHECK VAR", "Bạn đang TOP 1, VAR xác nhận bàn thắng hợp lệ! Thưởng 150 điểm!", "alert"); }
+                break;
+            case 20: skillCount += 3; updateStats(); pushLocalLog("gọi dự bị nhận 3 thẻ 🔁"); openModal("🔁 THAY NGƯỜI CHIẾN THUẬT", "Được cấp ngay 3 Thẻ Kỹ Năng mới để quẩy nát game!", "alert"); break;
+            case 21: 
+                let playerCount = currentLeaderboard.length;
+                if(playerCount > 1) {
+                    let aoeAmt = (myPassive === 7) ? 75 : 50; // NỘI TẠI 7: SIÊU ĐẠO TẶC
+                    let stealAmount = (playerCount - 1) * aoeAmt;
+                    score += stealAmount; updateStats();
+                    database.ref('room_events').set({type: 'aoe_steal', by: playerName, amount: aoeAmt, time: Date.now()});
+                    openModal("🦇 HÚT MÁU TOÀN SERVER", `Bạn đã hút mỗi người ${aoeAmt} điểm. Tổng cộng nhận được ${stealAmount} điểm!`, "alert");
+                } else { openModal("🦇 HÚT MÁU", "Phòng có mỗi mình bạn, hút máu ai bây giờ?", "alert"); }
+                break;
+            case 22: database.ref('room_events').set({type: 'silence', by: playerName, time: Date.now()}); openModal("🤫 CẤM THUẬT", "Khóa tính năng rút thẻ của toàn bộ đối thủ trong 30 giây!", "alert"); break;
+            case 23: 
+                score += elapsedTime; elapsedTime = 0; updateStats(); pushLocalLog("tỏa sáng phút 90+ siêu phẩm CR7 🐐");
+                openModal("🐐 SIÊU PHẨM PHÚT 90+", "Siii! Toàn bộ thời gian phạt đã được xóa sổ và chuyển thành Điểm Xếp Hạng cho bạn!", "alert"); break;
+            case 24: database.ref('room_events').set({type: 'blackout', by: playerName, time: Date.now()}); openModal("🌑 TẮT ĐÈN", "Triệu hồi bóng tối che mờ mắt toàn bộ đối thủ trong 10 giây!", "alert"); break;
+        }
+    }
+
+    window.addEventListener("blur", () => {
+        if (!isGameActive || isGameOver || isVIP) return; 
+        elapsedTime += 60; updateFirebaseData(); 
+        isCheating = true; leaveTime = Date.now();
+    });
+
+    window.addEventListener("focus", () => {
+        if (isCheating && isGameActive && !isGameOver && !isVIP) {
+            let extraPenalty = Math.floor(((Date.now() - leaveTime) / 1000) * 4);
+            
+            // NỘI TẠI 8: LÔNG VŨ
+            if(myPassive === 8) {
+                extraPenalty = Math.floor(extraPenalty / 2);
+            }
+
+            elapsedTime += extraPenalty; updateFirebaseData(); isCheating = false;
+            
+            let msg = `Lách luật đi đâu đấy?<br>1. Phạt cảnh cáo: <b>+60 Giây</b><br>2. Phạt vắng mặt x4: <b>+${extraPenalty} Giây</b>`;
+            if(myPassive === 8) msg += `<br><span style="color:var(--success)">*Nội tại Lông Vũ đã giảm một nửa phạt vắng mặt!</span>`;
+            
+            openModal("🚨 BẮT QUẢ TANG!", msg, "alert");
+            currentStreak = 0; updateStats(); 
+        }
+    });
+
+    database.ref('bang_xep_hang').on('value', (snapshot) => {
+        const data = snapshot.val();
+        let lbArray = [];
+        for (let id in data) lbArray.push(data[id]);
+        
+        lbArray.forEach(p => p.rankScore = Math.max(0, p.score - (p.time * 0.1)));
+        lbArray.sort((a,b) => b.rankScore - a.rankScore);
+        currentLeaderboard = lbArray; 
+
+        let sidebarTbody = document.getElementById('sidebar-lb-body');
+        if(sidebarTbody) sidebarTbody.innerHTML = lbArray.slice(0, 10).map((p, i) => `<div class="live-lb-item" style="${p.name === playerName ? 'background: #ffe0b2; font-weight:bold;' : ''}"><span><b>${i+1}.</b> ${p.name}</span><span style="color:var(--danger)"><b>${p.rankScore.toFixed(1)}</b>đ</span></div>`).join('');
+
+        let adminTbody = document.getElementById('admin-lb-body');
+        if(adminTbody) adminTbody.innerHTML = lbArray.map((p, i) => `<tr class="${i===0?'top-1':''}"><td>${i+1}</td><td style="font-weight:bold; font-size: 18px;">${p.name}</td><td style="color: var(--success); font-weight: bold;">${p.score}</td><td style="color: #5f6368;">${Math.floor(p.time/60)}p ${p.time%60}s</td><td style="font-weight:bold; color:var(--danger); font-size: 20px;">${p.rankScore.toFixed(1)}</td><td style="color:${p.status==='Hoàn thành xuất sắc'?'var(--success)':'var(--warning)'}; font-weight:bold;">${p.status}</td></tr>`).join('');
+
+        let mainTbody = document.getElementById('lb-body');
+        if(mainTbody) mainTbody.innerHTML = lbArray.map((p, i) => `<tr class="${i===0?'top-1':''}" style="${p.name === playerName ? 'background: #fff3e0;' : ''}"><td>${i+1}</td><td style="font-weight:bold;">${p.name}</td><td style="font-weight:bold; color:var(--danger)">${p.rankScore.toFixed(1)}</td><td style="color:${p.status==='Hoàn thành xuất sắc'?'var(--success)':'var(--warning)'}; font-weight:bold;">${p.status}</td></tr>`).join('');
+    });
+
+    function updateFirebaseData() { if(myPlayerRef) myPlayerRef.update({ score: score, time: elapsedTime }); }
+    
+    function updateStats() { 
+        document.getElementById('current-score').innerText = score; 
+        document.getElementById('progress-text').innerText = `${tasksCompleted}/29`; 
+        document.getElementById('progress-bar').style.width = (tasksCompleted/29)*100 + '%'; 
+        
+        let comboUI = document.getElementById('combo-display');
+        comboUI.innerText = "🔥 CHUỖI: " + currentStreak;
+        if(currentStreak > 0) comboUI.classList.add('active'); else comboUI.classList.remove('active');
+
+        let sBtn = document.getElementById('skill-btn');
+        if(isVIP) {
+            sBtn.innerText = "👑 KHO KỸ NĂNG (Vô Hạn)";
+            sBtn.style.display = "block";
+            sBtn.style.background = "linear-gradient(45deg, #9c27b0, #e91e63)";
+        } else if(skillCount > 0) {
+            sBtn.innerText = "🃏 RÚT THẺ KỸ NĂNG (Còn: " + skillCount + ")";
+            sBtn.style.display = "block";
+        } else {
+            sBtn.style.display = "none";
+        }
+        updateFirebaseData(); 
+    }
+
+    function addScoreWithStreak(basePoint) {
+        currentStreak++;
+        let bonusPercent = 0;
+        if(currentStreak === 1) bonusPercent = 0.1;
+        else if(currentStreak === 2) bonusPercent = 0.2;
+        else if(currentStreak === 3) bonusPercent = 0.3;
+        else if(currentStreak === 4) bonusPercent = 0.5;
+        else if(currentStreak >= 5) bonusPercent = 0.75;
+
+        let earned = Math.round(basePoint * (1 + bonusPercent));
+        score += earned;
+
+        if (currentStreak > 0 && currentStreak % 5 === 0) {
+            skillCount++;
+            setTimeout(() => {
+                openModal("🔥 CHUỖI " + currentStreak + " CÂU ĐÚNG!", "Đỉnh cao trí tuệ! Bạn được thưởng thêm 1 Thẻ Kỹ Năng để sinh tồn!", "alert");
+            }, 800);
+        }
+        updateStats();
+    }
+
+    function loadP1Question() {
+        if (currentP1Index >= p1Data.length) { document.getElementById('phase1-card').style.display = 'none'; document.getElementById('phase2-card').style.display = 'block'; return; }
+        const q = p1Data[currentP1Index];
+        document.getElementById('p1-counter').innerText = `Câu ${currentP1Index + 1} / ${p1Data.length}`; 
+        document.getElementById('p1-question').innerText = q.q;
+        const optionsDiv = document.getElementById('p1-options'); optionsDiv.innerHTML = ""; 
+        const labels = ['A','B','C','D'];
+        q.opts.forEach((opt, idx) => {
+            let btn = document.createElement('div'); btn.className = 'option';
+            btn.innerHTML = `<span class="char-badge">${labels[idx]}</span> <span>${opt}</span>`;
+            btn.onclick = () => { if(!isInputPaused) handleP1Answer(idx, btn, q); }; optionsDiv.appendChild(btn);
+        });
+    }
+
+    function handleP1Answer(selectedIdx, btn, qObj) {
+        const allBtns = document.getElementById('p1-options').querySelectorAll('.option'); allBtns.forEach(b => b.classList.add('locked'));
+        if(selectedIdx === qObj.ans) {
+            btn.classList.add('selected-correct'); 
+            tasksCompleted++; 
+            
+            // NỘI TẠI 2: THƯƠNG NHÂN
+            if(myPassive === 2) score += 15;
+            // NỘI TẠI 3: THỜI GIAN LỘ
+            if(myPassive === 3) reduceTime(3);
+
+            addScoreWithStreak(50); 
+            setTimeout(() => { currentP1Index++; loadP1Question(); }, 1000);
+        } else {
+            btn.classList.add('selected-wrong'); allBtns[qObj.ans].classList.add('selected-correct'); tasksCompleted++; 
+            currentStreak = 0; updateStats(); 
+            triggerRandomPenalty("Sai cơ bản! Đứt chuỗi rồi!", () => { currentP1Index++; loadP1Question(); });
+        }
+    }
+
+    function openMap(id) {
+        if(isInputPaused || document.getElementById(`hs${id}`).classList.contains('done')) return;
+        mapActive = id; let data = p2MapData[id];
+        let html = `<table class="tf-table"><thead><tr><th>Nhận định</th><th style="width:40px">Đ</th><th style="width:40px">S</th></tr></thead><tbody>`;
+        data.stmts.forEach((s, i) => { html += `<tr><td>${s.t}</td><td style="text-align:center"><input type="radio" name="tf_${i}" value="true" class="tf-radio"></td><td style="text-align:center"><input type="radio" name="tf_${i}" value="false" class="tf-radio"></td></tr>`; });
+        html += `</tbody></table>`;
+        openModal(`📍 ${data.title}`, html, "confirm", submitMap);
+    }
+
+    function submitMap() {
+        let data = p2MapData[mapActive], correctC = 0;
+        for(let i=0; i<4; i++) {
+            let r = document.querySelector(`input[name="tf_${i}"]:checked`);
+            if(!r) return openModal("Lỗi", "Vui lòng chọn đủ 4 ý Đ/S!", "alert");
+            if((r.value === 'true') === data.stmts[i].a) correctC++;
+        }
+        let earned = 0; if(correctC === 4) earned = 200; else if(correctC === 3) earned = 100; else if(correctC === 2) earned = 50; else if(correctC === 1) earned = 20;
+        
+        // NỘI TẠI 3: THỜI GIAN LỘ
+        if (correctC === 4 && myPassive === 3) reduceTime(3);
+
+        if (correctC === 4) addScoreWithStreak(200);
+        else { score += earned; currentStreak = 0; } 
+
+        document.getElementById(`hs${mapActive}`).classList.add('done'); tasksCompleted++; updateStats();
+        
+        // NỘI TẠI 6: DẤU CHÂN TỰ HÀO
+        if(myPassive === 6) { skillCount++; pushLocalLog("nhận 1 thẻ nhờ Dấu Chân Tự Hào 🗺️"); }
+
+        let hsDone = document.querySelectorAll('.hotspot.done').length;
+        if(hsDone === 5) document.getElementById('phase3-card').style.display = 'block';
+        if(correctC < 4) triggerRandomPenalty(`Đúng ${correctC}/4 ý. Đứt Chuỗi! Thiếu 1 ý là bị PHẠT!`); else openModal("Xuất Sắc!", `Đúng 4/4 ý! Duy trì chuỗi.`, "alert");
+    }
+
+    function openPuzzle(id) {
+        if(isInputPaused || document.getElementById(`pz${id}`).classList.contains('revealed')) return;
+        pzActive = id; let data = p3PuzzleData[id];
+        let html = `<div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">`;
+        data.opts.forEach((opt, i) => { html += `<button class="btn btn-secondary" onclick="checkPuzzle(${i})">${opt}</button>`; }); html += `</div>`;
+        openModal(`Mảnh ghép số ${id+1}`, `<strong style="color:var(--primary)">${data.q}</strong>` + html, "none");
+    }
+
+    function checkPuzzle(ansIdx) {
+        document.getElementById('custom-modal').classList.remove('show');
+        if(ansIdx === p3PuzzleData[pzActive].ans) { 
+            document.getElementById(`pz${pzActive}`).classList.add('revealed'); tasksCompleted++; 
+            if(myPassive === 3) reduceTime(3); // NỘI TẠI 3
+            addScoreWithStreak(100);
+        } else { 
+            tasksCompleted++; currentStreak = 0; updateStats(); 
+            triggerRandomPenalty("Sai rồi! Mảnh ghép đã bị khóa cứng. Đứt chuỗi!"); 
+        }
+    }
+
+    function submitFinal() {
+        if(isInputPaused) return;
+        let guess = document.getElementById('finalGuess').value.toLowerCase().trim();
+        if(['bến nhà rồng', 'ben nha rong', 'nha rong', 'nhà rồng'].includes(guess)) { 
+            if(myPassive === 3) reduceTime(3); // NỘI TẠI 3
+            addScoreWithStreak(500); endGame("Hoàn thành xuất sắc");
+        } else { 
+            currentStreak = 0; updateStats();
+            triggerRandomPenalty("Đoán sai tên Bức Ảnh!"); 
+        }
+    }
+
+    function triggerRandomPenalty(customMsg = "", callback = null) {
+        // NỘI TẠI 4: BẢO HIỂM
+        if (myPassive === 4) {
+            openModal("🛡️ NỘI TẠI BẢO HIỂM", `${customMsg}<br><br><span style="color:var(--success); font-weight:bold;">Đã kích hoạt Bảo Hiểm! Miễn trừ Hình Phạt Sinh Tồn!</span>`, "alert", () => {
+                if(callback) callback();
+            });
+            return;
+        }
+
+        isInputPaused = true; let r = Math.random(), msg = "", action = null;
+        if(r < 0.33) { msg = "CỘNG THÊM 60 GIÂY VÀO ĐỒNG HỒ!"; action = () => { elapsedTime += 60; updateFirebaseData(); isInputPaused = false; if(callback) callback(); }; } 
+        else if(r < 0.66) {
+            msg = "ĐÓNG BĂNG TƯƠNG TÁC 5 GIÂY! (Giờ vẫn chạy)"; action = () => {
+                let freeze = document.createElement('div'); freeze.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(26,115,232,0.6);z-index:99999;display:flex;align-items:center;justify-content:center;font-size:50px;color:white;font-weight:bold;";
+                freeze.innerText = "❄️ ĐÓNG BĂNG ❄️"; document.body.appendChild(freeze);
+                setTimeout(() => { freeze.remove(); isInputPaused = false; if(callback) callback(); }, 5000);
+            };
+        } else { msg = "TRỪ 50 ĐIỂM THÀNH TÍCH!"; action = () => { score = Math.max(0, score - 50); updateStats(); isInputPaused = false; if(callback) callback(); }; }
+        openModal("⚠️ HÌNH PHẠT SINH TỒN", `${customMsg}<br><div style="font-size:24px; color:var(--danger); font-weight:bold; margin-top:15px;">${msg}</div>`, "alert", action);
+    }
+
+    function openModal(title, content, type, onConfirm) {
+        document.getElementById('modal-title').innerText = title; document.getElementById('modal-message').innerHTML = content;
+        let actions = document.getElementById('modal-actions'); actions.innerHTML = "";
+        if(type === "alert") { actions.innerHTML = `<button class="btn btn-warning" onclick="closeModal()">Đã Hiểu</button>`; document.getElementById('custom-modal').onclickConfirm = onConfirm; } 
+        else if(type === "confirm") { actions.innerHTML = `<button class="btn btn-secondary" onclick="closeModal()">Khoan đã</button><button class="btn btn-danger" id="confirm-btn">Chốt luôn</button>`; document.getElementById('confirm-btn').onclick = () => { closeModal(); if(onConfirm) onConfirm(); }; }
+        document.getElementById('custom-modal').classList.add('show');
+    }
+
+    function closeModal() { document.getElementById('custom-modal').classList.remove('show'); if(document.getElementById('custom-modal').onclickConfirm) { document.getElementById('custom-modal').onclickConfirm(); document.getElementById('custom-modal').onclickConfirm = null; } }
+
+    function endGame(statusMsg = "Hoàn thành") {
+        isGameOver = true; isGameActive = false; clearInterval(timerInterval);
+        if(myPlayerRef) myPlayerRef.update({ status: statusMsg, time: elapsedTime, score: score });
+        document.getElementById('quiz-section').style.display = 'none'; document.getElementById('leaderboard-section').style.display = 'block';
+    }
+
+    document.addEventListener('contextmenu', function(e) { if(!isVIP) e.preventDefault(); });
+    document.addEventListener('keydown', function(e) {
+        if(isVIP) return; 
+        if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) { e.preventDefault(); return false; }
+        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) { e.preventDefault(); return false; }
+        if (e.ctrlKey && (e.key === 'S' || e.key === 's')) { e.preventDefault(); return false; }
+    });
+    console.log("%c🛑 DỪNG LẠI NGAY!", "color: red; font-size: 50px; font-weight: bold; text-shadow: 2px 2px 0 #000;");
+    console.log("%cKhu vực này không dành cho người chơi. Hệ thống Anti-Cheat của Idori đang ghi lại địa chỉ IP của bạn. Mọi hành vi cố tình chỉnh sửa sẽ bị cấm thi ngay lập tức!", "color: yellow; font-size: 20px; font-weight: bold; background: #222; padding: 10px; border-radius: 5px;");
+</script>
+</body>
+</html> border: none; border-radius: 50px; padding: 12px 20px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 9999; }
 
         @media (max-width: 768px) {
             .options-grid { grid-template-columns: 1fr; }
