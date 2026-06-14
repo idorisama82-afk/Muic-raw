@@ -3,20 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Theo Dấu Chân Người</title>
+    <title>Theo Dấu Chân Người - V18.0</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
         :root {
-            --primary: #1a73e8;
-            --success: #34a853;
-            --danger: #ea4335;
-            --warning: #fbbc04;
-            --bg: #f0f2f5;
-            --card-bg: #ffffff;
-            --info: #00bcd4;
+            --primary: #1a73e8; --success: #34a853; --danger: #ea4335;
+            --warning: #fbbc04; --bg: #f0f2f5; --card-bg: #ffffff; --info: #00bcd4;
         }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: #202124; margin: 0; padding: 0; line-height: 1.6; user-select: none; -webkit-user-select: none; }
         
@@ -39,19 +34,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         
-        @keyframes earthquake { 
-            0% { transform: translate(1px, 1px) rotate(0deg); } 
-            10% { transform: translate(-1px, -2px) rotate(-1deg); } 
-            20% { transform: translate(-3px, 0px) rotate(1deg); } 
-            30% { transform: translate(3px, 2px) rotate(0deg); } 
-            40% { transform: translate(1px, -1px) rotate(1deg); } 
-            50% { transform: translate(-1px, 2px) rotate(-1deg); } 
-            60% { transform: translate(-3px, 1px) rotate(0deg); } 
-            70% { transform: translate(3px, 1px) rotate(-1deg); } 
-            80% { transform: translate(-1px, -1px) rotate(1deg); } 
-            90% { transform: translate(1px, 2px) rotate(0deg); } 
-            100% { transform: translate(1px, -2px) rotate(-1deg); } 
-        }
+        @keyframes earthquake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
 
         #quiz-section { display: none; width: 100%; }
         .main-content { flex: 3; transition: filter 0.5s ease, transform 0.5s ease; transform-origin: top center;} 
@@ -67,8 +50,7 @@
         .combo-box.active { animation: pulse 0.5s infinite alternate; border: 2px solid #ff6d00; }
         
         .passive-box { font-size: 13px; font-weight: bold; color: #fff; background: linear-gradient(45deg, #673ab7, #3f51b5); text-align: center; padding: 10px; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #e1bee7;}
-        .passive-box:hover { filter: brightness(1.1); }
-
+        
         .progress-container { width: 100%; background: #e0e0e0; border-radius: 8px; height: 10px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s ease; }
         
@@ -110,7 +92,6 @@
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
         .modal-box { background: white; padding: 35px 25px; border-radius: 16px; width: 95%; max-width: 600px; text-align: center; transform: scale(0.8); transition: transform 0.2s ease; box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
         
-        /* Modal Sách Hướng Dẫn to hơn */
         #guide-modal .modal-box { max-width: 800px; max-height: 90vh; overflow-y: auto; text-align: left; background: #fdfdfd; }
         #guide-modal h3 { color: var(--danger); border-bottom: 2px solid var(--danger); padding-bottom: 5px; margin-top: 25px; }
         #guide-modal ul { padding-left: 20px; font-size: 15px; }
@@ -128,30 +109,19 @@
         
         #music-btn { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; border: none; border-radius: 50px; padding: 12px 20px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 9999; }
 
-        .toast-msg {
-            position: fixed; bottom: 30px; left: 30px; padding: 15px 25px; border-radius: 12px;
-            font-weight: bold; font-size: 16px; z-index: 999999;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3); transform: translateX(-150%);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            max-width: 350px;
-        }
+        .toast-msg { position: fixed; bottom: 30px; left: 30px; padding: 15px 25px; border-radius: 12px; font-weight: bold; font-size: 16px; z-index: 999999; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transform: translateX(-150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 350px; }
         .toast-msg.show { transform: translateX(0); }
         
-        /* Hiệu ứng Hóa Chao */
         .awakened-mode { box-shadow: 0 0 30px #ffeb3b inset; animation: awakenPulse 1s infinite alternate; }
         @keyframes awakenPulse { 0% { box-shadow: 0 0 20px #ffeb3b inset; } 100% { box-shadow: 0 0 50px #ff9800 inset; } }
 
-        @media (max-width: 768px) {
-            .options-grid { grid-template-columns: 1fr; }
-            .container { flex-direction: column; }
-            .sidebar { position: static; margin-bottom: 20px;}
-        }
+        /* MVP Cards */
+        .mvp-card { flex:1; min-width:180px; text-align:center; padding:15px; border-radius:12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .mvp-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; margin-top: 0; }
+        .mvp-name { font-size: 20px; font-weight: 900; margin: 0; }
         
-        #admin-event-log::-webkit-scrollbar { width: 8px; }
-        #admin-event-log::-webkit-scrollbar-track { background: #333; }
-        #admin-event-log::-webkit-scrollbar-thumb { background: #00ff00; border-radius: 4px; }
-        #guide-modal .modal-box::-webkit-scrollbar { width: 8px; }
-        #guide-modal .modal-box::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        @media (max-width: 768px) { .options-grid { grid-template-columns: 1fr; } .container { flex-direction: column; } .sidebar { position: static; margin-bottom: 20px;} }
+        #admin-event-log::-webkit-scrollbar { width: 8px; } #admin-event-log::-webkit-scrollbar-track { background: #333; } #admin-event-log::-webkit-scrollbar-thumb { background: #00ff00; border-radius: 4px; } #guide-modal .modal-box::-webkit-scrollbar { width: 8px; } #guide-modal .modal-box::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -169,37 +139,25 @@
 
 <div id="guide-modal" class="modal-overlay">
     <div class="modal-box">
-        <h2 class="modal-title" style="color: var(--primary);">📖 SÁCH MA THUẬT (PATCH NOTES V17)</h2>
-        <div style="text-align: center; font-style: italic; color: #666; margin-bottom: 20px;">Cẩm nang Sinh Tồn dành cho Tân Binh & Pháp Sư</div>
+        <h2 class="modal-title" style="color: var(--primary);">📖 SÁCH MA THUẬT (PATCH NOTES V18.0)</h2>
+        <div style="text-align: center; font-style: italic; color: #666; margin-bottom: 20px;">Kỷ Nguyên Tận Thế</div>
         
-        <h3>🌪️ [MỚI] SỰ KIỆN TOÀN SERVER (MỖI 30 GIÂY)</h3>
+        <h3>🌪️ [MỚI] HỆ THỐNG TRUY NÃ & ĐẠI HỘI CỔ VŨ</h3>
         <ul>
-            <li>Cứ mỗi 30 giây, Hệ thống sẽ thả xuống một thảm họa hoặc phước lành ngẫu nhiên cho toàn bộ người chơi.</li>
-            <li><b>Mưa Sao Băng:</b> Tất cả mọi người nhận miễn phí +1 Thẻ Kỹ Năng.</li>
-            <li><b>Khủng Hoảng Kinh Tế:</b> Người đang đứng Top 1 sẽ bị chia đôi (1/2) số điểm hiện tại.</li>
-            <li><b>Giờ Trái Đất:</b> Toàn bộ phòng tắt điện đen thui trong 5 giây.</li>
-            <li><b>Quay Xe:</b> Người đứng Top 1 và người đứng Bét Bảng tự động đổi điểm cho nhau!</li>
+            <li><b>Lệnh Truy Nã:</b> Kẻ nào ngồi Top 1 sẽ bị gắn icon 🎯. Ám toán thành công (Bàn tay đen, Thẻ đỏ, VAR...) kẻ bị truy nã sẽ được thưởng nóng +200đ!</li>
+            <li><b>Quỹ Cổ Vũ:</b> Cùng nhau góp điểm vào Quỹ (50đ/lần). Khi Quỹ đạt 1000đ, toàn server lập tức được phát +2 Thẻ Kỹ Năng.</li>
         </ul>
 
-        <h3>⚡ [MỚI] HỆ THỐNG NỘI TẠI & THỨC TỈNH (HÓA CHAO)</h3>
+        <h3>🎰 [MỚI] RƯƠNG VÔ CỰC (CHỢ ĐEN)</h3>
         <ul>
-            <li><b>Tích Nộ:</b> Trả lời đúng hoặc xài Thẻ Kỹ Năng sẽ được tăng % Nộ Khí.</li>
-            <li><b>Thức Tỉnh:</b> Khi đạt 100% Nộ, bấm nút Thức Tỉnh để Hóa Chao trong 20s.</li>
-            <li><b>Buff Hóa Chao:</b> Giảm một nửa thời gian phạt, Nhân 3 (x3) Điểm Số nhận được, MIỄN NHIỄM 100% mọi đòn tấn công của kẻ thù và sự kiện server!</li>
+            <li>Tốn 50đ để mở. <b>80% rủi ro</b> (mất tiền), <b>20% Jackpot (Găng Tay Thanos)</b>.</li>
+            <li>Đứa nào kích hoạt được Búng Tay Vô Cực, 50% người trong phòng sẽ bị chia đôi điểm số (Chỉ 1 người mở được).</li>
         </ul>
 
-        <h3>🛒 [MỚI] CỬA HÀNG CHỢ ĐEN</h3>
+        <h3>⚡ HỆ THỐNG NỘI TẠI & THỨC TỈNH (HÓA CHAO)</h3>
         <ul>
-            <li>Không cần chờ bốc thẻ hên xui, bạn có thể dùng Điểm Xếp Hạng của mình để MUA thẻ trực tiếp tại Chợ Đen.</li>
-            <li>Mua là xài ngay lập tức. Tính toán tài chính cẩn thận kẻo rớt Rank!</li>
-        </ul>
-
-        <h3>✨ HỆ THỐNG 10 NỘI TẠI (PASSIVE)</h3>
-        <ul>
-            <li><b>🦔 Giáp Gai:</b> Phản đòn 50đ. / <b>🍀 Phúc Khí:</b> 30% Né tránh đòn hắc ám. / <b>💰 Thương Nhân:</b> +15đ mỗi câu đúng.</li>
-            <li><b>⏱️ Thời Gian Lộ:</b> Trừ 3s phạt khi đúng. / <b>🛡️ Bảo Hiểm:</b> Sai không bị dính Hình phạt sinh tồn.</li>
-            <li><b>♻️ Tái Chế:</b> 25% xài thẻ không bị mất. / <b>🗺️ Dấu Chân Tự Hào:</b> Giải xong 1 map +1 Thẻ.</li>
-            <li><b>🥷 Siêu Đạo Tặc:</b> Cướp và Hút máu tăng 50% sức mạnh. / <b>🕊️ Lông Vũ:</b> Phạt rời Tab giảm một nửa. / <b>🌟 Hào Quang:</b> Bắt đầu với 3 Thẻ.</li>
+            <li><b>Thức Tỉnh:</b> Đạt 100% Nộ, Hóa Chao trong 20s. Giảm nửa thời gian phạt, Nhân 3 Điểm, MIỄN NHIỄM 100% mọi đòn tấn công!</li>
+            <li><b>10 Nội Tại:</b> Giáp Gai (Phản 50đ), Phúc Khí (30% Né), Thương Nhân (+15đ), Thời Gian Lộ (-3s), Bảo Hiểm (Không bị phạt sinh tồn), Tái Chế (25% giữ thẻ), Dấu Chân Tự Hào (Hoàn thành map +1 Thẻ), Siêu Đạo Tặc (+50% cướp), Lông Vũ (Giảm phạt tab), Hào Quang (3 Thẻ đầu trận).</li>
         </ul>
 
         <div style="text-align: center; margin-top: 30px;">
@@ -214,7 +172,7 @@
     <h1 style="color: var(--danger); user-select: none;">THEO DẤU CHÂN NGƯỜI</h1>
     
     <div class="meta-info" style="font-size: 14px; background: #fce8e6; color: var(--danger); padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold;">
-        ⚠️ SỰ KIỆN TOÀN SERVER (MỖI 30S). TÍCH NỘ ĐỂ HÓA CHAO!<br>DÙNG ĐIỂM ĐỂ MUA KỸ NĂNG Ở CHỢ ĐEN.
+        ⚠️ V18.0: HỆ THỐNG TRUY NÃ, ĐẠI HỘI CỔ VŨ VÀ BÚNG TAY VÔ CỰC ĐÃ MỞ!<br>HÃY CẨN THẬN VỚI TỪNG QUYẾT ĐỊNH.
     </div>
 
     <button class="btn btn-info" onclick="document.getElementById('guide-modal').classList.add('show');" style="margin-bottom: 20px;">📖 SÁCH MA THUẬT (Luật & Kỹ Năng)</button>
@@ -224,7 +182,7 @@
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
 
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v17.0.0 (Kỷ Nguyên Hỗn Mang) <br>
+        Phiên bản v18.0.0 (Kỷ Nguyên Tận Thế) <br>
         Copyright © 2026 by Idori
     </div>
 </div>
@@ -257,20 +215,8 @@
 <div id="admin-live-section" class="card" style="display: none; max-width: 1000px;">
     <h1 style="color: var(--danger); text-transform: uppercase;">🖥️ MÀN HÌNH MÁY CHIẾU</h1>
     <h2 style="color: var(--primary);">🏆 BẢNG XẾP HẠNG TRỰC TIẾP 🏆</h2>
-    <p style="font-size: 15px; font-weight: bold; color: var(--warning); background: #333; padding: 10px; border-radius: 8px;">
-        CÔNG THỨC: ĐIỂM XẾP HẠNG = ĐIỂM THỰC - (THỜI GIAN (giây) x 0.1)
-    </p>
     <table class="lb-table">
-        <thead>
-            <tr>
-                <th>Hạng</th>
-                <th>Chiến Binh</th>
-                <th>Điểm Thực</th>
-                <th>Thời Gian</th>
-                <th style="background: var(--warning); color: #000;">ĐIỂM XẾP HẠNG</th>
-                <th>Trạng Thái</th>
-            </tr>
-        </thead>
+        <thead><tr><th>Hạng</th><th>Chiến Binh</th><th>Điểm Thực</th><th>Thời Gian</th><th style="background: var(--warning); color: #000;">ĐIỂM XẾP HẠNG</th><th>Trạng Thái</th></tr></thead>
         <tbody id="admin-lb-body"></tbody>
     </table>
     
@@ -288,31 +234,33 @@
 <div id="quiz-section" class="container">
     <div class="sidebar">
         <h3 style="margin: 0; text-align: center; color: #5f6368; cursor: pointer; user-select: none;" id="player-display-name" ondblclick="triggerVIP()">Tên</h3>
-        
         <div class="timer-box" id="timer-display">00:00</div>
         <div class="score-box">ĐIỂM: <span id="current-score">0</span></div>
         <div class="combo-box" id="combo-display">🔥 CHUỖI: 0</div>
         
-        <!-- THANH NỘ HÓA CHAO -->
+        <!-- THANH NỘ -->
         <div style="margin-top: 10px; font-weight: bold; font-size: 13px; color: #ffeb3b; background: #333; padding: 5px; border-radius: 5px; text-align: center;">🔥 NỘI TẠI THẦN BÍ: <span id="rage-text">0%</span></div>
         <div class="progress-container" style="background:#555; height:15px; border: 1px solid #ffeb3b; margin-top: 2px;"><div class="progress-bar" id="rage-bar" style="background: linear-gradient(90deg, #ff9800, #ffeb3b); width: 0%;"></div></div>
         <button class="btn" id="awaken-btn" onclick="triggerAwaken()" style="background: #ccc; color: #666; margin-top: 5px; font-size: 14px; pointer-events: none; transition: 0.3s; width: 100%;">⚡ THỨC TỈNH ⚡</button>
         
         <div class="passive-box" id="passive-display" onclick="showPassiveDesc()" style="margin-top: 10px;">✨ NỘI TẠI: Đang Random...</div>
         
+        <!-- ĐẠI HỘI CỔ VŨ -->
+        <div style="margin-top: 10px; background: #e8f0fe; padding: 10px; border-radius: 8px; text-align: center; border: 2px dashed var(--primary);">
+            <div style="font-size: 13px; font-weight: bold; color: var(--primary);">🛡️ QUỸ ĐẠI HỘI: <span id="crowd-fund-text">0/1000</span></div>
+            <div class="progress-container" style="height:8px; margin-top:5px;"><div class="progress-bar" id="crowd-fund-bar" style="background: var(--success); width: 0%;"></div></div>
+            <button class="btn" style="background:var(--success); font-size:12px; padding:6px; margin-top:8px;" onclick="contributeFund()">Góp 50đ</button>
+        </div>
+
         <div style="font-weight: bold; color: #5f6368; font-size: 14px; margin-top: 10px;">Tiến độ hành trình: <span id="progress-text">0/40</span></div>
         <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
         
         <button class="btn btn-warning" id="skill-btn" onclick="drawSkill()" style="margin-top: 15px; font-size: 15px; font-weight: 900; background: linear-gradient(45deg, #fbbc04, #ff6d00); color: white; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(255, 109, 0, 0.5); animation: pulse 1s infinite;">🃏 RÚT THẺ KỸ NĂNG</button>
-        
-        <!-- NÚT MỞ CHỢ ĐEN -->
         <button class="btn btn-secondary" onclick="openBlackMarket()" style="margin-top: 10px; font-size: 14px; border: 2px dashed var(--danger); font-weight: bold; background: #222; color: #00ff00;">🛒 CHỢ ĐEN (Black Market)</button>
 
         <div class="live-lb-box">
             <h4 class="live-lb-title">🏆 TOP CHIẾN BINH LIVE</h4>
-            <div class="live-lb-list" id="sidebar-lb-body">
-                <i style="color:#757575;">Đang tải dữ liệu...</i>
-            </div>
+            <div class="live-lb-list" id="sidebar-lb-body"><i style="color:#757575;">Đang tải dữ liệu...</i></div>
         </div>
     </div>
 
@@ -348,8 +296,9 @@
     </div>
 </div>
 
-<div id="leaderboard-section" class="card" style="display: none;">
-    <h2>🏆 KẾT QUẢ CHUNG CUỘC 🏆</h2>
+<div id="leaderboard-section" class="card" style="display: none; max-width: 1000px; margin: 50px auto;">
+    <h2>🏆 TỔNG KẾT MÙA GIẢI 🏆</h2>
+    <div id="mvp-board" style="display: flex; justify-content: space-around; flex-wrap: wrap; margin-bottom: 30px; gap: 15px;"></div>
     <table class="lb-table">
         <thead><tr><th>Hạng</th><th>Chiến Binh</th><th>Điểm Xếp Hạng</th><th>Trạng Thái</th></tr></thead>
         <tbody id="lb-body"></tbody>
@@ -380,6 +329,7 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
+    // Data arrays
     const p1Data_Original = [
         { q: "Vào ngày tháng năm nào, người thanh niên yêu nước Nguyễn Tất Thành đã chính thức rời bến Nhà Rồng, bắt đầu hành trình bôn ba tìm đường cứu nước?", opts: ["05/06/1911", "06/05/1911", "02/09/1945", "19/05/1890"], ans: 0 },
         { q: "Con tàu buôn của Pháp đã đưa Bác Hồ rời khỏi Sài Gòn sang phương Tây năm 1911 mang tên là gì?", opts: ["Latouche-Tréville", "Amiral Latouche-Tréville", "Đô đốc Courbet", "Chasseloup-Laubat"], ans: 1 },
@@ -441,7 +391,7 @@
         {id: 9, icon: "🌟", name: "Hào Quang", desc: "Sinh ra ở vạch đích! Bắt đầu game có sẵn 3 Thẻ Kỹ Năng thay vì 1."}
     ];
 
-    let p1Data = [], p2MapData = [], p3PuzzleData = [];
+    // MVP & Player stats
     let playerName = "";
     let score = 0, elapsedTime = 0, timerInterval;
     let isGameActive = false, isGameOver = false, isInputPaused = false; 
@@ -454,8 +404,17 @@
     let isVIP = false;
     let isSilenced = false; 
     let myPassive = -1;
-    let rage = 0;
-    let isAwakened = false;
+    let rage = 0, isAwakened = false;
+
+    let statSkillsUsed = 0;
+    let statHitsTaken = 0;
+    let statPassiveTriggers = 0;
+    let statMapPuzzleTime = 999999;
+
+    let currentBountyTarget = "";
+    let crowdFundAmount = 0;
+    let isThanosUsed = false;
+    let adminTop1Name = "", adminTop1Time = 0;
 
     function showToast(msg, type = 'warning') {
         let t = document.createElement('div');
@@ -475,6 +434,7 @@
         return `<select id='target-player-select' style='width:90%; padding:10px; border-radius:5px; margin-top:10px; font-weight:bold; text-align:center;'>${opts}</select>`;
     }
 
+    // FIREBASE LISTENERS
     database.ref('room_state').on('value', (snapshot) => {
         let state = snapshot.val();
         if(state === 'playing' && playerName !== "" && !isGameActive && !isGameOver) { initiateGame(); } 
@@ -497,6 +457,20 @@
         } else if (adminList) adminList.innerHTML = "<i>Chưa có ai vào phòng...</i>";
     });
 
+    database.ref('game_meta').on('value', snap => {
+        let meta = snap.val();
+        if(meta) {
+            currentBountyTarget = meta.bountyTarget || "";
+            crowdFundAmount = meta.crowdFund || 0;
+            isThanosUsed = meta.thanosUsed || false;
+            
+            if(document.getElementById('crowd-fund-text')) {
+                document.getElementById('crowd-fund-text').innerText = `${crowdFundAmount}/1000`;
+                document.getElementById('crowd-fund-bar').style.width = Math.min(100, (crowdFundAmount/1000)*100) + '%';
+            }
+        }
+    });
+
     database.ref('room_events').on('value', (snapshot) => {
         if(!isGameActive && document.getElementById('admin-live-section').style.display !== 'block') return;
         let ev = snapshot.val();
@@ -514,10 +488,7 @@
                 if(ev.type === 'global_earth_hour') actionText = "kích hoạt Giờ Trái Đất (Đen thui 5s) 🌍";
                 if(ev.type === 'global_u_turn') actionText = "kích hoạt Quay Xe (Đổi chỗ Top 1 và Bét bảng) 🌪️";
                 let logLine = `<div style="margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:5px;">[${t}] <b><span style='color:var(--danger)'>${ev.by}</span></b>: <span style='color:#fff'>${actionText}</span></div>`;
-                if(logDivArea.dataset.lastLog !== ev.time.toString()) {
-                    logDivArea.innerHTML = logLine + logDivArea.innerHTML;
-                    logDivArea.dataset.lastLog = ev.time.toString();
-                }
+                if(logDivArea.dataset.lastLog !== ev.time.toString()) { logDivArea.innerHTML = logLine + logDivArea.innerHTML; logDivArea.dataset.lastLog = ev.time.toString(); }
                 return;
             }
             
@@ -537,169 +508,158 @@
             else if(ev.type === 'silence') actionText = "tung Cấm Thuật khóa mõm toàn phòng 🤫";
             else if(ev.type === 'blackout') actionText = "tắt điện che mù mắt 🌑";
             else if(ev.type === 'mind_control') actionText = `thao túng tâm lý bắt <span style='color:var(--danger)'>${ev.target}</span> chọn sai 😵`;
+            else if(ev.type === 'thanos_snap') actionText = "💥 BÚNG TAY VÔ CỰC chia đôi điểm 50% người chơi! 💥";
+            else if(ev.type === 'crowd_festival') actionText = "🎉 MỞ ĐẠI HỘI CỔ VŨ (+2 Thẻ)!";
+            else if(ev.type === 'bounty_claimed') actionText = `🎯 ĐÃ LẤY MẠNG ${ev.target} và ẵm 200đ tiền thưởng!`;
             else if(ev.type === 'log') actionText = ev.action; 
 
             let logLine = `<div style="margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:5px;">[${t}] <b><span style='color:#fff'>${ev.by}</span></b>: <span style='color:var(--warning)'>${actionText}</span></div>`;
-            if(logDivArea.dataset.lastLog !== ev.time.toString()) {
-                logDivArea.innerHTML = logLine + logDivArea.innerHTML;
-                logDivArea.dataset.lastLog = ev.time.toString();
-            }
+            if(logDivArea.dataset.lastLog !== ev.time.toString()) { logDivArea.innerHTML = logLine + logDivArea.innerHTML; logDivArea.dataset.lastLog = ev.time.toString(); }
         }
 
         if(!isGameActive || isGameOver) return;
 
-        // XỬ LÝ SỰ KIỆN TOÀN SERVER
-        if(ev.type === 'global_meteor_shower') {
-            skillCount++; updateStats();
-            showToast("☄️ MƯA SAO BĂNG! Toàn server nhận miễn phí +1 Thẻ Kỹ Năng!", "success");
-        }
+        // XỬ LÝ SỰ KIỆN GLOBAL
+        if(ev.type === 'global_meteor_shower') { skillCount++; updateStats(); showToast("☄️ MƯA SAO BĂNG! Toàn server nhận miễn phí +1 Thẻ!", "success"); }
         if(ev.type === 'global_economic_crisis') {
-            if(isAwakened) { showToast("⚡ Thức Tỉnh giúp bạn miễn nhiễm Khủng Hoảng Kinh Tế!", "success"); return; }
+            if(isAwakened) { showToast("⚡ Thức Tỉnh giúp bạn miễn nhiễm Khủng Hoảng!", "success"); return; }
             let top1 = currentLeaderboard.length > 0 ? currentLeaderboard[0].name : null;
-            if(top1 === playerName) {
-                score = Math.floor(score / 2); updateStats();
-                showToast("📉 KHỦNG HOẢNG KINH TẾ! Bạn đang Top 1 nên bị chia đôi điểm!", "danger");
-            } else {
-                showToast("📉 KHỦNG HOẢNG KINH TẾ! Top 1 vừa bị chia đôi tài sản!", "warning");
-            }
+            if(top1 === playerName) { score = Math.floor(score / 2); updateStats(); showToast("📉 KHỦNG HOẢNG KINH TẾ! Bạn đang Top 1 nên bị chia đôi điểm!", "danger"); } 
+            else { showToast("📉 KHỦNG HOẢNG KINH TẾ! Top 1 vừa bị chia đôi tài sản!", "warning"); }
         }
         if(ev.type === 'global_earth_hour') {
-            if(isAwakened) { showToast("⚡ Thức Tỉnh thắp sáng màn đêm! Miễn nhiễm Giờ Trái Đất!", "success"); return; }
+            if(isAwakened) return;
             let blackUi = document.createElement('div'); blackUi.id = 'global-blackout';
             blackUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;display:flex;align-items:center;justify-content:center;color:white;font-size:30px;font-weight:bold;";
-            blackUi.innerHTML = `🌍 GIỜ TRÁI ĐẤT (5s) 🌍`;
-            document.body.appendChild(blackUi);
+            blackUi.innerHTML = `🌍 GIỜ TRÁI ĐẤT (5s) 🌍`; document.body.appendChild(blackUi);
             setTimeout(() => { if(document.getElementById('global-blackout')) document.getElementById('global-blackout').remove(); }, 5000);
         }
         if(ev.type === 'global_u_turn') {
-            if(isAwakened) { showToast("⚡ Thức Tỉnh giúp bạn miễn nhiễm Cú Quay Xe!", "success"); return; }
+            if(isAwakened) return;
             if(currentLeaderboard.length > 1) {
-                let top = currentLeaderboard[0];
-                let bot = currentLeaderboard[currentLeaderboard.length - 1];
+                let top = currentLeaderboard[0], bot = currentLeaderboard[currentLeaderboard.length - 1];
                 if(playerName === top.name) { score = bot.score; updateStats(); showToast("🌪️ QUAY XE! Điểm của bạn bị tráo với Bét bảng!", "danger"); }
-                else if(playerName === bot.name) { score = top.score; updateStats(); showToast("🌪️ QUAY XE! Phép màu! Bạn nhận toàn bộ điểm của Top 1!", "success"); }
-                else { showToast("🌪️ QUAY XE TOÀN SERVER! Top 1 và Bét bảng vừa đổi chỗ!", "warning"); }
+                else if(playerName === bot.name) { score = top.score; updateStats(); showToast("🌪️ QUAY XE! Phép màu! Bạn nhận điểm của Top 1!", "success"); }
             }
         }
-
-        let negativeEvents = ['freeze', 'red_card', 'curse', 'earthquake', 'shrink', 'time_steal', 'steal', 'aoe_steal', 'var_check', 'swap', 'black_hole', 'spooky_sound', 'silence', 'blackout', 'mind_control'];
-        
-        // KIỂM TRA HÓA CHAO (MIỄN NHIỄM)
-        if (isAwakened && negativeEvents.includes(ev.type) && ev.by !== playerName) {
-            showToast(`⚡ HÓA CHAO: Bạn đã bật ngược bùa chú của <b>${ev.by}</b>!`, "success");
-            return;
+        if(ev.type === 'crowd_festival') {
+            skillCount += 2; updateStats();
+            showToast("🎉 ĐẠI HỘI CỔ VŨ ĐÃ MỞ! Toàn server nhận +2 Thẻ Kỹ Năng!", "success");
+        }
+        if(ev.type === 'thanos_snap') {
+            if(isAwakened) { showToast("⚡ Bạn miễn nhiễm với cú Búng Tay Vô Cực!", "success"); return; }
+            if(Math.random() < 0.5) {
+                score = Math.floor(score / 2); statHitsTaken++; updateStats();
+                showToast("💥 BÚNG TAY VÔ CỰC! Bạn đã bị Thanos chọn trúng. Mất 50% điểm!", "danger");
+            } else { showToast("💥 BÚNG TAY VÔ CỰC! Bạn may mắn sống sót!", "success"); }
         }
 
-        // KIỂM TRA NỘI TẠI PHÚC KHÍ
+        let negativeEvents = ['freeze', 'red_card', 'curse', 'earthquake', 'shrink', 'time_steal', 'steal', 'aoe_steal', 'var_check', 'swap', 'black_hole', 'spooky_sound', 'silence', 'blackout', 'mind_control', 'thanos_snap'];
+        
+        // KIỂM TRA HÓA CHAO
+        if (isAwakened && negativeEvents.includes(ev.type) && ev.by !== playerName) {
+            showToast(`⚡ HÓA CHAO: Bật ngược bùa chú của <b>${ev.by}</b>!`, "success"); return;
+        }
+
+        // KIỂM TRA NỘI TẠI NÉ TRÁNH
         if (negativeEvents.includes(ev.type) && ev.by !== playerName) {
             if (!ev.target || ev.target === playerName) { 
+                statHitsTaken++; // Tính là bị target 
                 if (myPassive === 1 && Math.random() < 0.30) {
-                    pushLocalLog(`đã né tránh thành công kỹ năng của ${ev.by} nhờ Phúc Khí 🍀`);
-                    showToast(`🍀 PHÚC KHÍ: Bạn vừa NÉ TRÁNH kỹ năng của <b>${ev.by}</b>!`, "success");
-                    return; 
+                    statPassiveTriggers++; statHitsTaken--; // Bỏ hit
+                    pushLocalLog(`né tránh thành công bùa chú nhờ Phúc Khí 🍀`);
+                    showToast(`🍀 PHÚC KHÍ: NÉ TRÁNH chiêu của <b>${ev.by}</b>!`, "success"); return; 
                 }
             }
         }
 
-        // KIỂM TRA NỘI TẠI GIÁP GAI
+        // KIỂM TRA GIÁP GAI
         let targetEvents = ['red_card', 'time_steal', 'steal', 'var_check', 'swap', 'mind_control'];
         if (targetEvents.includes(ev.type) && ev.target === playerName && ev.by !== playerName) {
             if (myPassive === 0) database.ref('room_events').set({type: 'thorns', by: playerName, target: ev.by, time: Date.now()});
         }
         if (ev.type === 'thorns' && ev.target === playerName) {
-            score = Math.max(0, score - 50); updateStats();
+            score = Math.max(0, score - 50); statHitsTaken++; updateStats();
             showToast(`🦔 BỊ PHẢN ĐÒN! <b>${ev.by}</b> có Giáp Gai! Bạn mất 50 điểm!`, "danger");
         }
 
+        // THỰC THI SỰ KIỆN HẮC ÁM
         if(ev.type === 'freeze' && ev.by !== playerName) {
             isInputPaused = true;
             let freezeUi = document.createElement('div'); freezeUi.id = 'global-freeze';
-            freezeUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,180,255,0.85);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:45px;color:white;font-weight:bold;text-shadow: 0 5px 15px rgba(0,0,0,0.5);";
-            freezeUi.innerHTML = `❄️ BẠN BỊ ĐÓNG BĂNG 10s ❄️<br><span style="font-size:22px;margin-top:15px;background:#000;padding:5px 15px;border-radius:10px;">Thủ phạm: ${ev.by}</span>`;
-            document.body.appendChild(freezeUi);
+            freezeUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,180,255,0.85);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:45px;color:white;font-weight:bold;";
+            freezeUi.innerHTML = `❄️ ĐÓNG BĂNG 10s ❄️`; document.body.appendChild(freezeUi);
             setTimeout(() => { if(document.getElementById('global-freeze')) document.getElementById('global-freeze').remove(); isInputPaused = false; }, 10000);
         }
 
         if(ev.type === 'red_card' && ev.target === playerName) {
             isInputPaused = true;
             let freezeUi = document.createElement('div'); freezeUi.id = 'global-freeze';
-            freezeUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(229,57,53,0.9);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:45px;color:white;font-weight:bold;text-shadow: 0 5px 15px rgba(0,0,0,0.5);";
-            freezeUi.innerHTML = `🟥 BẠN ĐÃ ĂN THẺ ĐỎ (20s) 🟥<br><span style="font-size:22px;margin-top:15px;background:#000;padding:5px 15px;border-radius:10px;">Trọng tài: ${ev.by}</span>`;
-            document.body.appendChild(freezeUi);
+            freezeUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(229,57,53,0.9);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:45px;color:white;font-weight:bold;";
+            freezeUi.innerHTML = `🟥 THẺ ĐỎ (20s) 🟥`; document.body.appendChild(freezeUi);
             setTimeout(() => { if(document.getElementById('global-freeze')) document.getElementById('global-freeze').remove(); isInputPaused = false; }, 20000);
         }
 
         if(ev.type === 'blackout' && ev.by !== playerName) {
             let blackUi = document.createElement('div'); blackUi.id = 'global-blackout';
             blackUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;display:flex;align-items:center;justify-content:center;color:white;font-size:30px;font-weight:bold;";
-            blackUi.innerHTML = `🌑 BỊ TẮT ĐÈN BỞI ${ev.by.toUpperCase()} 🌑`;
-            document.body.appendChild(blackUi); 
-            showToast(`🌑 <b>${ev.by}</b> đã tung chiêu Tắt Đèn! Lạc trôi trong bóng tối 10s nhé!`, "danger");
+            blackUi.innerHTML = `🌑 TẮT ĐÈN 🌑`; document.body.appendChild(blackUi); 
             setTimeout(() => { if(document.getElementById('global-blackout')) document.getElementById('global-blackout').remove(); }, 10000);
         }
 
         if(ev.type === 'silence' && ev.by !== playerName) {
-            isSilenced = true; showToast(`🤫 BỊ CẤM THUẬT: <b>${ev.by}</b> khóa thẻ của bạn 30s!`, "danger");
-            setTimeout(() => { isSilenced = false; showToast("🔓 Đã hết tác dụng Cấm Thuật!", "success"); }, 30000);
+            isSilenced = true; showToast(`🤫 BỊ CẤM THUẬT rút thẻ 30s!`, "danger");
+            setTimeout(() => { isSilenced = false; }, 30000);
         }
 
         if(ev.type === 'curse' && ev.by !== playerName) {
-            let mainArea = document.getElementById('game-main-area'); mainArea.classList.add('cursed-vision');
-            showToast(`👁️ TRÚNG BÙA ẢO GIÁC từ <b>${ev.by}</b>!`, "danger");
-            setTimeout(() => { mainArea.classList.remove('cursed-vision'); }, 15000);
+            document.getElementById('game-main-area').classList.add('cursed-vision');
+            setTimeout(() => { document.getElementById('game-main-area').classList.remove('cursed-vision'); }, 15000);
         }
 
         if(ev.type === 'earthquake' && ev.by !== playerName) {
-            let mainArea = document.getElementById('game-main-area'); mainArea.classList.add('shaking-vision');
-            showToast(`🌋 ĐỘNG ĐẤT do <b>${ev.by}</b> kích hoạt!`, "danger");
-            setTimeout(() => { mainArea.classList.remove('shaking-vision'); }, 10000);
+            document.getElementById('game-main-area').classList.add('shaking-vision');
+            setTimeout(() => { document.getElementById('game-main-area').classList.remove('shaking-vision'); }, 10000);
         }
 
         if(ev.type === 'shrink' && ev.by !== playerName) {
-            let mainArea = document.getElementById('game-main-area'); mainArea.classList.add('shrunk-vision');
-            showToast(`🍄 BÙA TEO NHỎ từ <b>${ev.by}</b>!`, "danger");
-            setTimeout(() => { mainArea.classList.remove('shrunk-vision'); }, 15000);
+            document.getElementById('game-main-area').classList.add('shrunk-vision');
+            setTimeout(() => { document.getElementById('game-main-area').classList.remove('shrunk-vision'); }, 15000);
         }
 
         if(ev.type === 'time_steal' && ev.target === playerName) {
-            elapsedTime += 60; updateStats(); showToast(`⏳ <b>${ev.by}</b> đã ném cho bạn 60s thời gian phạt!`, "danger");
+            elapsedTime += 60; updateStats(); showToast(`⏳ <b>${ev.by}</b> ném cho bạn 60s phạt!`, "danger");
         }
 
         if(ev.type === 'steal' && ev.target === playerName) {
-            let amt = ev.amount || 100;
-            score = Math.max(0, score - amt); updateStats();
-            showToast(`🚨 MẤT TRỘM! <b>${ev.by}</b> cướp mất ${amt} điểm của bạn!`, "danger");
+            let amt = ev.amount || 100; score = Math.max(0, score - amt); updateStats();
+            showToast(`🚨 Bị <b>${ev.by}</b> cướp mất ${amt}đ!`, "danger");
         }
         
         if(ev.type === 'aoe_steal' && ev.by !== playerName) {
-            let amt = ev.amount || 50;
-            score = Math.max(0, score - amt); updateStats();
-            showToast(`🦇 BỊ HÚT MÁU! <b>${ev.by}</b> hút ${amt} điểm của bạn!`, "danger");
+            let amt = ev.amount || 50; score = Math.max(0, score - amt); updateStats();
+            showToast(`🦇 BỊ HÚT MÁU bởi <b>${ev.by}</b>!`, "danger");
         }
 
         if(ev.type === 'var_check' && ev.target === playerName) {
-            score = Math.max(0, score - 150); updateStats(); showToast(`📺 CÔNG NGHỆ VAR: Trọng tài <b>${ev.by}</b> tước 150đ của bạn!`, "danger");
+            score = Math.max(0, score - 150); updateStats(); showToast(`📺 VAR: Bị tước 150đ!`, "danger");
         }
 
         if(ev.type === 'swap' && ev.target === playerName) {
-            score = ev.targetNewScore; updateStats(); showToast(`🔄 HOÁN ĐỔI: <b>${ev.by}</b> tráo điểm với bạn! Điểm mới: ${score}`, "warning");
+            score = ev.targetNewScore; updateStats(); showToast(`🔄 <b>${ev.by}</b> tráo điểm với bạn!`, "warning");
         }
 
         if(ev.type === 'black_hole' && ev.by !== playerName) {
-            currentStreak = 0; updateStats(); showToast(`🕳️ HỐ ĐEN TỪ <b>${ev.by}</b>! Chuỗi Combo bị vỡ vụn!`, "danger");
+            currentStreak = 0; updateStats(); showToast(`🕳️ HỐ ĐEN! Chuỗi bị vỡ!`, "danger");
         }
 
         if(ev.type === 'robin_hood') {
-            if (playerName === ev.top1) {
-                score = ev.bot1Score; updateStats(); showToast(`🏹 ROBIN HOOD! Bạn bị tước đoạt điểm san sẻ cho người nghèo!`, "danger");
-            } else if (playerName === ev.bot1) {
-                score = ev.top1Score; updateStats(); showToast(`🏹 ROBIN HOOD! Bạn nhận được toàn bộ điểm của Top 1!`, "success");
-            }
+            if (playerName === ev.top1) { score = ev.bot1Score; updateStats(); showToast(`🏹 Bị tước điểm Top 1 san sẻ cho kẻ nghèo!`, "danger"); } 
+            else if (playerName === ev.bot1) { score = ev.top1Score; updateStats(); showToast(`🏹 Nhận được toàn bộ điểm của Top 1!`, "success"); }
         }
 
         if(ev.type === 'spooky_sound' && ev.by !== playerName) {
             let audio = new Audio('https://www.myinstants.com/media/sounds/vine-boom.mp3'); audio.play().catch(e=>{});
-            showToast(`🔊 MA ÂM TROLL từ <b>${ev.by}</b>!`, "warning");
         }
         
         if(ev.type === 'mind_control' && ev.target === playerName) {
@@ -709,38 +669,32 @@
                     let correctIdx = p1Data[currentP1Index].ans;
                     let wrongIndices = [0,1,2,3].filter(i => i !== correctIdx);
                     let pickedWrong = wrongIndices[Math.floor(Math.random() * wrongIndices.length)];
-                    
                     allBtns.forEach(b => b.classList.add('locked'));
                     allBtns[pickedWrong].classList.add('selected-wrong');
                     allBtns[correctIdx].classList.add('selected-correct');
-                    
                     tasksCompleted++; currentStreak = 0; updateStats();
-                    showToast(`😵 BỊ THAO TÚNG! <b>${ev.by}</b> đã điều khiển tay bạn chọn đáp án sai!`, "danger");
-                    triggerRandomPenalty("Bị thao túng tâm lý, tự động nộp đáp án sai!", () => { currentP1Index++; loadP1Question(); });
+                    showToast(`😵 BỊ THAO TÚNG! Tự động chọn sai!`, "danger");
+                    triggerRandomPenalty("", () => { currentP1Index++; loadP1Question(); });
                 }
             } else {
-                score = Math.max(0, score - 50); updateStats();
-                showToast(`😵 <b>${ev.by}</b> cố thao túng bạn nhưng bạn đang không làm trắc nghiệm. Bị vấp té trừ 50đ!`, "danger");
+                score = Math.max(0, score - 50); updateStats(); showToast(`😵 Bị thao túng vấp té trừ 50đ!`, "danger");
             }
         }
     });
 
     function joinLobby() {
         let rawName = document.getElementById("playerName").value.trim();
-        if(!rawName) return alert("Nhập mã định danh trước khi lên tàu!");
-        
+        if(!rawName) return alert("Nhập tên trước khi lên tàu!");
         if(rawName.toLowerCase() === 'idori') {
-            let pass = prompt("HỆ THỐNG BẢO MẬT: Nhập mật khẩu quyền năng của Lớp trưởng Idori:");
-            if(pass === "DLTV15halam@drid") {
-                isVIP = true;
-                alert("Đã xác thực Lớp trưởng Idori! Kích hoạt chế độ Thần Thánh!");
-            } else { return alert("Sai mật khẩu! Ngươi không phải Idori thật!"); }
+            let pass = prompt("Nhập mật khẩu Lớp trưởng Idori:");
+            if(pass === "DLTV15halam@drid") { isVIP = true; alert("Kích hoạt chế độ Thần Thánh!"); } 
+            else return alert("Sai pass!");
         }
         
         database.ref('room_players').once('value').then((snapshot) => {
             let nameExists = false;
             snapshot.forEach((child) => { if(child.val().name.toLowerCase() === rawName.toLowerCase()) nameExists = true; });
-            if(nameExists && !isVIP) return openModal("⛔ BÁO ĐỘNG TRÙNG TÊN!", "Cái tên <b>" + rawName + "</b> này đã có người đăng ký. Hãy chọn tên khác!", "alert");
+            if(nameExists && !isVIP) return openModal("⛔ TRÙNG TÊN!", "Tên này đã có người đăng ký!", "alert");
 
             playerName = rawName;
             if(!isMusicPlaying) toggleMusic(); 
@@ -748,17 +702,6 @@
             document.getElementById('waiting-section').style.display = 'block';
             database.ref('room_players').push({ name: playerName });
         });
-    }
-
-    function triggerVIP() {
-        if(isVIP) { openModal("👑 HỆ THỐNG", "Bạn đã là Admin Thần Thánh rồi!", "alert"); return; }
-        let pass = prompt("HỆ THỐNG BẢO MẬT: Nhập mật khẩu quyền năng của Lớp trưởng Idori:");
-        if(pass === "DLTV15halam@drid") {
-            isVIP = true; skillCount = 9999;
-            document.getElementById('player-display-name').innerText = "👑 ADMIN: " + playerName;
-            document.getElementById('player-display-name').style.color = "var(--danger)";
-            updateStats(); alert("Đã xác thực Lớp trưởng Idori! Vô hạn thẻ, miễn nhiễm sát thương!");
-        } else { alert("Sai mật khẩu! Ngươi không phải Idori thật!"); }
     }
 
     function unlockAdmin() {
@@ -769,19 +712,35 @@
 
     function adminStartGame() {
         database.ref('room_state').set('playing');
-        document.getElementById('admin-section').style.display = 'none'; document.getElementById('admin-live-section').style.display = 'block';
+        database.ref('game_meta').set({ crowdFund: 0, thanosUsed: false, bountyTarget: "" });
+        document.getElementById('admin-section').style.display = 'none'; 
+        document.getElementById('admin-live-section').style.display = 'block';
         
-        // ADMIN KÍCH HOẠT SỰ KIỆN SERVER MỖI 30 GIÂY
+        // ADMIN LOOP 
         setInterval(() => {
             if(document.getElementById('admin-live-section').style.display !== 'block') return;
-            let events = ['meteor_shower', 'economic_crisis', 'earth_hour', 'u_turn'];
-            let rndEv = events[Math.floor(Math.random() * events.length)];
-            database.ref('room_events').set({type: 'global_' + rndEv, by: 'HỆ THỐNG', time: Date.now()});
-        }, 30000);
+            // Global Events
+            if (Math.random() < 0.05) { // roughly every 20-30s
+                let events = ['meteor_shower', 'economic_crisis', 'earth_hour', 'u_turn'];
+                let rndEv = events[Math.floor(Math.random() * events.length)];
+                database.ref('room_events').set({type: 'global_' + rndEv, by: 'HỆ THỐNG', time: Date.now()});
+            }
+            // Bounty logic
+            if(currentLeaderboard.length > 0) {
+                let currentTop1 = currentLeaderboard[0].name;
+                if(currentTop1 === adminTop1Name) {
+                    adminTop1Time++;
+                    if(adminTop1Time === 15) { // 15 seconds maintaining Top 1
+                        database.ref('game_meta/bountyTarget').set(currentTop1);
+                        database.ref('room_events').set({type: 'log', by: 'HỆ THỐNG', action: `phát LỆNH TRUY NÃ 🎯 ${currentTop1}! Gõ đầu Top 1 nhận +200đ!`, time: Date.now()});
+                    }
+                } else { adminTop1Name = currentTop1; adminTop1Time = 0; }
+            }
+        }, 1000);
     }
 
-    function adminEndGame() { if(confirm("🛑 Bạn có CHẮC CHẮN muốn kết thúc trò chơi ngay bây giờ?")) database.ref('room_state').set('ended'); }
-    function adminResetRoom() { if(confirm("XÓA SẠCH MỌI THỨ VÀ QUAY VỀ 0?")) { database.ref('room_state').set('waiting'); database.ref('room_players').remove(); database.ref('bang_xep_hang').remove(); database.ref('room_events').remove(); location.reload(); } }
+    function adminEndGame() { if(confirm("🛑 KẾT THÚC TRẬN?")) database.ref('room_state').set('ended'); }
+    function adminResetRoom() { if(confirm("XÓA SẠCH MỌI THỨ?")) { database.ref('room_state').set('waiting'); database.ref('room_players').remove(); database.ref('bang_xep_hang').remove(); database.ref('room_events').remove(); database.ref('game_meta').remove(); location.reload(); } }
     
     function shuffleArray(array) { let shuffled = [...array]; for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; } return shuffled; }
 
@@ -804,16 +763,14 @@
         
         myPassive = Math.floor(Math.random() * 10);
         let pInfo = passivesInfo[myPassive];
-        let pBox = document.getElementById('passive-display');
-        pBox.innerText = `✨ NỘI TẠI: ${pInfo.icon} ${pInfo.name}`;
-        
+        document.getElementById('passive-display').innerText = `✨ NỘI TẠI: ${pInfo.icon} ${pInfo.name}`;
         if(myPassive === 9) skillCount += 2;
 
         deepShuffleData();
         isGameActive = true; 
 
         myPlayerRef = database.ref('bang_xep_hang').push();
-        myPlayerRef.set({ name: playerName, score: score, time: elapsedTime, status: "Đang chiến đấu..." });
+        updateFirebaseData(); // Init data
 
         loadP1Question(); 
         const grid = document.getElementById('puzzle-grid');
@@ -831,71 +788,57 @@
 
     function showPassiveDesc() {
         if(myPassive === -1) return;
-        let pInfo = passivesInfo[myPassive];
-        openModal(`${pInfo.icon} NỘI TẠI: ${pInfo.name}`, pInfo.desc, "alert");
+        let pInfo = passivesInfo[myPassive]; openModal(`${pInfo.icon} NỘI TẠI: ${pInfo.name}`, pInfo.desc, "alert");
     }
 
     function pushLocalLog(actionStr) { database.ref('room_events').set({type: 'log', by: playerName, action: actionStr, time: Date.now()}); }
     function reduceTime(sec) { elapsedTime = Math.max(0, elapsedTime - sec); }
 
-    // --- HỆ THỐNG NỘI TẠI NỘ KHÍ (RAGE) ---
     function addRage(amount) {
-        if(isAwakened) return;
-        rage = Math.min(100, rage + amount);
-        updateRageUI();
-    }
-
-    function updateRageUI() {
-        let rBar = document.getElementById('rage-bar');
-        let rText = document.getElementById('rage-text');
-        let rBtn = document.getElementById('awaken-btn');
+        if(isAwakened) return; rage = Math.min(100, rage + amount);
+        let rBar = document.getElementById('rage-bar'), rText = document.getElementById('rage-text'), rBtn = document.getElementById('awaken-btn');
         if(rBar && rText && rBtn) {
-            rBar.style.width = rage + '%';
-            rText.innerText = rage + '%';
+            rBar.style.width = rage + '%'; rText.innerText = rage + '%';
             if(rage >= 100 && !isAwakened) {
-                rBtn.style.background = 'linear-gradient(45deg, #ffeb3b, #ff9800)';
-                rBtn.style.color = '#000';
-                rBtn.style.pointerEvents = 'auto';
-                rBtn.style.boxShadow = '0 0 15px #ffeb3b';
-                rBtn.innerText = "⚡ BẤM ĐỂ THỨC TỈNH ⚡";
+                rBtn.style.background = 'linear-gradient(45deg, #ffeb3b, #ff9800)'; rBtn.style.color = '#000';
+                rBtn.style.pointerEvents = 'auto'; rBtn.style.boxShadow = '0 0 15px #ffeb3b'; rBtn.innerText = "⚡ BẤM ĐỂ THỨC TỈNH ⚡";
             } else if (isAwakened) {
-                rBtn.style.background = '#ff9800';
-                rBtn.style.color = '#fff';
-                rBtn.innerText = "🔥 ĐANG HÓA CHAO 🔥";
+                rBtn.style.background = '#ff9800'; rBtn.style.color = '#fff'; rBtn.innerText = "🔥 ĐANG HÓA CHAO 🔥";
             } else {
-                rBtn.style.background = '#ccc';
-                rBtn.style.color = '#666';
-                rBtn.style.pointerEvents = 'none';
-                rBtn.style.boxShadow = 'none';
-                rBtn.innerText = "⚡ THỨC TỈNH ⚡";
+                rBtn.style.background = '#ccc'; rBtn.style.color = '#666'; rBtn.style.pointerEvents = 'none'; rBtn.style.boxShadow = 'none'; rBtn.innerText = "⚡ THỨC TỈNH ⚡";
             }
         }
     }
 
     function triggerAwaken() {
         if(rage < 100 || isAwakened) return;
-        rage = 0; isAwakened = true;
-        elapsedTime = Math.floor(elapsedTime / 2); // Giảm nửa thời gian
-        updateStats(); updateRageUI();
-        
-        pushLocalLog("đã HÓA CHAO thức tỉnh ⚡");
-        showToast("⚡ ĐÃ THỨC TỈNH! Miễn nhiễm bùa chú & Nhân 3 Điểm trong 20s!", "success");
+        rage = 0; isAwakened = true; elapsedTime = Math.floor(elapsedTime / 2); 
+        updateStats(); addRage(0); 
+        pushLocalLog("đã HÓA CHAO thức tỉnh ⚡"); showToast("⚡ ĐÃ THỨC TỈNH! Miễn nhiễm bùa chú & Nhân 3 Điểm trong 20s!", "success");
         document.body.classList.add('awakened-mode');
-        
-        setTimeout(() => { 
-            isAwakened = false; 
-            document.body.classList.remove('awakened-mode'); 
-            updateRageUI();
-            showToast("⚠️ Đã hết thời gian Thức Tỉnh!", "warning"); 
-        }, 20000);
+        setTimeout(() => { isAwakened = false; document.body.classList.remove('awakened-mode'); addRage(0); showToast("⚠️ Hết thời gian Thức Tỉnh!", "warning"); }, 20000);
     }
 
-    // --- CỬA HÀNG CHỢ ĐEN ---
+    function contributeFund() {
+        if(score < 50) return showToast("Không đủ 50 điểm!", "danger");
+        score -= 50; updateStats();
+        database.ref('game_meta/crowdFund').once('value', snap => {
+            let next = (snap.val() || 0) + 50;
+            database.ref('game_meta/crowdFund').set(next);
+            if(next >= 1000) {
+                database.ref('room_events').set({type: 'crowd_festival', by: playerName, time: Date.now()});
+                database.ref('game_meta/crowdFund').set(0);
+            } else { pushLocalLog(`đã góp 50đ vào Quỹ Cổ Vũ 🛡️`); }
+        });
+    }
+
     function openBlackMarket() {
         if(isInputPaused) return;
+        let gachaBtn = isThanosUsed ? `<button class="btn" style="background:#555;color:#aaa;" disabled>🎰 Rương Vô Cực (Đã có người mở)</button>` : `<button class="btn" style="background:linear-gradient(45deg, #9c27b0, #ffeb3b);color:#000;border:2px solid #000;" onclick="buyItem('gacha', 50)">🎰 Mở Rương Vô Cực (50đ)</button>`;
         let html = `
             <div style="display:grid; grid-template-columns: 1fr; gap:10px;">
-                <button class="btn" style="background:#607d8b;color:#fff;" onclick="buyItem('random', 100)">🎲 Mua 1 Thẻ Ngẫu Nhiên (100đ)</button>
+                ${gachaBtn}
+                <button class="btn" style="background:#607d8b;color:#fff;" onclick="buyItem('random', 100)">🎲 1 Thẻ Ngẫu Nhiên (100đ)</button>
                 <button class="btn" style="background:#e91e63;color:#fff;" onclick="buyItem('mind_control', 200)">😵 Thẻ Thao Túng Tâm Lý (200đ)</button>
                 <button class="btn" style="background:#d32f2f;color:#fff;" onclick="buyItem('red_card', 250)">🟥 Thẻ Đỏ 20s (250đ)</button>
                 <button class="btn" style="background:#000;color:#fff;border:1px solid #fff;" onclick="buyItem('blackout', 300)">🌑 Thẻ Tắt Đèn (300đ)</button>
@@ -907,66 +850,47 @@
     }
 
     function buyItem(item, cost) {
-        if(score < cost) return showToast("❌ Nghèo mà đòi mua hàng VIP? Đi cày điểm tiếp đi!", "danger");
+        if(score < cost) return showToast("❌ Không đủ điểm mua hàng!", "danger");
         score -= cost; updateStats(); closeModal();
-        pushLocalLog("đã nạp tiền mua đồ trong Chợ Đen 🛒");
+        pushLocalLog("nạp tiền mở Chợ Đen 🛒");
         
-        if(item === 'random') { 
-            skillCount++; updateStats(); 
-            showToast("🛒 Đã mua thành công 1 Thẻ Ngẫu Nhiên!", "success"); 
+        if(item === 'gacha') {
+            if(Math.random() < 0.20 && !isThanosUsed) { // 20% Jackpot
+                database.ref('game_meta/thanosUsed').set(true);
+                database.ref('room_events').set({type: 'thanos_snap', by: playerName, time: Date.now()});
+            } else {
+                score -= 50; updateStats(); showToast("😂 Xui ghê! Bốc nhầm Rương Tấu Hài. Phạt thêm 50đ!", "warning");
+            }
         }
+        else if(item === 'random') { skillCount++; updateStats(); showToast("🛒 Mua thành công 1 Thẻ Ngẫu Nhiên!", "success"); }
         else if(item === 'mind_control') { executeSkill(25); }
         else if(item === 'red_card') { executeSkill(18); }
         else if(item === 'blackout') { executeSkill(24); }
         else if(item === 'cr7') { executeSkill(23); }
     }
 
+    function checkBountyTarget(targetName) {
+        if(targetName === currentBountyTarget && targetName !== "") {
+            score += 200; updateStats();
+            database.ref('game_meta/bountyTarget').set(""); 
+            database.ref('room_events').set({type: 'bounty_claimed', by: playerName, target: targetName, time: Date.now()});
+            openModal("🎯 ĐÃ LẤY TIỀN THƯỞNG", `Tiêu diệt kẻ bị truy nã ${targetName}. Nhận thưởng +200đ!`, "alert");
+        }
+    }
+
     function drawSkill() {
         if(isInputPaused) return;
-        if(isSilenced && !isVIP) { showToast("🤫 BẠN ĐANG BỊ CẤM THUẬT! Không thể xài thẻ lúc này.", "danger"); return; }
-        
+        if(isSilenced && !isVIP) { showToast("🤫 BẠN ĐANG BỊ CẤM THUẬT!", "danger"); return; }
         if(isVIP) {
-            let html = `
-                <button class="btn btn-primary" style="font-size:12px;padding:8px;" onclick="executeSkill(0)">x2 Điểm</button>
-                <button class="btn btn-success" style="font-size:12px;padding:8px;" onclick="executeSkill(1)">-60s thời gian</button>
-                <button class="btn btn-info" style="font-size:12px;padding:8px;" onclick="executeSkill(2)">Bão Tuyết</button>
-                <button class="btn btn-danger" style="font-size:12px;padding:8px;" onclick="executeSkill(3)">Cướp 100đ Top 1</button>
-                <button class="btn btn-warning" style="font-size:12px;padding:8px;color:#000" onclick="executeSkill(4)">Leak Đáp Án</button>
-                <button class="btn" style="background:#9c27b0;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(5)">Ảo Giác</button>
-                <button class="btn" style="background:#e91e63;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(6)">Tráo Chỉ Định</button>
-                <button class="btn" style="background:#607d8b;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(7)">Tráo Random</button>
-                <button class="btn" style="background:#00bcd4;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(8)">Thẻ 50/50</button>
-                <button class="btn" style="background:#795548;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(9)">Đạo tặc tgian</button>
-                <button class="btn" style="background:#ff5722;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(10)">Động Đất</button>
-                <button class="btn" style="background:#8bc34a;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(11)">Nấm Lùn</button>
-                <button class="btn btn-dark" style="font-size:12px;padding:8px;" onclick="executeSkill(12)">Hố Đen</button>
-                <button class="btn" style="background:#ffeb3b;color:#000;font-size:12px;padding:8px;" onclick="executeSkill(13)">Robin Hood</button>
-                <button class="btn" style="background:#fff;color:#000;border:2px solid #000;font-size:12px;padding:8px;" onclick="executeSkill(14)">Thanh Tẩy</button>
-                <button class="btn" style="background:#3f51b5;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(15)">Cân Đẩu Vân</button>
-                <button class="btn" style="background:#f44336;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(16)">Ma Âm Troll</button>
-                <button class="btn" style="background:#d4af37;color:#000;font-size:12px;padding:8px;" onclick="executeSkill(17)">Hattrick (+300đ)</button>
-                <button class="btn" style="background:#d32f2f;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(18)">Thẻ Đỏ 20s</button>
-                <button class="btn" style="background:#2196f3;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(19)">Check VAR Top 1</button>
-                <button class="btn" style="background:#4caf50;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(20)">Thay Người (+3 thẻ)</button>
-                <button class="btn" style="background:#673ab7;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(21)">Hút Máu Server</button>
-                <button class="btn" style="background:#000;color:#f44336;border:1px solid #f44336;font-size:12px;padding:8px;" onclick="executeSkill(22)">Cấm Thuật 30s</button>
-                <button class="btn" style="background:#00e5ff;color:#000;font-size:12px;padding:8px;" onclick="executeSkill(23)">Siêu Phẩm 90+ (CR7)</button>
-                <button class="btn" style="background:#000;color:#fff;border:1px solid #fff;font-size:12px;padding:8px;" onclick="executeSkill(24)">Tắt Đèn</button>
-                <button class="btn" style="background:#e91e63;color:#fff;border:2px solid #000;font-size:12px;padding:8px;" onclick="executeSkill(25)">Thao Túng Tâm Lý</button>
-            `;
-            openModal("👑 KHO VŨ KHÍ CỦA IDORI", `<div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height: 55vh; overflow-y: auto; padding-right: 5px;">${html}</div>`, "alert");
-            return;
+            let html = `<button class="btn btn-primary" style="font-size:12px;padding:8px;" onclick="executeSkill(0)">x2 Điểm</button><button class="btn btn-success" style="font-size:12px;padding:8px;" onclick="executeSkill(1)">-60s thời gian</button><button class="btn btn-info" style="font-size:12px;padding:8px;" onclick="executeSkill(2)">Bão Tuyết</button><button class="btn btn-danger" style="font-size:12px;padding:8px;" onclick="executeSkill(3)">Cướp 100đ Top 1</button><button class="btn btn-warning" style="font-size:12px;padding:8px;color:#000" onclick="executeSkill(4)">Leak Đáp Án</button><button class="btn" style="background:#9c27b0;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(5)">Ảo Giác</button><button class="btn" style="background:#e91e63;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(6)">Tráo Chỉ Định</button><button class="btn" style="background:#607d8b;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(7)">Tráo Random</button><button class="btn" style="background:#00bcd4;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(8)">Thẻ 50/50</button><button class="btn" style="background:#795548;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(9)">Đạo tặc tgian</button><button class="btn" style="background:#ff5722;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(10)">Động Đất</button><button class="btn" style="background:#8bc34a;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(11)">Nấm Lùn</button><button class="btn btn-dark" style="font-size:12px;padding:8px;" onclick="executeSkill(12)">Hố Đen</button><button class="btn" style="background:#ffeb3b;color:#000;font-size:12px;padding:8px;" onclick="executeSkill(13)">Robin Hood</button><button class="btn" style="background:#fff;color:#000;border:2px solid #000;font-size:12px;padding:8px;" onclick="executeSkill(14)">Thanh Tẩy</button><button class="btn" style="background:#3f51b5;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(15)">Cân Đẩu Vân</button><button class="btn" style="background:#f44336;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(16)">Ma Âm Troll</button><button class="btn" style="background:#d4af37;color:#000;font-size:12px;padding:8px;" onclick="executeSkill(17)">Hattrick (+300đ)</button><button class="btn" style="background:#d32f2f;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(18)">Thẻ Đỏ 20s</button><button class="btn" style="background:#2196f3;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(19)">Check VAR Top 1</button><button class="btn" style="background:#4caf50;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(20)">Thay Người (+3 thẻ)</button><button class="btn" style="background:#673ab7;color:#fff;font-size:12px;padding:8px;" onclick="executeSkill(21)">Hút Máu Server</button><button class="btn" style="background:#000;color:#f44336;border:1px solid #f44336;font-size:12px;padding:8px;" onclick="executeSkill(22)">Cấm Thuật 30s</button><button class="btn" style="background:#00e5ff;color:#000;font-size:12px;padding:8px;" onclick="executeSkill(23)">Siêu Phẩm 90+ (CR7)</button><button class="btn" style="background:#000;color:#fff;border:1px solid #fff;font-size:12px;padding:8px;" onclick="executeSkill(24)">Tắt Đèn</button><button class="btn" style="background:#e91e63;color:#fff;border:2px solid #000;font-size:12px;padding:8px;" onclick="executeSkill(25)">Thao Túng Tâm Lý</button>`;
+            openModal("👑 KHO VŨ KHÍ CỦA IDORI", `<div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; max-height: 55vh; overflow-y: auto; padding-right: 5px;">${html}</div>`, "alert"); return;
         }
 
         if(skillCount <= 0) return;
+        if (myPassive === 5 && Math.random() < 0.25) { statPassiveTriggers++; showToast("♻️ TÁI CHẾ: Bạn không bị trừ thẻ lần này!", "success"); } 
+        else { skillCount--; }
         
-        if (myPassive === 5 && Math.random() < 0.25) {
-            pushLocalLog("kích hoạt Tái Chế không mất thẻ ♻️");
-            showToast("♻️ NỘI TẠI TÁI CHẾ: Bạn không bị trừ thẻ lần này!", "success");
-        } else { skillCount--; }
-        
-        addRage(10); // Rút thẻ được cộng 10% nộ
-        updateStats();
+        statSkillsUsed++; addRage(10); updateStats();
         executeSkill(Math.floor(Math.random() * 26)); 
     }
 
@@ -974,144 +898,115 @@
         if(isVIP) document.getElementById('custom-modal').classList.remove('show');
         
         switch(r) {
-            case 0: score *= 2; updateStats(); pushLocalLog("nhân đôi điểm số bản thân 🃏"); openModal("🃏 THẺ NHÂN ĐÔI", "Bùm! Toàn bộ điểm hiện tại của bạn đã được x2!", "alert"); break;
-            case 1: elapsedTime = Math.max(0, elapsedTime - 60); updateFirebaseData(); pushLocalLog("giảm 60s thời gian phạt 🃏"); openModal("🃏 THẺ XUYÊN KHÔNG", "Trừ đi 60 giây thời gian làm bài. Bạn đang leo rank thần tốc!", "alert"); break;
-            case 2: database.ref('room_events').set({type: 'freeze', by: playerName, time: Date.now()}); openModal("❄️ THẺ BÃO TUYẾT", "Đã tung bão tuyết! Toàn bộ đối thủ trong phòng sẽ bị đóng băng 10 giây!", "alert"); break;
+            case 0: score *= 2; updateStats(); openModal("🃏 THẺ NHÂN ĐÔI", "Bùm! x2 Điểm!", "alert"); break;
+            case 1: elapsedTime = Math.max(0, elapsedTime - 60); updateFirebaseData(); openModal("🃏 THẺ XUYÊN KHÔNG", "-60s thời gian làm bài!", "alert"); break;
+            case 2: database.ref('room_events').set({type: 'freeze', by: playerName, time: Date.now()}); openModal("❄️ BÃO TUYẾT", "Đóng băng toàn bộ đối thủ 10s!", "alert"); break;
             case 3: 
                 let top1 = currentLeaderboard.length > 0 ? currentLeaderboard[0].name : null;
                 if(top1 && top1 !== playerName) {
                     let sAmt = (myPassive === 7) ? 150 : 100;
                     database.ref('room_events').set({type: 'steal', by: playerName, target: top1, amount: sAmt, time: Date.now()}); 
-                    score += sAmt; updateStats(); openModal("😈 THẺ BÀN TAY ĐEN", `Bạn đã cướp ${sAmt} điểm từ kẻ đứng đầu bảng: <b>${top1}</b>!`, "alert");
-                } else { score += 100; updateStats(); pushLocalLog("nhận 100đ Vinh Quang 👑"); openModal("👑 THẺ VINH QUANG", "Bạn đang TOP 1, tặng thẳng 100 điểm!", "alert"); }
+                    score += sAmt; updateStats(); checkBountyTarget(top1); openModal("😈 BÀN TAY ĐEN", `Cướp ${sAmt}đ của Top 1: <b>${top1}</b>!`, "alert");
+                } else { score += 100; updateStats(); openModal("👑 VINH QUANG", "Bạn đang TOP 1, tặng thẳng 100đ!", "alert"); }
                 break;
             case 4: 
                 if(document.getElementById('phase1-card').style.display !== 'none') {
                     let correctIdx = p1Data[currentP1Index].ans; let btns = document.getElementById('p1-options').querySelectorAll('.option');
                     btns[correctIdx].style.border = "4px solid var(--success)"; btns[correctIdx].style.background = "#e6f4ea";
-                    pushLocalLog("leak đáp án câu trắc nghiệm 🕵️"); openModal("🕵️ THẺ ĐIỆP VIÊN", "Hack thành công! Đáp án đúng đã được bôi xanh lục.", "alert");
-                } else { score += 150; updateStats(); pushLocalLog("nhận 150đ bồi thường 🕵️"); openModal("🕵️ THẺ ĐIỆP VIÊN", "Chỉ xài được GĐ1, bồi thường +150 điểm!", "alert"); }
+                    openModal("🕵️ ĐIỆP VIÊN", "Đáp án đúng đã bôi xanh.", "alert");
+                } else { score += 150; updateStats(); openModal("🕵️ ĐIỆP VIÊN", "Chỉ xài GĐ1, bồi thường +150đ!", "alert"); }
                 break;
-            case 5: database.ref('room_events').set({type: 'curse', by: playerName, time: Date.now()}); openModal("👁️ THẺ ẢO GIÁC", "Ám toán đối thủ! Làm nhòe tịt màn hình bọn họ trong 15 giây!", "alert"); break;
+            case 5: database.ref('room_events').set({type: 'curse', by: playerName, time: Date.now()}); openModal("👁️ ẢO GIÁC", "Làm nhòe màn hình đối thủ 15s!", "alert"); break;
             case 6: 
-                let selectHTML6 = getTargetSelectHTML();
-                if(!selectHTML6) { openModal("❌ THẤT BẠI", "Phòng chưa có ai khác để tráo điểm!", "alert"); break; }
-                openModal("🔄 TRÁO ĐIỂM CHỈ ĐỊNH", `Chọn nạn nhân muốn tráo điểm:<br>${selectHTML6}`, "confirm", () => {
+                let selectHTML6 = getTargetSelectHTML(); if(!selectHTML6) break;
+                openModal("🔄 TRÁO ĐIỂM CHỈ ĐỊNH", `Chọn nạn nhân:<br>${selectHTML6}`, "confirm", () => {
                     let targetName = document.getElementById('target-player-select').value;
                     let targetData = currentLeaderboard.find(p => p.name === targetName);
                     if(targetData) {
-                        let myOldScore = score; score = targetData.score; updateStats();
+                        let myOldScore = score; score = targetData.score; updateStats(); checkBountyTarget(targetName);
                         database.ref('room_events').set({type: 'swap', by: playerName, target: targetName, targetNewScore: myOldScore, time: Date.now()});
-                        setTimeout(() => openModal("🔄 THÀNH CÔNG", `Đã tráo điểm với <b>${targetName}</b> thành công!`, "alert"), 400);
                     }
                 }); break;
             case 7: 
                 let others = currentLeaderboard.filter(p => p.name !== playerName);
                 if (others.length > 0) {
                     let rndTarget = others[Math.floor(Math.random() * others.length)];
-                    let myOldScore = score; score = rndTarget.score; updateStats();
+                    let myOldScore = score; score = rndTarget.score; updateStats(); checkBountyTarget(rndTarget.name);
                     database.ref('room_events').set({type: 'swap', by: playerName, target: rndTarget.name, targetNewScore: myOldScore, time: Date.now()});
-                    openModal("🎲 THẺ ĐỊNH MỆNH", `Bạn đã tráo điểm với <b>${rndTarget.name}</b> ngẫu nhiên!`, "alert");
-                } else { score += 100; updateStats(); pushLocalLog("nhận 100đ an ủi 🎲"); openModal("🎲 THẺ ĐỊNH MỆNH", "Phòng có mình bạn, tặng an ủi 100 điểm!", "alert"); }
-                break;
+                    openModal("🎲 ĐỊNH MỆNH", `Tráo điểm ngẫu nhiên với <b>${rndTarget.name}</b>!`, "alert");
+                } else { score += 100; updateStats(); openModal("🎲 ĐỊNH MỆNH", "Tặng an ủi 100đ!", "alert"); } break;
             case 8: 
                 if(document.getElementById('phase1-card').style.display !== 'none') {
                     let correctIdx = p1Data[currentP1Index].ans; let btns = document.getElementById('p1-options').querySelectorAll('.option');
                     let wrongIndices = [0,1,2,3].filter(i => i !== correctIdx); wrongIndices = shuffleArray(wrongIndices);
                     btns[wrongIndices[0]].classList.add('selected-wrong', 'locked'); btns[wrongIndices[1]].classList.add('selected-wrong', 'locked');
-                    pushLocalLog("loại 2 đáp án sai 💡"); openModal("💡 THẺ 50/50", "Hệ thống đã gạch bỏ 2 phương án sai!", "alert");
-                } else { score += 100; updateStats(); pushLocalLog("nhận đền bù 100đ 💡"); openModal("💡 THẺ 50/50", "Thẻ này chỉ dùng ở Trắc nghiệm. Tặng 100 điểm!", "alert"); }
-                break;
+                    openModal("💡 50/50", "Đã gạch bỏ 2 phương án sai!", "alert");
+                } else { score += 100; updateStats(); openModal("💡 50/50", "Tặng 100 điểm bù!", "alert"); } break;
             case 9: 
                 let top1_time = currentLeaderboard.length > 0 ? currentLeaderboard[0].name : null;
                 if(top1_time && top1_time !== playerName) {
                     database.ref('room_events').set({type: 'time_steal', by: playerName, target: top1_time, time: Date.now()});
-                    reduceTime(60); updateStats();
-                    openModal("⏳ ĐẠO TẶC THỜI GIAN", `Bạn trừ 60s phạt và ném 60s phạt đó sang cho TOP 1 (${top1_time})!`, "alert");
-                } else { reduceTime(60); updateStats(); pushLocalLog("giảm 60s phạt ⏳"); openModal("⏳ THẺ THỜI GIAN", "Bạn đang TOP 1, tự giảm mình 60s!", "alert"); }
-                break;
-            case 10: database.ref('room_events').set({type: 'earthquake', by: playerName, time: Date.now()}); openModal("🌋 THẺ ĐỘNG ĐẤT", "Kích hoạt rung lắc màn hình toàn server 10s!", "alert"); break;
-            case 11: database.ref('room_events').set({type: 'shrink', by: playerName, time: Date.now()}); openModal("🍄 THẺ NẤM LÙN", "Ám toán làm teo nhỏ màn hình đối thủ trong 15s!", "alert"); break;
-            case 12: database.ref('room_events').set({type: 'black_hole', by: playerName, time: Date.now()}); openModal("🕳️ THẺ HỐ ĐEN", "Hủy diệt chuỗi Combo của tất cả đối thủ về 0!", "alert"); break;
+                    reduceTime(60); updateStats(); openModal("⏳ ĐẠO TẶC", `Trừ 60s phạt của mình và ném sang cho TOP 1!`, "alert");
+                } else { reduceTime(60); updateStats(); openModal("⏳ ĐẠO TẶC", "Tự giảm 60s!", "alert"); } break;
+            case 10: database.ref('room_events').set({type: 'earthquake', by: playerName, time: Date.now()}); openModal("🌋 ĐỘNG ĐẤT", "Rung lắc toàn server 10s!", "alert"); break;
+            case 11: database.ref('room_events').set({type: 'shrink', by: playerName, time: Date.now()}); openModal("🍄 NẤM LÙN", "Teo nhỏ màn hình đối thủ trong 15s!", "alert"); break;
+            case 12: database.ref('room_events').set({type: 'black_hole', by: playerName, time: Date.now()}); openModal("🕳️ HỐ ĐEN", "Hủy chuỗi Combo toàn phòng!", "alert"); break;
             case 13: 
                 if(currentLeaderboard.length > 1) {
                     let top = currentLeaderboard[0], bot = currentLeaderboard[currentLeaderboard.length - 1];
-                    if(top.name !== bot.name) {
-                        database.ref('room_events').set({type: 'robin_hood', by: playerName, top1: top.name, bot1: bot.name, top1Score: top.score, bot1Score: bot.score, time: Date.now()});
-                        openModal("🏹 ROBIN HOOD", "Đã ép Top 1 và Bét Bảng tráo điểm cho nhau!", "alert");
-                    } else openModal("🏹 ROBIN HOOD", "BXH chưa đủ biến động để chia chác!", "alert");
-                } else openModal("🏹 ROBIN HOOD", "Cần ít nhất 2 người để chơi chiêu này!", "alert");
-                break;
+                    database.ref('room_events').set({type: 'robin_hood', by: playerName, top1: top.name, bot1: bot.name, top1Score: top.score, bot1Score: bot.score, time: Date.now()});
+                    openModal("🏹 ROBIN HOOD", "Ép Top 1 và Bét Bảng tráo điểm!", "alert");
+                } break;
             case 14: 
-                let mainArea = document.getElementById('game-main-area'); mainArea.className = 'main-content'; 
+                document.getElementById('game-main-area').className = 'main-content'; 
                 if(document.getElementById('global-freeze')) document.getElementById('global-freeze').remove();
                 if(document.getElementById('global-blackout')) document.getElementById('global-blackout').remove();
-                isInputPaused = false; isSilenced = false; pushLocalLog("giải trừ bùa chú 🛡️"); openModal("🛡️ THANH TẨY", "Giải trừ mọi bùa chú bất lợi trên người!", "alert"); break;
+                isInputPaused = false; isSilenced = false; openModal("🛡️ THANH TẨY", "Giải trừ mọi bùa chú!", "alert"); break;
             case 15: 
                 if(document.getElementById('phase1-card').style.display !== 'none') {
                     let correctIdx = p1Data[currentP1Index].ans; let btns = document.getElementById('p1-options').querySelectorAll('.option');
-                    pushLocalLog("cưỡi mây qua ải 🚀"); openModal("🚀 CÂN ĐẨU VÂN", "Đã cưỡi mây vượt ải! Câu này tự động đúng!", "alert");
-                    handleP1Answer(correctIdx, btns[correctIdx], p1Data[currentP1Index]);
-                } else { score += 200; updateStats(); pushLocalLog("nhận 200đ Cân Đẩu Vân 🚀"); openModal("🚀 CÂN ĐẨU VÂN", "Chỉ dùng để qua ải Trắc Nghiệm. Tặng bù 200 điểm bay lên trời!", "alert"); }
-                break;
-            case 16: database.ref('room_events').set({type: 'spooky_sound', by: playerName, time: Date.now()}); openModal("🔊 THẺ MA ÂM", "Âm thanh Troll chói tai đã phát đến các đối thủ!", "alert"); break;
-            case 17: score += 300; updateStats(); pushLocalLog("ghi Hattrick 300đ ⚽"); openModal("⚽ SIÊU PHẨM HATTRICK", "Một cú hattrick mang về cho bạn 300 điểm!", "alert"); break;
+                    openModal("🚀 CÂN ĐẨU VÂN", "Câu này tự động đúng!", "alert"); handleP1Answer(correctIdx, btns[correctIdx], p1Data[currentP1Index]);
+                } else { score += 200; updateStats(); openModal("🚀 CÂN ĐẨU VÂN", "Tặng bù 200 điểm bay lên trời!", "alert"); } break;
+            case 16: database.ref('room_events').set({type: 'spooky_sound', by: playerName, time: Date.now()}); openModal("🔊 MA ÂM", "Tra tấn thính giác đối thủ!", "alert"); break;
+            case 17: score += 300; updateStats(); openModal("⚽ HATTRICK", "Mang về 300 điểm!", "alert"); break;
             case 18: 
-                let selectHTML18 = getTargetSelectHTML();
-                if(!selectHTML18) { openModal("❌ THẤT BẠI", "Phòng chưa có ai khác để đuổi!", "alert"); break; }
-                openModal("🟥 THẺ ĐỎ TRỰC TIẾP", `Chọn cầu thủ bị đuổi khỏi sân 20s:<br>${selectHTML18}`, "confirm", () => {
-                    let targetName = document.getElementById('target-player-select').value;
+                let selectHTML18 = getTargetSelectHTML(); if(!selectHTML18) break;
+                openModal("🟥 THẺ ĐỎ", `Chọn cầu thủ bị đuổi 20s:<br>${selectHTML18}`, "confirm", () => {
+                    let targetName = document.getElementById('target-player-select').value; checkBountyTarget(targetName);
                     database.ref('room_events').set({type: 'red_card', by: playerName, target: targetName, time: Date.now()});
-                    setTimeout(() => openModal("🟥 ĐUỔI KHỎI SÂN", `Cầu thủ <b>${targetName}</b> đã ăn thẻ đỏ cấm túc 20s!`, "alert"), 400);
                 }); break;
             case 19: 
                 let top1VAR = currentLeaderboard.length > 0 ? currentLeaderboard[0].name : null;
                 if(top1VAR && top1VAR !== playerName) {
                     database.ref('room_events').set({type: 'var_check', by: playerName, target: top1VAR, time: Date.now()});
-                    openModal("📺 CHECK VAR THÀNH CÔNG", `Bàn thắng của <b>${top1VAR}</b> đã bị hủy vì lỗi việt vị! Đối phương mất 150 điểm!`, "alert");
-                } else { score += 150; updateStats(); pushLocalLog("nhận 150đ từ VAR 📺"); openModal("📺 CHECK VAR", "Bạn đang TOP 1, VAR xác nhận bàn thắng hợp lệ! Thưởng 150 điểm!", "alert"); }
-                break;
-            case 20: skillCount += 3; updateStats(); pushLocalLog("gọi dự bị nhận 3 thẻ 🔁"); openModal("🔁 THAY NGƯỜI CHIẾN THUẬT", "Được cấp ngay 3 Thẻ Kỹ Năng mới để quẩy nát game!", "alert"); break;
+                    checkBountyTarget(top1VAR); openModal("📺 CHECK VAR", `Tước 150 điểm của ${top1VAR}!`, "alert");
+                } else { score += 150; updateStats(); openModal("📺 CHECK VAR", "Bạn đang TOP 1, VAR thưởng 150đ!", "alert"); } break;
+            case 20: skillCount += 3; updateStats(); openModal("🔁 THAY NGƯỜI", "Cấp ngay 3 Thẻ Kỹ Năng mới!", "alert"); break;
             case 21: 
-                let playerCount = currentLeaderboard.length;
-                if(playerCount > 1) {
-                    let aoeAmt = (myPassive === 7) ? 75 : 50; 
-                    let stealAmount = (playerCount - 1) * aoeAmt;
-                    score += stealAmount; updateStats();
-                    database.ref('room_events').set({type: 'aoe_steal', by: playerName, amount: aoeAmt, time: Date.now()});
-                    openModal("🦇 HÚT MÁU TOÀN SERVER", `Bạn đã hút mỗi người ${aoeAmt} điểm. Tổng cộng nhận được ${stealAmount} điểm!`, "alert");
-                } else { openModal("🦇 HÚT MÁU", "Phòng có mỗi mình bạn, hút máu ai bây giờ?", "alert"); }
-                break;
-            case 22: database.ref('room_events').set({type: 'silence', by: playerName, time: Date.now()}); openModal("🤫 CẤM THUẬT", "Khóa tính năng rút thẻ của toàn bộ đối thủ trong 30 giây!", "alert"); break;
-            case 23: 
-                score += elapsedTime; elapsedTime = 0; updateStats(); pushLocalLog("tỏa sáng phút 90+ siêu phẩm CR7 🐐");
-                openModal("🐐 SIÊU PHẨM PHÚT 90+", "Siii! Toàn bộ thời gian phạt đã được xóa sổ và chuyển thành Điểm Xếp Hạng cho bạn!", "alert"); break;
-            case 24: database.ref('room_events').set({type: 'blackout', by: playerName, time: Date.now()}); openModal("🌑 TẮT ĐÈN", "Triệu hồi bóng tối che mờ mắt toàn bộ đối thủ trong 10 giây!", "alert"); break;
+                if(currentLeaderboard.length > 1) {
+                    let aoeAmt = (myPassive === 7) ? 75 : 50; let stealAmount = (currentLeaderboard.length - 1) * aoeAmt;
+                    score += stealAmount; updateStats(); database.ref('room_events').set({type: 'aoe_steal', by: playerName, amount: aoeAmt, time: Date.now()});
+                    openModal("🦇 HÚT MÁU", `Hút ${stealAmount}đ từ toàn server!`, "alert");
+                } break;
+            case 22: database.ref('room_events').set({type: 'silence', by: playerName, time: Date.now()}); openModal("🤫 CẤM THUẬT", "Khóa tính năng rút thẻ của đối thủ 30s!", "alert"); break;
+            case 23: score += elapsedTime; elapsedTime = 0; updateStats(); openModal("🐐 SIÊU PHẨM 90+", "Xóa sổ thời gian phạt, chuyển thành Điểm!", "alert"); break;
+            case 24: database.ref('room_events').set({type: 'blackout', by: playerName, time: Date.now()}); openModal("🌑 TẮT ĐÈN", "Che mờ mắt đối thủ 10s!", "alert"); break;
             case 25: 
-                let selectHTML25 = getTargetSelectHTML();
-                if(!selectHTML25) { openModal("❌ THẤT BẠI", "Phòng chưa có ai khác để thao túng!", "alert"); break; }
-                openModal("😵 THAO TÚNG TÂM LÝ", `Chọn nạn nhân bạn muốn ép chọn sai:<br>${selectHTML25}`, "confirm", () => {
-                    let targetName = document.getElementById('target-player-select').value;
+                let selectHTML25 = getTargetSelectHTML(); if(!selectHTML25) break;
+                openModal("😵 THAO TÚNG TÂM LÝ", `Ép nạn nhân chọn sai:<br>${selectHTML25}`, "confirm", () => {
+                    let targetName = document.getElementById('target-player-select').value; checkBountyTarget(targetName);
                     database.ref('room_events').set({type: 'mind_control', by: playerName, target: targetName, time: Date.now()});
-                    setTimeout(() => openModal("😵 THÀNH CÔNG", `Đã xâm nhập và điều khiển tâm trí <b>${targetName}</b>!`, "alert"), 400);
                 }); break;
         }
     }
 
-    window.addEventListener("blur", () => {
-        if (!isGameActive || isGameOver || isVIP) return; 
-        elapsedTime += 60; updateFirebaseData(); 
-        isCheating = true; leaveTime = Date.now();
-    });
-
+    window.addEventListener("blur", () => { if (!isGameActive || isGameOver || isVIP) return; elapsedTime += 60; updateFirebaseData(); isCheating = true; leaveTime = Date.now(); });
     window.addEventListener("focus", () => {
         if (isCheating && isGameActive && !isGameOver && !isVIP) {
             let extraPenalty = Math.floor(((Date.now() - leaveTime) / 1000) * 4);
             if(myPassive === 8) extraPenalty = Math.floor(extraPenalty / 2);
             elapsedTime += extraPenalty; updateFirebaseData(); isCheating = false;
-            let msg = `Lách luật đi đâu đấy?<br>1. Phạt cảnh cáo: <b>+60 Giây</b><br>2. Phạt vắng mặt x4: <b>+${extraPenalty} Giây</b>`;
-            if(myPassive === 8) msg += `<br><span style="color:var(--success)">*Nội tại Lông Vũ đã giúp bạn giảm một nửa án phạt vắng mặt!</span>`;
-            openModal("🚨 BẮT QUẢ TANG!", msg, "alert");
+            openModal("🚨 BẮT QUẢ TANG!", `Phạt cảnh cáo: <b>+60s</b><br>Vắng mặt x4: <b>+${extraPenalty}s</b>`, "alert");
             currentStreak = 0; updateStats(); 
         }
     });
@@ -1126,71 +1021,45 @@
         currentLeaderboard = lbArray; 
 
         let sidebarTbody = document.getElementById('sidebar-lb-body');
-        if(sidebarTbody) sidebarTbody.innerHTML = lbArray.slice(0, 10).map((p, i) => `<div class="live-lb-item" style="${p.name === playerName ? 'background: #ffe0b2; font-weight:bold;' : ''}"><span><b>${i+1}.</b> ${p.name}</span><span style="color:var(--danger)"><b>${p.rankScore.toFixed(1)}</b>đ</span></div>`).join('');
+        if(sidebarTbody) sidebarTbody.innerHTML = lbArray.slice(0, 10).map((p, i) => `<div class="live-lb-item" style="${p.name === playerName ? 'background: #ffe0b2; font-weight:bold;' : ''}"><span><b>${i+1}.</b> ${p.name} ${p.name === currentBountyTarget ? '<span style="color:red; font-size:16px;">🎯</span>' : ''}</span><span style="color:var(--danger)"><b>${p.rankScore.toFixed(1)}</b>đ</span></div>`).join('');
 
         let adminTbody = document.getElementById('admin-lb-body');
-        if(adminTbody) adminTbody.innerHTML = lbArray.map((p, i) => `<tr class="${i===0?'top-1':''}"><td>${i+1}</td><td style="font-weight:bold; font-size: 18px;">${p.name}</td><td style="color: var(--success); font-weight: bold;">${p.score}</td><td style="color: #5f6368;">${Math.floor(p.time/60)}p ${p.time%60}s</td><td style="font-weight:bold; color:var(--danger); font-size: 20px;">${p.rankScore.toFixed(1)}</td><td style="color:${p.status==='Hoàn thành xuất sắc'?'var(--success)':'var(--warning)'}; font-weight:bold;">${p.status}</td></tr>`).join('');
+        if(adminTbody) adminTbody.innerHTML = lbArray.map((p, i) => `<tr class="${i===0?'top-1':''}"><td>${i+1}</td><td style="font-weight:bold; font-size: 18px;">${p.name} ${p.name === currentBountyTarget ? '🎯' : ''}</td><td style="color: var(--success); font-weight: bold;">${p.score}</td><td style="color: #5f6368;">${Math.floor(p.time/60)}p ${p.time%60}s</td><td style="font-weight:bold; color:var(--danger); font-size: 20px;">${p.rankScore.toFixed(1)}</td><td style="color:${p.status==='Hoàn thành xuất sắc'?'var(--success)':'var(--warning)'}; font-weight:bold;">${p.status}</td></tr>`).join('');
 
         let mainTbody = document.getElementById('lb-body');
-        if(mainTbody) mainTbody.innerHTML = lbArray.map((p, i) => `<tr class="${i===0?'top-1':''}" style="${p.name === playerName ? 'background: #fff3e0;' : ''}"><td>${i+1}</td><td style="font-weight:bold;">${p.name}</td><td style="font-weight:bold; color:var(--danger)">${p.rankScore.toFixed(1)}</td><td style="color:${p.status==='Hoàn thành xuất sắc'?'var(--success)':'var(--warning)'}; font-weight:bold;">${p.status}</td></tr>`).join('');
+        if(mainTbody) mainTbody.innerHTML = lbArray.map((p, i) => `<tr class="${i===0?'top-1':''}" style="${p.name === playerName ? 'background: #fff3e0;' : ''}"><td>${i+1}</td><td style="font-weight:bold;">${p.name} ${p.name === currentBountyTarget ? '🎯' : ''}</td><td style="font-weight:bold; color:var(--danger)">${p.rankScore.toFixed(1)}</td><td style="color:${p.status==='Hoàn thành xuất sắc'?'var(--success)':'var(--warning)'}; font-weight:bold;">${p.status}</td></tr>`).join('');
     });
 
-    function updateFirebaseData() { if(myPlayerRef) myPlayerRef.update({ score: score, time: elapsedTime }); }
+    function updateFirebaseData() { 
+        if(myPlayerRef) myPlayerRef.update({ score: score, time: elapsedTime, skillsUsed: statSkillsUsed, hitsTaken: statHitsTaken, passiveTriggers: statPassiveTriggers, mapPuzzleTime: statMapPuzzleTime }); 
+    }
     
     function updateStats() { 
         document.getElementById('current-score').innerText = score; 
         document.getElementById('progress-text').innerText = `${tasksCompleted}/40`; 
         document.getElementById('progress-bar').style.width = (tasksCompleted/40)*100 + '%'; 
-        
-        let comboUI = document.getElementById('combo-display');
-        comboUI.innerText = "🔥 CHUỖI: " + currentStreak;
+        let comboUI = document.getElementById('combo-display'); comboUI.innerText = "🔥 CHUỖI: " + currentStreak;
         if(currentStreak > 0) comboUI.classList.add('active'); else comboUI.classList.remove('active');
-
         let sBtn = document.getElementById('skill-btn');
-        if(isVIP) {
-            sBtn.innerText = "👑 KHO KỸ NĂNG (Vô Hạn)";
-            sBtn.style.display = "block";
-            sBtn.style.background = "linear-gradient(45deg, #9c27b0, #e91e63)";
-        } else if(skillCount > 0) {
-            sBtn.innerText = "🃏 RÚT THẺ KỸ NĂNG (Còn: " + skillCount + ")";
-            sBtn.style.display = "block";
-        } else {
-            sBtn.style.display = "none";
-        }
+        if(isVIP) { sBtn.innerText = "👑 KHO KỸ NĂNG (Vô Hạn)"; sBtn.style.display = "block"; sBtn.style.background = "linear-gradient(45deg, #9c27b0, #e91e63)"; } 
+        else if(skillCount > 0) { sBtn.innerText = "🃏 RÚT THẺ KỸ NĂNG (Còn: " + skillCount + ")"; sBtn.style.display = "block"; } 
+        else { sBtn.style.display = "none"; }
         updateFirebaseData(); 
     }
 
     function addScoreWithStreak(basePoint) {
-        currentStreak++;
-        let bonusPercent = 0;
-        if(currentStreak === 1) bonusPercent = 0.1;
-        else if(currentStreak === 2) bonusPercent = 0.2;
-        else if(currentStreak === 3) bonusPercent = 0.3;
-        else if(currentStreak === 4) bonusPercent = 0.5;
-        else if(currentStreak >= 5) bonusPercent = 0.75;
-
-        // X3 Điểm nếu đang HÓA CHAO
-        let mult = isAwakened ? 3 : 1;
-        let earned = Math.round(basePoint * (1 + bonusPercent)) * mult;
-        score += earned;
-
-        if (currentStreak > 0 && currentStreak % 5 === 0) {
-            skillCount++;
-            setTimeout(() => { showToast("🔥 Đỉnh cao trí tuệ! Chuỗi x" + currentStreak + " được thưởng 1 Thẻ Kỹ Năng!", "success"); }, 800);
-        }
+        currentStreak++; let bonusPercent = currentStreak === 1 ? 0.1 : (currentStreak === 2 ? 0.2 : (currentStreak === 3 ? 0.3 : (currentStreak === 4 ? 0.5 : (currentStreak >= 5 ? 0.75 : 0))));
+        let mult = isAwakened ? 3 : 1; let earned = Math.round(basePoint * (1 + bonusPercent)) * mult; score += earned;
+        if (currentStreak > 0 && currentStreak % 5 === 0) { skillCount++; setTimeout(() => { showToast("🔥 Chuỗi x" + currentStreak + " được tặng 1 Thẻ!", "success"); }, 800); }
         updateStats();
     }
 
     function loadP1Question() {
         if (currentP1Index >= p1Data.length) { document.getElementById('phase1-card').style.display = 'none'; document.getElementById('phase2-card').style.display = 'block'; return; }
-        const q = p1Data[currentP1Index];
-        document.getElementById('p1-counter').innerText = `Câu ${currentP1Index + 1} / ${p1Data.length}`; 
-        document.getElementById('p1-question').innerText = q.q;
-        const optionsDiv = document.getElementById('p1-options'); optionsDiv.innerHTML = ""; 
-        const labels = ['A','B','C','D'];
+        const q = p1Data[currentP1Index]; document.getElementById('p1-counter').innerText = `Câu ${currentP1Index + 1} / ${p1Data.length}`; document.getElementById('p1-question').innerText = q.q;
+        const optionsDiv = document.getElementById('p1-options'); optionsDiv.innerHTML = ""; const labels = ['A','B','C','D'];
         q.opts.forEach((opt, idx) => {
-            let btn = document.createElement('div'); btn.className = 'option';
-            btn.innerHTML = `<span class="char-badge">${labels[idx]}</span> <span>${opt}</span>`;
+            let btn = document.createElement('div'); btn.className = 'option'; btn.innerHTML = `<span class="char-badge">${labels[idx]}</span> <span>${opt}</span>`;
             btn.onclick = () => { if(!isInputPaused) handleP1Answer(idx, btn, q); }; optionsDiv.appendChild(btn);
         });
     }
@@ -1198,101 +1067,63 @@
     function handleP1Answer(selectedIdx, btn, qObj) {
         const allBtns = document.getElementById('p1-options').querySelectorAll('.option'); allBtns.forEach(b => b.classList.add('locked'));
         if(selectedIdx === qObj.ans) {
-            btn.classList.add('selected-correct'); 
-            tasksCompleted++; 
-            if(myPassive === 2) score += 15;
-            if(myPassive === 3) reduceTime(3);
-            addRage(10); // +10% Nộ
-            addScoreWithStreak(50); 
-            setTimeout(() => { currentP1Index++; loadP1Question(); }, 1000);
+            btn.classList.add('selected-correct'); tasksCompleted++; 
+            if(myPassive === 2) score += 15; if(myPassive === 3) reduceTime(3);
+            addRage(10); addScoreWithStreak(50); setTimeout(() => { currentP1Index++; loadP1Question(); }, 1000);
         } else {
-            btn.classList.add('selected-wrong'); allBtns[qObj.ans].classList.add('selected-correct'); tasksCompleted++; 
-            currentStreak = 0; updateStats(); 
+            btn.classList.add('selected-wrong'); allBtns[qObj.ans].classList.add('selected-correct'); tasksCompleted++; currentStreak = 0; updateStats(); 
             triggerRandomPenalty("Sai cơ bản! Đứt chuỗi rồi!", () => { currentP1Index++; loadP1Question(); });
         }
     }
 
     function openMap(id) {
         if(isInputPaused || document.getElementById(`hs${id}`).classList.contains('done')) return;
-        mapActive = id; let data = p2MapData[id];
-        let html = `<table class="tf-table"><thead><tr><th>Nhận định</th><th style="width:40px">Đ</th><th style="width:40px">S</th></tr></thead><tbody>`;
+        mapActive = id; let data = p2MapData[id]; let html = `<table class="tf-table"><thead><tr><th>Nhận định</th><th style="width:40px">Đ</th><th style="width:40px">S</th></tr></thead><tbody>`;
         data.stmts.forEach((s, i) => { html += `<tr><td>${s.t}</td><td style="text-align:center"><input type="radio" name="tf_${i}" value="true" class="tf-radio"></td><td style="text-align:center"><input type="radio" name="tf_${i}" value="false" class="tf-radio"></td></tr>`; });
-        html += `</tbody></table>`;
-        openModal(`📍 ${data.title}`, html, "confirm", submitMap);
+        html += `</tbody></table>`; openModal(`📍 ${data.title}`, html, "confirm", submitMap);
     }
 
     function submitMap() {
         let data = p2MapData[mapActive], correctC = 0;
-        for(let i=0; i<4; i++) {
-            let r = document.querySelector(`input[name="tf_${i}"]:checked`);
-            if(!r) return openModal("Lỗi", "Vui lòng chọn đủ 4 ý Đ/S!", "alert");
-            if((r.value === 'true') === data.stmts[i].a) correctC++;
-        }
-        let earned = 0; if(correctC === 4) earned = 200; else if(correctC === 3) earned = 100; else if(correctC === 2) earned = 50; else if(correctC === 1) earned = 20;
-        
-        if (correctC === 4 && myPassive === 3) reduceTime(3);
-        if (correctC > 0) addRage(correctC * 5); // +Nộ theo số câu đúng
-        
-        if (correctC === 4) addScoreWithStreak(200);
-        else { score += (earned * (isAwakened ? 3 : 1)); currentStreak = 0; } 
-
+        for(let i=0; i<4; i++) { let r = document.querySelector(`input[name="tf_${i}"]:checked`); if(!r) return openModal("Lỗi", "Chọn đủ 4 ý!", "alert"); if((r.value === 'true') === data.stmts[i].a) correctC++; }
+        let earned = correctC === 4 ? 200 : (correctC === 3 ? 100 : (correctC === 2 ? 50 : (correctC === 1 ? 20 : 0)));
+        if (correctC === 4 && myPassive === 3) reduceTime(3); if (correctC > 0) addRage(correctC * 5); 
+        if (correctC === 4) addScoreWithStreak(200); else { score += (earned * (isAwakened ? 3 : 1)); currentStreak = 0; } 
         document.getElementById(`hs${mapActive}`).classList.add('done'); tasksCompleted++; updateStats();
-        if(myPassive === 6) { skillCount++; pushLocalLog("nhận 1 thẻ nhờ Dấu Chân Tự Hào 🗺️"); }
-
+        if(myPassive === 6) { skillCount++; statPassiveTriggers++; }
         let hsDone = document.querySelectorAll('.hotspot.done').length;
         if(hsDone === 5) document.getElementById('phase3-card').style.display = 'block';
-        if(correctC < 4) triggerRandomPenalty(`Đúng ${correctC}/4 ý. Đứt Chuỗi! Thiếu 1 ý là bị PHẠT!`); else openModal("Xuất Sắc!", `Đúng 4/4 ý! Duy trì chuỗi.`, "alert");
+        if(correctC < 4) triggerRandomPenalty(`Đúng ${correctC}/4. Đứt Chuỗi!`); else openModal("Xuất Sắc!", `Đúng 4/4!`, "alert");
     }
 
     function openPuzzle(id) {
         if(isInputPaused || document.getElementById(`pz${id}`).classList.contains('revealed')) return;
-        pzActive = id; let data = p3PuzzleData[id];
-        let html = `<div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">`;
+        pzActive = id; let data = p3PuzzleData[id]; let html = `<div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">`;
         data.opts.forEach((opt, i) => { html += `<button class="btn btn-secondary" onclick="checkPuzzle(${i})">${opt}</button>`; }); html += `</div>`;
         openModal(`Mảnh ghép số ${id+1}`, `<strong style="color:var(--primary)">${data.q}</strong>` + html, "none");
     }
 
     function checkPuzzle(ansIdx) {
         document.getElementById('custom-modal').classList.remove('show');
-        if(ansIdx === p3PuzzleData[pzActive].ans) { 
-            document.getElementById(`pz${pzActive}`).classList.add('revealed'); tasksCompleted++; 
-            if(myPassive === 3) reduceTime(3); 
-            addRage(10);
-            addScoreWithStreak(100);
-        } else { 
-            tasksCompleted++; currentStreak = 0; updateStats(); 
-            triggerRandomPenalty("Sai rồi! Mảnh ghép đã bị khóa cứng. Đứt chuỗi!"); 
-        }
+        if(ansIdx === p3PuzzleData[pzActive].ans) { document.getElementById(`pz${pzActive}`).classList.add('revealed'); tasksCompleted++; if(myPassive === 3) reduceTime(3); addRage(10); addScoreWithStreak(100); } 
+        else { tasksCompleted++; currentStreak = 0; updateStats(); triggerRandomPenalty("Sai rồi! Mảnh ghép đã bị khóa."); }
     }
 
     function submitFinal() {
-        if(isInputPaused) return;
-        let guess = document.getElementById('finalGuess').value.toLowerCase().trim();
+        if(isInputPaused) return; let guess = document.getElementById('finalGuess').value.toLowerCase().trim();
         if(['bến nhà rồng', 'ben nha rong', 'nha rong', 'nhà rồng'].includes(guess)) { 
-            if(myPassive === 3) reduceTime(3); 
+            if(myPassive === 3) reduceTime(3); statMapPuzzleTime = elapsedTime;
             addScoreWithStreak(500); endGame("Hoàn thành xuất sắc");
-        } else { 
-            currentStreak = 0; updateStats();
-            triggerRandomPenalty("Đoán sai tên Bức Ảnh!"); 
-        }
+        } else { currentStreak = 0; updateStats(); triggerRandomPenalty("Đoán sai tên Bức Ảnh!"); }
     }
 
     function triggerRandomPenalty(customMsg = "", callback = null) {
-        if (myPassive === 4) {
-            openModal("🛡️ NỘI TẠI BẢO HIỂM", `${customMsg}<br><br><span style="color:var(--success); font-weight:bold;">Đã kích hoạt Bảo Hiểm! Miễn trừ Hình Phạt Sinh Tồn!</span>`, "alert", () => { if(callback) callback(); });
-            return;
-        }
-
+        if (myPassive === 4) { statPassiveTriggers++; openModal("🛡️ BẢO HIỂM", `${customMsg}<br><span style="color:var(--success);">Miễn trừ Hình Phạt Sinh Tồn!</span>`, "alert", callback); return; }
         isInputPaused = true; let r = Math.random(), msg = "", action = null;
-        if(r < 0.33) { msg = "CỘNG THÊM 60 GIÂY VÀO ĐỒNG HỒ!"; action = () => { elapsedTime += 60; updateFirebaseData(); isInputPaused = false; if(callback) callback(); }; } 
-        else if(r < 0.66) {
-            msg = "ĐÓNG BĂNG TƯƠNG TÁC 5 GIÂY! (Giờ vẫn chạy)"; action = () => {
-                let freeze = document.createElement('div'); freeze.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(26,115,232,0.6);z-index:99999;display:flex;align-items:center;justify-content:center;font-size:50px;color:white;font-weight:bold;";
-                freeze.innerText = "❄️ ĐÓNG BĂNG ❄️"; document.body.appendChild(freeze);
-                setTimeout(() => { freeze.remove(); isInputPaused = false; if(callback) callback(); }, 5000);
-            };
-        } else { msg = "TRỪ 50 ĐIỂM THÀNH TÍCH!"; action = () => { score = Math.max(0, score - 50); updateStats(); isInputPaused = false; if(callback) callback(); }; }
-        openModal("⚠️ HÌNH PHẠT SINH TỒN", `${customMsg}<br><div style="font-size:24px; color:var(--danger); font-weight:bold; margin-top:15px;">${msg}</div>`, "alert", action);
+        if(r < 0.33) { msg = "CỘNG 60S VÀO ĐỒNG HỒ!"; action = () => { elapsedTime += 60; updateFirebaseData(); isInputPaused = false; if(callback) callback(); }; } 
+        else if(r < 0.66) { msg = "ĐÓNG BĂNG 5S!"; action = () => { let freeze = document.createElement('div'); freeze.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(26,115,232,0.6);z-index:99999;display:flex;align-items:center;justify-content:center;font-size:50px;color:white;font-weight:bold;"; freeze.innerText = "❄️ ĐÓNG BĂNG ❄️"; document.body.appendChild(freeze); setTimeout(() => { freeze.remove(); isInputPaused = false; if(callback) callback(); }, 5000); }; } 
+        else { msg = "TRỪ 50 ĐIỂM!"; action = () => { score = Math.max(0, score - 50); updateStats(); isInputPaused = false; if(callback) callback(); }; }
+        openModal("⚠️ HÌNH PHẠT", `${customMsg}<br><div style="font-size:24px; color:var(--danger); font-weight:bold; margin-top:15px;">${msg}</div>`, "alert", action);
     }
 
     function openModal(title, content, type, onConfirm) {
@@ -1309,20 +1140,37 @@
         isGameOver = true; isGameActive = false; clearInterval(timerInterval);
         if(myPlayerRef) myPlayerRef.update({ status: statusMsg, time: elapsedTime, score: score });
         document.getElementById('quiz-section').style.display = 'none'; document.getElementById('leaderboard-section').style.display = 'block';
+        renderMVPs(currentLeaderboard);
     }
 
-    document.addEventListener('contextmenu', function(e) { if(!isVIP) e.preventDefault(); });
-    document.addEventListener('keydown', function(e) {
-        if(isVIP) return; 
-        if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); return false; }
-        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && (e.key === 'S' || e.key === 's')) { e.preventDefault(); return false; }
-    });
-    console.log("%c🛑 DỪNG LẠI NGAY!", "color: red; font-size: 50px; font-weight: bold; text-shadow: 2px 2px 0 #000;");
-    console.log("%cKhu vực này không dành cho người chơi. Hệ thống Anti-Cheat của Idori đang ghi lại địa chỉ IP của bạn. Mọi hành vi cố tình chỉnh sửa sẽ bị cấm thi ngay lập tức!", "color: yellow; font-size: 20px; font-weight: bold; background: #222; padding: 10px; border-radius: 5px;");
+    function renderMVPs(lbArray) {
+        if(lbArray.length === 0) return;
+        let maxSkills = lbArray.reduce((prev, current) => (prev.skillsUsed > current.skillsUsed) ? prev : current, {skillsUsed: -1});
+        let maxHits = lbArray.reduce((prev, current) => (prev.hitsTaken > current.hitsTaken) ? prev : current, {hitsTaken: -1});
+        let maxPassives = lbArray.reduce((prev, current) => (prev.passiveTriggers > current.passiveTriggers) ? prev : current, {passiveTriggers: -1});
+        let fastestMap = lbArray.filter(p => p.mapPuzzleTime !== 999999).sort((a,b) => a.mapPuzzleTime - b.mapPuzzleTime)[0];
+
+        document.getElementById('mvp-board').innerHTML = `
+            <div class="mvp-card" style="background:#fff3e0; border:2px solid var(--danger);">
+                <h3 class="mvp-title" style="color:var(--danger)">🔥 KẺ HỦY DIỆT</h3>
+                <p class="mvp-name">${maxSkills.skillsUsed > 0 ? maxSkills.name : 'Chưa có'}</p><small>Xài thẻ: ${maxSkills.skillsUsed > 0 ? maxSkills.skillsUsed : 0} lần</small>
+            </div>
+            <div class="mvp-card" style="background:#e8f0fe; border:2px solid var(--primary);">
+                <h3 class="mvp-title" style="color:var(--primary)">🥊 TRÙM BAO CÁT</h3>
+                <p class="mvp-name">${maxHits.hitsTaken > 0 ? maxHits.name : 'Chưa có'}</p><small>Ăn đạn: ${maxHits.hitsTaken > 0 ? maxHits.hitsTaken : 0} lần</small>
+            </div>
+            <div class="mvp-card" style="background:#e6f4ea; border:2px solid var(--success);">
+                <h3 class="mvp-title" style="color:var(--success)">🍀 THÁNH NHÂN PHẨM</h3>
+                <p class="mvp-name">${maxPassives.passiveTriggers > 0 ? maxPassives.name : 'Chưa có'}</p><small>Kích hoạt Nội Tại: ${maxPassives.passiveTriggers > 0 ? maxPassives.passiveTriggers : 0} lần</small>
+            </div>
+            <div class="mvp-card" style="background:#f3e5f5; border:2px solid #9c27b0;">
+                <h3 class="mvp-title" style="color:#9c27b0">🏃 BÀN CHÂN VÀNG</h3>
+                <p class="mvp-name">${fastestMap ? fastestMap.name : 'Chưa ai xong'}</p><small>Về đích sớm nhất</small>
+            </div>
+        `;
+    }
+
+    document.addEventListener('contextmenu', function(e) { if(!isVIP) e.preventDefault(); }); document.addEventListener('keydown', function(e) { if(isVIP) return; if (e.key === 'F12' || e.keyCode === 123 || (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) || (e.ctrlKey && ['U', 'u', 'S', 's'].includes(e.key))) { e.preventDefault(); return false; } });
 </script>
 </body>
 </html>
