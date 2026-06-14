@@ -136,6 +136,10 @@
             max-width: 350px;
         }
         .toast-msg.show { transform: translateX(0); }
+        
+        /* Hiệu ứng Hóa Chao */
+        .awakened-mode { box-shadow: 0 0 30px #ffeb3b inset; animation: awakenPulse 1s infinite alternate; }
+        @keyframes awakenPulse { 0% { box-shadow: 0 0 20px #ffeb3b inset; } 100% { box-shadow: 0 0 50px #ff9800 inset; } }
 
         @media (max-width: 768px) {
             .options-grid { grid-template-columns: 1fr; }
@@ -155,7 +159,6 @@
 <audio id="bgMusic" loop><source src="Thịnh Vượng Việt Nam Sáng Ngời _ buitruonglinh - buitruonglinh.mp3" type="audio/mpeg"></audio>
 <button id="music-btn" onclick="toggleMusic()">🎵 Bật Nhạc</button>
 
-<!-- MODAL CẢNH BÁO BÌNH THƯỜNG -->
 <div id="custom-modal" class="modal-overlay">
     <div class="modal-box">
         <h2 id="modal-title" class="modal-title">Tiêu đề</h2>
@@ -164,43 +167,39 @@
     </div>
 </div>
 
-<!-- MODAL SÁCH MA THUẬT (HƯỚNG DẪN CẬP NHẬT) -->
 <div id="guide-modal" class="modal-overlay">
     <div class="modal-box">
-        <h2 class="modal-title" style="color: var(--primary);">📖 SÁCH MA THUẬT (PATCH NOTES)</h2>
+        <h2 class="modal-title" style="color: var(--primary);">📖 SÁCH MA THUẬT (PATCH NOTES V17)</h2>
         <div style="text-align: center; font-style: italic; color: #666; margin-bottom: 20px;">Cẩm nang Sinh Tồn dành cho Tân Binh & Pháp Sư</div>
         
-        <h3>🔥 1. CƠ CHẾ SINH TỒN CƠ BẢN</h3>
+        <h3>🌪️ [MỚI] SỰ KIỆN TOÀN SERVER (MỖI 30 GIÂY)</h3>
         <ul>
-            <li><b>Hệ thống Combo:</b> Trả lời đúng liên tiếp sẽ được cộng thêm % điểm số (Chuỗi 1: +10%, Chuỗi 4: +50%, Chuỗi 5+: +75%).</li>
-            <li><b>Phần Thưởng:</b> Cứ đạt chuỗi 5, 10, 15... bạn sẽ được hệ thống tặng miễn phí <b>1 Thẻ Kỹ Năng</b>.</li>
-            <li><b>Phạt Anti-Cheat:</b> Rời khỏi Tab làm bài (chuyển qua tab khác, mở ứng dụng khác) sẽ bị phạt cộng thêm thời gian gấp 4 lần thời gian đi vắng. Cẩn thận!</li>
-            <li><b>Điểm Xếp Hạng Cuối Cùng:</b> = Điểm Thực Tế - (Thời gian sử dụng x 0.1). Hãy vừa làm nhanh vừa làm đúng!</li>
+            <li>Cứ mỗi 30 giây, Hệ thống sẽ thả xuống một thảm họa hoặc phước lành ngẫu nhiên cho toàn bộ người chơi.</li>
+            <li><b>Mưa Sao Băng:</b> Tất cả mọi người nhận miễn phí +1 Thẻ Kỹ Năng.</li>
+            <li><b>Khủng Hoảng Kinh Tế:</b> Người đang đứng Top 1 sẽ bị chia đôi (1/2) số điểm hiện tại.</li>
+            <li><b>Giờ Trái Đất:</b> Toàn bộ phòng tắt điện đen thui trong 5 giây.</li>
+            <li><b>Quay Xe:</b> Người đứng Top 1 và người đứng Bét Bảng tự động đổi điểm cho nhau!</li>
         </ul>
 
-        <h3>✨ 2. HỆ THỐNG 10 NỘI TẠI (PASSIVE)</h3>
-        <p style="font-size: 14px; margin-bottom: 10px;">Khi vào trận, mỗi chiến binh được phát ngẫu nhiên 1 Nội Tại bám theo suốt đời:</p>
+        <h3>⚡ [MỚI] HỆ THỐNG NỘI TẠI & THỨC TỈNH (HÓA CHAO)</h3>
         <ul>
-            <li><b>🦔 Giáp Gai:</b> Phản đòn! Kẻ nào ám toán bạn (Cướp, Tráo, Thẻ Đỏ...) sẽ bị trừ ngược 50 điểm.</li>
-            <li><b>🍀 Phúc Khí:</b> Nhân phẩm cực cao. Có 30% tỷ lệ NÉ TRÁNH hoàn toàn mọi bùa chú hắc ám bay vào người.</li>
-            <li><b>💰 Thương Nhân:</b> Mỗi câu Trắc nghiệm đúng tự động được "bo" thêm 15 điểm (bất chấp có chuỗi hay không).</li>
-            <li><b>⏱️ Thời Gian Lộ:</b> Làm đúng 1 câu bất kỳ, tự động được trừ đi 3 giây trong quỹ thời gian phạt.</li>
-            <li><b>🛡️ Bảo Hiểm:</b> Làm sai vẫn mất chuỗi, nhưng TUYỆT ĐỐI không bao giờ bị kích hoạt Hình Phạt rủi ro (Trừ điểm/Cộng giờ).</li>
-            <li><b>♻️ Tái Chế:</b> Khi xài Thẻ Kỹ Năng, có 25% cơ hội thẻ đó không bị mất đi (Được xài chùa).</li>
-            <li><b>🗺️ Dấu Chân Tự Hào:</b> Vượt qua 1 địa danh Bản Đồ (Đúng/Sai) là được thưởng ngay 1 Thẻ Kỹ Năng.</li>
-            <li><b>🥷 Siêu Đạo Tặc:</b> Kỹ năng Bàn Tay Đen và Hút Máu tăng 50% uy lực (Cướp 150đ, Hút 75đ).</li>
-            <li><b>🕊️ Lông Vũ:</b> Lỡ chuyển Tab bị bắt quả tang? Án phạt thời gian sẽ được GIẢM MỘT NỬA.</li>
-            <li><b>🌟 Hào Quang:</b> Sinh ra ở vạch đích. Bắt đầu trận đấu với 3 Thẻ Kỹ Năng thay vì 1 Thẻ như dân thường.</li>
+            <li><b>Tích Nộ:</b> Trả lời đúng hoặc xài Thẻ Kỹ Năng sẽ được tăng % Nộ Khí.</li>
+            <li><b>Thức Tỉnh:</b> Khi đạt 100% Nộ, bấm nút Thức Tỉnh để Hóa Chao trong 20s.</li>
+            <li><b>Buff Hóa Chao:</b> Giảm một nửa thời gian phạt, Nhân 3 (x3) Điểm Số nhận được, MIỄN NHIỄM 100% mọi đòn tấn công của kẻ thù và sự kiện server!</li>
         </ul>
 
-        <h3>🃏 3. KHO TÀNG 26 THẺ KỸ NĂNG</h3>
-        <p style="font-size: 14px; margin-bottom: 10px;">Rút thẻ ngẫu nhiên. Hãy cầu nguyện mình không bốc trúng thẻ tự hủy!</p>
+        <h3>🛒 [MỚI] CỬA HÀNG CHỢ ĐEN</h3>
         <ul>
-            <li><b>Nhóm Tự Cường:</b> x2 Điểm, -60s Phạt, Cân Đẩu Vân (Vượt ải free), 50/50, Thanh Tẩy (Giải bùa), Điệp Viên (Leak đáp án).</li>
-            <li><b>Nhóm Trộm Cắp:</b> Bàn Tay Đen (Cướp 100đ Top 1), Đạo Tặc (Cướp thời gian), Hút Máu (Hút 50đ cả phòng).</li>
-            <li><b>Nhóm Phá Hoại (AoE):</b> Bão Tuyết (Đóng băng 10s), Ảo Giác (Mờ chữ), Động Đất (Rung màn hình), Nấm Lùn (Teo nhỏ), Tắt Đèn (Đen thui), Ma Âm (Troll âm thanh), Hố Đen (Xóa sạch chuỗi Combo cả phòng), Cấm Thuật (Khóa xài thẻ).</li>
-            <li><b>Nhóm Thao Túng:</b> Tráo Điểm (Chỉ định / Ngẫu nhiên / Top 1 & Bét), Thẻ Đỏ (Cấm thi 20s), Check VAR (Trừ 150đ), Thao Túng Tâm Lý (Ép nạn nhân tự chọn sai).</li>
-            <li><b>Nhóm Huyền Thoại bóng đá:</b> Hattrick (+300đ), Thay Người (+3 thẻ), Siêu Phẩm 90+ (Đổi án phạt thành Điểm cộng).</li>
+            <li>Không cần chờ bốc thẻ hên xui, bạn có thể dùng Điểm Xếp Hạng của mình để MUA thẻ trực tiếp tại Chợ Đen.</li>
+            <li>Mua là xài ngay lập tức. Tính toán tài chính cẩn thận kẻo rớt Rank!</li>
+        </ul>
+
+        <h3>✨ HỆ THỐNG 10 NỘI TẠI (PASSIVE)</h3>
+        <ul>
+            <li><b>🦔 Giáp Gai:</b> Phản đòn 50đ. / <b>🍀 Phúc Khí:</b> 30% Né tránh đòn hắc ám. / <b>💰 Thương Nhân:</b> +15đ mỗi câu đúng.</li>
+            <li><b>⏱️ Thời Gian Lộ:</b> Trừ 3s phạt khi đúng. / <b>🛡️ Bảo Hiểm:</b> Sai không bị dính Hình phạt sinh tồn.</li>
+            <li><b>♻️ Tái Chế:</b> 25% xài thẻ không bị mất. / <b>🗺️ Dấu Chân Tự Hào:</b> Giải xong 1 map +1 Thẻ.</li>
+            <li><b>🥷 Siêu Đạo Tặc:</b> Cướp và Hút máu tăng 50% sức mạnh. / <b>🕊️ Lông Vũ:</b> Phạt rời Tab giảm một nửa. / <b>🌟 Hào Quang:</b> Bắt đầu với 3 Thẻ.</li>
         </ul>
 
         <div style="text-align: center; margin-top: 30px;">
@@ -209,17 +208,15 @@
     </div>
 </div>
 
-<!-- MÀN HÌNH ĐĂNG NHẬP -->
 <div id="setup-section" class="card">
     <img src="stock-vector-seamless-puzzles-grid-blank-template-jigsaw-puzzle-pieces-seamless-pattern-mosaic-background-2747017317.jpg" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
     
     <h1 style="color: var(--danger); user-select: none;">THEO DẤU CHÂN NGƯỜI</h1>
     
     <div class="meta-info" style="font-size: 14px; background: #fce8e6; color: var(--danger); padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold;">
-        ⚠️ COMBO CHUỖI CÀNG CAO CÀNG ĐƯỢC +% ĐIỂM.<br>MỖI NGƯỜI NHẬN 1 NỘI TẠI VÀ 1 THẺ KỸ NĂNG!
+        ⚠️ SỰ KIỆN TOÀN SERVER (MỖI 30S). TÍCH NỘ ĐỂ HÓA CHAO!<br>DÙNG ĐIỂM ĐỂ MUA KỸ NĂNG Ở CHỢ ĐEN.
     </div>
 
-    <!-- NÚT MỞ SÁCH MA THUẬT -->
     <button class="btn btn-info" onclick="document.getElementById('guide-modal').classList.add('show');" style="margin-bottom: 20px;">📖 SÁCH MA THUẬT (Luật & Kỹ Năng)</button>
 
     <input type="text" id="playerName" placeholder="Nhập Tên / Mã Sinh Viên...">
@@ -227,7 +224,7 @@
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
 
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v16.1.0 (Vá Lỗi 25 Câu) <br>
+        Phiên bản v17.0.0 (Kỷ Nguyên Hỗn Mang) <br>
         Copyright © 2026 by Idori
     </div>
 </div>
@@ -278,7 +275,7 @@
     </table>
     
     <div id="admin-event-log" style="height: 250px; overflow-y: auto; background: #1e1e1e; color: #00ff00; text-align: left; padding: 15px; font-family: monospace; border-radius: 8px; margin-top: 20px; border: 2px solid #333; box-shadow: inset 0 0 10px #000;">
-        <div id="log-title-anchor" style="color: #ffeb3b; font-weight: bold; margin-bottom: 10px; border-bottom: 1px dashed #555; padding-bottom: 5px;">--- HỆ THỐNG GIÁM SÁT KỸ NĂNG (MẮT THẦN VAR) ---</div>
+        <div id="log-title-anchor" style="color: #ffeb3b; font-weight: bold; margin-bottom: 10px; border-bottom: 1px dashed #555; padding-bottom: 5px;">--- HỆ THỐNG GIÁM SÁT KỸ NĂNG & SỰ KIỆN SERVER ---</div>
         <div id="log-content-area"></div>
     </div>
     
@@ -296,6 +293,11 @@
         <div class="score-box">ĐIỂM: <span id="current-score">0</span></div>
         <div class="combo-box" id="combo-display">🔥 CHUỖI: 0</div>
         
+        <!-- THANH NỘ HÓA CHAO -->
+        <div style="margin-top: 10px; font-weight: bold; font-size: 13px; color: #ffeb3b; background: #333; padding: 5px; border-radius: 5px; text-align: center;">🔥 NỘI TẠI THẦN BÍ: <span id="rage-text">0%</span></div>
+        <div class="progress-container" style="background:#555; height:15px; border: 1px solid #ffeb3b; margin-top: 2px;"><div class="progress-bar" id="rage-bar" style="background: linear-gradient(90deg, #ff9800, #ffeb3b); width: 0%;"></div></div>
+        <button class="btn" id="awaken-btn" onclick="triggerAwaken()" style="background: #ccc; color: #666; margin-top: 5px; font-size: 14px; pointer-events: none; transition: 0.3s; width: 100%;">⚡ THỨC TỈNH ⚡</button>
+        
         <div class="passive-box" id="passive-display" onclick="showPassiveDesc()" style="margin-top: 10px;">✨ NỘI TẠI: Đang Random...</div>
         
         <div style="font-weight: bold; color: #5f6368; font-size: 14px; margin-top: 10px;">Tiến độ hành trình: <span id="progress-text">0/40</span></div>
@@ -303,15 +305,14 @@
         
         <button class="btn btn-warning" id="skill-btn" onclick="drawSkill()" style="margin-top: 15px; font-size: 15px; font-weight: 900; background: linear-gradient(45deg, #fbbc04, #ff6d00); color: white; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(255, 109, 0, 0.5); animation: pulse 1s infinite;">🃏 RÚT THẺ KỸ NĂNG</button>
         
+        <!-- NÚT MỞ CHỢ ĐEN -->
+        <button class="btn btn-secondary" onclick="openBlackMarket()" style="margin-top: 10px; font-size: 14px; border: 2px dashed var(--danger); font-weight: bold; background: #222; color: #00ff00;">🛒 CHỢ ĐEN (Black Market)</button>
+
         <div class="live-lb-box">
             <h4 class="live-lb-title">🏆 TOP CHIẾN BINH LIVE</h4>
             <div class="live-lb-list" id="sidebar-lb-body">
                 <i style="color:#757575;">Đang tải dữ liệu...</i>
             </div>
-        </div>
-
-        <div style="background: #fce8e6; padding: 10px; border-radius: 8px; font-size: 13px; text-align: center; color: var(--danger); font-weight: bold; margin-top: 10px;">
-            🚨 RADAR ANTI-CHEAT ĐANG BẬT
         </div>
     </div>
 
@@ -380,7 +381,6 @@
     const database = firebase.database();
 
     const p1Data_Original = [
-        // 15 câu cũ
         { q: "Vào ngày tháng năm nào, người thanh niên yêu nước Nguyễn Tất Thành đã chính thức rời bến Nhà Rồng, bắt đầu hành trình bôn ba tìm đường cứu nước?", opts: ["05/06/1911", "06/05/1911", "02/09/1945", "19/05/1890"], ans: 0 },
         { q: "Con tàu buôn của Pháp đã đưa Bác Hồ rời khỏi Sài Gòn sang phương Tây năm 1911 mang tên là gì?", opts: ["Latouche-Tréville", "Amiral Latouche-Tréville", "Đô đốc Courbet", "Chasseloup-Laubat"], ans: 1 },
         { q: "Khi xin làm việc trên tàu Amiral Latouche-Tréville để được sang Pháp, Nguyễn Tất Thành đã lấy tên gọi (bí danh) là gì?", opts: ["Nguyễn Ái Quốc", "Lý Thụy", "Văn Ba", "Hồ Chí Minh"], ans: 2 },
@@ -396,8 +396,6 @@
         { q: "Sau 30 năm hoạt động ở nước ngoài, mùa xuân năm 1941, lãnh tụ Nguyễn Ái Quốc đã vượt biên giới Việt - Trung để trở về tỉnh nào của nước ta?", opts: ["Lạng Sơn", "Cao Bằng", "Tuyên Quang", "Hà Giang"], ans: 1 },
         { q: "Trong khoảng thời gian từ năm 1928 đến 1929, khi hoạt động cách mạng tại Thái Lan (Xiêm), Bác Hồ đã sử dụng bí danh nào để che mắt địch?", opts: ["Thầu Chín", "Vương", "Trần", "Lý Thụy"], ans: 0 },
         { q: "Tác phẩm nổi tiếng 'Bản án chế độ thực dân Pháp' do Nguyễn Ái Quốc viết bằng tiếng Pháp được xuất bản lần đầu tiên (năm 1925) tại quốc gia nào?", opts: ["Việt Nam", "Trung Quốc", "Pháp", "Nga"], ans: 2 },
-        
-        // 10 CÂU MỚI BỔ SUNG (Câu 16 -> 25)
         { q: "Sự kiện Nguyễn Ái Quốc bỏ phiếu tán thành Quốc tế III và tham gia sáng lập Đảng Cộng sản Pháp (12/1920) diễn ra tại Đại hội nào?", opts: ["Đại hội Tours", "Đại hội Versailles", "Đại hội Paris", "Đại hội London"], ans: 0 },
         { q: "Trong thời gian hoạt động ở Quảng Châu (Trung Quốc) những năm 1924-1925, Nguyễn Ái Quốc thường sử dụng bí danh nào?", opts: ["Vương", "Văn Ba", "Lý Thụy", "Thầu Chín"], ans: 2 },
         { q: "Tác phẩm 'Đường Kách mệnh' - tập hợp các bài giảng của Nguyễn Ái Quốc tại Quảng Châu, được xuất bản lần đầu tiên vào năm nào?", opts: ["1925", "1927", "1930", "1941"], ans: 1 },
@@ -437,7 +435,7 @@
         {id: 3, icon: "⏱️", name: "Thời Gian Lộ", desc: "Mỗi câu trả lời đúng sẽ giảm 3 giây thời gian phạt tổng."},
         {id: 4, icon: "🛡️", name: "Bảo Hiểm", desc: "Khi trả lời sai, KHÔNG bao giờ bị kích hoạt Hình Phạt Sinh Tồn."},
         {id: 5, icon: "♻️", name: "Tái Chế", desc: "Mỗi lần sử dụng 1 Thẻ Kỹ Năng, có 25% tỷ lệ không bị trừ mất thẻ đó."},
-        {id: 6, icon: "🗺️", name: "Dấu Chân Tự Hào", desc: "Hoàn thành 1 địa danh Bản Đồ, tự động được thưởng 1 Thẻ Kỹ Năng (Tối đa 5 thẻ)."},
+        {id: 6, icon: "🗺️", name: "Dấu Chân Tự Hào", desc: "Hoàn thành 1 địa danh Bản Đồ, tự động được thưởng 1 Thẻ Kỹ Năng."},
         {id: 7, icon: "🥷", name: "Siêu Đạo Tặc", desc: "Cướp Điểm và Hút Máu Server tăng 50% hiệu quả (Cướp 150đ, Hút 75đ)."},
         {id: 8, icon: "🕊️", name: "Lông Vũ", desc: "Nếu lỡ rời tab bị hệ thống bắt, thời gian phạt vắng mặt sẽ được giảm đi một nửa."},
         {id: 9, icon: "🌟", name: "Hào Quang", desc: "Sinh ra ở vạch đích! Bắt đầu game có sẵn 3 Thẻ Kỹ Năng thay vì 1."}
@@ -456,6 +454,8 @@
     let isVIP = false;
     let isSilenced = false; 
     let myPassive = -1;
+    let rage = 0;
+    let isAwakened = false;
 
     function showToast(msg, type = 'warning') {
         let t = document.createElement('div');
@@ -502,10 +502,24 @@
         let ev = snapshot.val();
         if(!ev || (Date.now() - ev.time > 15000)) return; 
 
+        // ADMIN LOG
         let logDivArea = document.getElementById('log-content-area');
         if(logDivArea && document.getElementById('admin-live-section').style.display === 'block') {
             let t = new Date(ev.time).toLocaleTimeString();
             let actionText = "đã dùng một kỹ năng bí ẩn";
+            
+            if(ev.type.startsWith('global_')) {
+                if(ev.type === 'global_meteor_shower') actionText = "kích hoạt Mưa Sao Băng (Toàn server +1 thẻ) ☄️";
+                if(ev.type === 'global_economic_crisis') actionText = "gây Khủng Hoảng Kinh Tế (Chia đôi điểm Top 1) 📉";
+                if(ev.type === 'global_earth_hour') actionText = "kích hoạt Giờ Trái Đất (Đen thui 5s) 🌍";
+                if(ev.type === 'global_u_turn') actionText = "kích hoạt Quay Xe (Đổi chỗ Top 1 và Bét bảng) 🌪️";
+                let logLine = `<div style="margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:5px;">[${t}] <b><span style='color:var(--danger)'>${ev.by}</span></b>: <span style='color:#fff'>${actionText}</span></div>`;
+                if(logDivArea.dataset.lastLog !== ev.time.toString()) {
+                    logDivArea.innerHTML = logLine + logDivArea.innerHTML;
+                    logDivArea.dataset.lastLog = ev.time.toString();
+                }
+                return;
+            }
             
             if(ev.type === 'freeze') actionText = "đóng băng toàn bản đồ ❄️";
             else if(ev.type === 'red_card') actionText = `rút Thẻ Đỏ đuổi <span style='color:var(--danger)'>${ev.target}</span> khỏi sân 🟥`;
@@ -534,7 +548,49 @@
 
         if(!isGameActive || isGameOver) return;
 
+        // XỬ LÝ SỰ KIỆN TOÀN SERVER
+        if(ev.type === 'global_meteor_shower') {
+            skillCount++; updateStats();
+            showToast("☄️ MƯA SAO BĂNG! Toàn server nhận miễn phí +1 Thẻ Kỹ Năng!", "success");
+        }
+        if(ev.type === 'global_economic_crisis') {
+            if(isAwakened) { showToast("⚡ Thức Tỉnh giúp bạn miễn nhiễm Khủng Hoảng Kinh Tế!", "success"); return; }
+            let top1 = currentLeaderboard.length > 0 ? currentLeaderboard[0].name : null;
+            if(top1 === playerName) {
+                score = Math.floor(score / 2); updateStats();
+                showToast("📉 KHỦNG HOẢNG KINH TẾ! Bạn đang Top 1 nên bị chia đôi điểm!", "danger");
+            } else {
+                showToast("📉 KHỦNG HOẢNG KINH TẾ! Top 1 vừa bị chia đôi tài sản!", "warning");
+            }
+        }
+        if(ev.type === 'global_earth_hour') {
+            if(isAwakened) { showToast("⚡ Thức Tỉnh thắp sáng màn đêm! Miễn nhiễm Giờ Trái Đất!", "success"); return; }
+            let blackUi = document.createElement('div'); blackUi.id = 'global-blackout';
+            blackUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;display:flex;align-items:center;justify-content:center;color:white;font-size:30px;font-weight:bold;";
+            blackUi.innerHTML = `🌍 GIỜ TRÁI ĐẤT (5s) 🌍`;
+            document.body.appendChild(blackUi);
+            setTimeout(() => { if(document.getElementById('global-blackout')) document.getElementById('global-blackout').remove(); }, 5000);
+        }
+        if(ev.type === 'global_u_turn') {
+            if(isAwakened) { showToast("⚡ Thức Tỉnh giúp bạn miễn nhiễm Cú Quay Xe!", "success"); return; }
+            if(currentLeaderboard.length > 1) {
+                let top = currentLeaderboard[0];
+                let bot = currentLeaderboard[currentLeaderboard.length - 1];
+                if(playerName === top.name) { score = bot.score; updateStats(); showToast("🌪️ QUAY XE! Điểm của bạn bị tráo với Bét bảng!", "danger"); }
+                else if(playerName === bot.name) { score = top.score; updateStats(); showToast("🌪️ QUAY XE! Phép màu! Bạn nhận toàn bộ điểm của Top 1!", "success"); }
+                else { showToast("🌪️ QUAY XE TOÀN SERVER! Top 1 và Bét bảng vừa đổi chỗ!", "warning"); }
+            }
+        }
+
         let negativeEvents = ['freeze', 'red_card', 'curse', 'earthquake', 'shrink', 'time_steal', 'steal', 'aoe_steal', 'var_check', 'swap', 'black_hole', 'spooky_sound', 'silence', 'blackout', 'mind_control'];
+        
+        // KIỂM TRA HÓA CHAO (MIỄN NHIỄM)
+        if (isAwakened && negativeEvents.includes(ev.type) && ev.by !== playerName) {
+            showToast(`⚡ HÓA CHAO: Bạn đã bật ngược bùa chú của <b>${ev.by}</b>!`, "success");
+            return;
+        }
+
+        // KIỂM TRA NỘI TẠI PHÚC KHÍ
         if (negativeEvents.includes(ev.type) && ev.by !== playerName) {
             if (!ev.target || ev.target === playerName) { 
                 if (myPassive === 1 && Math.random() < 0.30) {
@@ -545,6 +601,7 @@
             }
         }
 
+        // KIỂM TRA NỘI TẠI GIÁP GAI
         let targetEvents = ['red_card', 'time_steal', 'steal', 'var_check', 'swap', 'mind_control'];
         if (targetEvents.includes(ev.type) && ev.target === playerName && ev.by !== playerName) {
             if (myPassive === 0) database.ref('room_events').set({type: 'thorns', by: playerName, target: ev.by, time: Date.now()});
@@ -713,6 +770,14 @@
     function adminStartGame() {
         database.ref('room_state').set('playing');
         document.getElementById('admin-section').style.display = 'none'; document.getElementById('admin-live-section').style.display = 'block';
+        
+        // ADMIN KÍCH HOẠT SỰ KIỆN SERVER MỖI 30 GIÂY
+        setInterval(() => {
+            if(document.getElementById('admin-live-section').style.display !== 'block') return;
+            let events = ['meteor_shower', 'economic_crisis', 'earth_hour', 'u_turn'];
+            let rndEv = events[Math.floor(Math.random() * events.length)];
+            database.ref('room_events').set({type: 'global_' + rndEv, by: 'HỆ THỐNG', time: Date.now()});
+        }, 30000);
     }
 
     function adminEndGame() { if(confirm("🛑 Bạn có CHẮC CHẮN muốn kết thúc trò chơi ngay bây giờ?")) database.ref('room_state').set('ended'); }
@@ -773,6 +838,89 @@
     function pushLocalLog(actionStr) { database.ref('room_events').set({type: 'log', by: playerName, action: actionStr, time: Date.now()}); }
     function reduceTime(sec) { elapsedTime = Math.max(0, elapsedTime - sec); }
 
+    // --- HỆ THỐNG NỘI TẠI NỘ KHÍ (RAGE) ---
+    function addRage(amount) {
+        if(isAwakened) return;
+        rage = Math.min(100, rage + amount);
+        updateRageUI();
+    }
+
+    function updateRageUI() {
+        let rBar = document.getElementById('rage-bar');
+        let rText = document.getElementById('rage-text');
+        let rBtn = document.getElementById('awaken-btn');
+        if(rBar && rText && rBtn) {
+            rBar.style.width = rage + '%';
+            rText.innerText = rage + '%';
+            if(rage >= 100 && !isAwakened) {
+                rBtn.style.background = 'linear-gradient(45deg, #ffeb3b, #ff9800)';
+                rBtn.style.color = '#000';
+                rBtn.style.pointerEvents = 'auto';
+                rBtn.style.boxShadow = '0 0 15px #ffeb3b';
+                rBtn.innerText = "⚡ BẤM ĐỂ THỨC TỈNH ⚡";
+            } else if (isAwakened) {
+                rBtn.style.background = '#ff9800';
+                rBtn.style.color = '#fff';
+                rBtn.innerText = "🔥 ĐANG HÓA CHAO 🔥";
+            } else {
+                rBtn.style.background = '#ccc';
+                rBtn.style.color = '#666';
+                rBtn.style.pointerEvents = 'none';
+                rBtn.style.boxShadow = 'none';
+                rBtn.innerText = "⚡ THỨC TỈNH ⚡";
+            }
+        }
+    }
+
+    function triggerAwaken() {
+        if(rage < 100 || isAwakened) return;
+        rage = 0; isAwakened = true;
+        elapsedTime = Math.floor(elapsedTime / 2); // Giảm nửa thời gian
+        updateStats(); updateRageUI();
+        
+        pushLocalLog("đã HÓA CHAO thức tỉnh ⚡");
+        showToast("⚡ ĐÃ THỨC TỈNH! Miễn nhiễm bùa chú & Nhân 3 Điểm trong 20s!", "success");
+        document.body.classList.add('awakened-mode');
+        
+        setTimeout(() => { 
+            isAwakened = false; 
+            document.body.classList.remove('awakened-mode'); 
+            updateRageUI();
+            showToast("⚠️ Đã hết thời gian Thức Tỉnh!", "warning"); 
+        }, 20000);
+    }
+
+    // --- CỬA HÀNG CHỢ ĐEN ---
+    function openBlackMarket() {
+        if(isInputPaused) return;
+        let html = `
+            <div style="display:grid; grid-template-columns: 1fr; gap:10px;">
+                <button class="btn" style="background:#607d8b;color:#fff;" onclick="buyItem('random', 100)">🎲 Mua 1 Thẻ Ngẫu Nhiên (100đ)</button>
+                <button class="btn" style="background:#e91e63;color:#fff;" onclick="buyItem('mind_control', 200)">😵 Thẻ Thao Túng Tâm Lý (200đ)</button>
+                <button class="btn" style="background:#d32f2f;color:#fff;" onclick="buyItem('red_card', 250)">🟥 Thẻ Đỏ 20s (250đ)</button>
+                <button class="btn" style="background:#000;color:#fff;border:1px solid #fff;" onclick="buyItem('blackout', 300)">🌑 Thẻ Tắt Đèn (300đ)</button>
+                <button class="btn" style="background:#00e5ff;color:#000;" onclick="buyItem('cr7', 400)">🐐 Thẻ Siêu Phẩm 90+ (400đ)</button>
+            </div>
+            <p style="color:#5f6368; font-size:14px; margin-top:15px;">*Mua xong hệ thống sẽ ép xài luôn lập tức!</p>
+        `;
+        openModal("🛒 CHỢ ĐEN CHIẾN THUẬT", html, "alert");
+    }
+
+    function buyItem(item, cost) {
+        if(score < cost) return showToast("❌ Nghèo mà đòi mua hàng VIP? Đi cày điểm tiếp đi!", "danger");
+        score -= cost; updateStats(); closeModal();
+        pushLocalLog("đã nạp tiền mua đồ trong Chợ Đen 🛒");
+        
+        if(item === 'random') { 
+            skillCount++; updateStats(); 
+            showToast("🛒 Đã mua thành công 1 Thẻ Ngẫu Nhiên!", "success"); 
+        }
+        else if(item === 'mind_control') { executeSkill(25); }
+        else if(item === 'red_card') { executeSkill(18); }
+        else if(item === 'blackout') { executeSkill(24); }
+        else if(item === 'cr7') { executeSkill(23); }
+    }
+
     function drawSkill() {
         if(isInputPaused) return;
         if(isSilenced && !isVIP) { showToast("🤫 BẠN ĐANG BỊ CẤM THUẬT! Không thể xài thẻ lúc này.", "danger"); return; }
@@ -817,6 +965,7 @@
             showToast("♻️ NỘI TẠI TÁI CHẾ: Bạn không bị trừ thẻ lần này!", "success");
         } else { skillCount--; }
         
+        addRage(10); // Rút thẻ được cộng 10% nộ
         updateStats();
         executeSkill(Math.floor(Math.random() * 26)); 
     }
@@ -1020,7 +1169,9 @@
         else if(currentStreak === 4) bonusPercent = 0.5;
         else if(currentStreak >= 5) bonusPercent = 0.75;
 
-        let earned = Math.round(basePoint * (1 + bonusPercent));
+        // X3 Điểm nếu đang HÓA CHAO
+        let mult = isAwakened ? 3 : 1;
+        let earned = Math.round(basePoint * (1 + bonusPercent)) * mult;
         score += earned;
 
         if (currentStreak > 0 && currentStreak % 5 === 0) {
@@ -1051,6 +1202,7 @@
             tasksCompleted++; 
             if(myPassive === 2) score += 15;
             if(myPassive === 3) reduceTime(3);
+            addRage(10); // +10% Nộ
             addScoreWithStreak(50); 
             setTimeout(() => { currentP1Index++; loadP1Question(); }, 1000);
         } else {
@@ -1079,8 +1231,10 @@
         let earned = 0; if(correctC === 4) earned = 200; else if(correctC === 3) earned = 100; else if(correctC === 2) earned = 50; else if(correctC === 1) earned = 20;
         
         if (correctC === 4 && myPassive === 3) reduceTime(3);
+        if (correctC > 0) addRage(correctC * 5); // +Nộ theo số câu đúng
+        
         if (correctC === 4) addScoreWithStreak(200);
-        else { score += earned; currentStreak = 0; } 
+        else { score += (earned * (isAwakened ? 3 : 1)); currentStreak = 0; } 
 
         document.getElementById(`hs${mapActive}`).classList.add('done'); tasksCompleted++; updateStats();
         if(myPassive === 6) { skillCount++; pushLocalLog("nhận 1 thẻ nhờ Dấu Chân Tự Hào 🗺️"); }
@@ -1103,6 +1257,7 @@
         if(ansIdx === p3PuzzleData[pzActive].ans) { 
             document.getElementById(`pz${pzActive}`).classList.add('revealed'); tasksCompleted++; 
             if(myPassive === 3) reduceTime(3); 
+            addRage(10);
             addScoreWithStreak(100);
         } else { 
             tasksCompleted++; currentStreak = 0; updateStats(); 
