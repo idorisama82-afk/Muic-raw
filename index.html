@@ -219,7 +219,7 @@
         ⚠️ COMBO CHUỖI CÀNG CAO CÀNG ĐƯỢC +% ĐIỂM.<br>MỖI NGƯỜI NHẬN 1 NỘI TẠI VÀ 1 THẺ KỸ NĂNG!
     </div>
 
-    <!-- NÚT MỞ SÁCH MA THUẬT NẰM Ở ĐÂY NÈ -->
+    <!-- NÚT MỞ SÁCH MA THUẬT -->
     <button class="btn btn-info" onclick="document.getElementById('guide-modal').classList.add('show');" style="margin-bottom: 20px;">📖 SÁCH MA THUẬT (Luật & Kỹ Năng)</button>
 
     <input type="text" id="playerName" placeholder="Nhập Tên / Mã Sinh Viên...">
@@ -227,7 +227,7 @@
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
 
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v16.0.0 (Kỷ Nguyên Khai Sáng) <br>
+        Phiên bản v16.1.0 (Vá Lỗi 25 Câu) <br>
         Copyright © 2026 by Idori
     </div>
 </div>
@@ -298,7 +298,7 @@
         
         <div class="passive-box" id="passive-display" onclick="showPassiveDesc()" style="margin-top: 10px;">✨ NỘI TẠI: Đang Random...</div>
         
-        <div style="font-weight: bold; color: #5f6368; font-size: 14px; margin-top: 10px;">Tiến độ hành trình: <span id="progress-text">0/29</span></div>
+        <div style="font-weight: bold; color: #5f6368; font-size: 14px; margin-top: 10px;">Tiến độ hành trình: <span id="progress-text">0/40</span></div>
         <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
         
         <button class="btn btn-warning" id="skill-btn" onclick="drawSkill()" style="margin-top: 15px; font-size: 15px; font-weight: 900; background: linear-gradient(45deg, #fbbc04, #ff6d00); color: white; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(255, 109, 0, 0.5); animation: pulse 1s infinite;">🃏 RÚT THẺ KỸ NĂNG</button>
@@ -318,7 +318,7 @@
     <div class="main-content" id="game-main-area">
         <div class="card q-card" id="phase1-card">
             <h2 style="color: var(--primary); margin-bottom: 5px;">GĐ 1: TÌM ĐƯỜNG CỨU NƯỚC</h2>
-            <div class="q-number" id="p1-counter">Câu 1 / 15</div>
+            <div class="q-number" id="p1-counter">Câu 1 / 25</div>
             <div class="q-text" id="p1-question">Nội dung câu hỏi...</div>
             <div class="options-grid" id="p1-options"></div>
         </div>
@@ -380,7 +380,6 @@
     const database = firebase.database();
 
     const p1Data_Original = [
-        const p1Data_Original = [
         // 15 câu cũ
         { q: "Vào ngày tháng năm nào, người thanh niên yêu nước Nguyễn Tất Thành đã chính thức rời bến Nhà Rồng, bắt đầu hành trình bôn ba tìm đường cứu nước?", opts: ["05/06/1911", "06/05/1911", "02/09/1945", "19/05/1890"], ans: 0 },
         { q: "Con tàu buôn của Pháp đã đưa Bác Hồ rời khỏi Sài Gòn sang phương Tây năm 1911 mang tên là gì?", opts: ["Latouche-Tréville", "Amiral Latouche-Tréville", "Đô đốc Courbet", "Chasseloup-Laubat"], ans: 1 },
@@ -991,8 +990,8 @@
     
     function updateStats() { 
         document.getElementById('current-score').innerText = score; 
-        document.getElementById('progress-text').innerText = `${tasksCompleted}/29`; 
-        document.getElementById('progress-bar').style.width = (tasksCompleted/29)*100 + '%'; 
+        document.getElementById('progress-text').innerText = `${tasksCompleted}/40`; 
+        document.getElementById('progress-bar').style.width = (tasksCompleted/40)*100 + '%'; 
         
         let comboUI = document.getElementById('combo-display');
         comboUI.innerText = "🔥 CHUỖI: " + currentStreak;
