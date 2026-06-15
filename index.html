@@ -62,7 +62,24 @@
         
         .q-card { border-top: 6px solid var(--primary); padding: 30px; text-align: center;} 
         .q-number { font-weight: bold; color: #5f6368; font-size: 1rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;}
-        .q-text { font-size: 24px; color: #202124; font-weight: bold; margin-bottom: 30px; min-height: 80px; display: flex; align-items: center; justify-content: center;}
+        .q-text { 
+            font-size: 20px; 
+            color: #202124; 
+            font-weight: 600; 
+            margin-bottom: 30px; 
+            min-height: 80px; 
+            display: block !important; 
+            text-align: left;       /* THAY ĐỔI Ở ĐÂY: Căn đều hai bên mép chữ */
+            line-height: 1.6; 
+            width: 100%;
+            padding: 0 25px;           /* Tăng nhẹ padding tí cho chữ cách đều hai cạnh bên chỉn chu hơn */
+            box-sizing: border-box;
+        }
+
+        /* Giữ nguyên đoạn này để bảo hiểm không bị rời icon */
+        .q-text b, .q-text i, .q-text span {
+            display: inline !important; 
+        }
         
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px;}
         .option { padding: 20px; border: 2px solid #dadce0; border-radius: 12px; cursor: pointer; transition: transform 0.1s ease-out, background 0.2s; background: #fff; font-size: 18px; font-weight: bold; display: flex; align-items: center;}
@@ -121,6 +138,24 @@
         
         @media (max-width: 768px) { .options-grid { grid-template-columns: 1fr; } .container { flex-direction: column; } .sidebar { position: static; margin-bottom: 20px;} }
         #admin-event-log::-webkit-scrollbar { width: 8px; } #admin-event-log::-webkit-scrollbar-track { background: #333; } #admin-event-log::-webkit-scrollbar-thumb { background: #00ff00; border-radius: 4px; } #guide-modal .modal-box::-webkit-scrollbar { width: 8px; } #guide-modal .modal-box::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        #p1-question {
+        display: flex;
+        flex-direction: column; /* Ép tất cả nội dung xếp dọc xuống dưới */
+        align-items: center;    /* Căn giữa toàn bộ nội dung */
+        justify-content: center;
+        gap: 15px;              /* Tạo khoảng cách 15px giữa các đoạn cho thoáng mắt */
+        text-align: center;
+        width: 100%;            /* Đảm bảo khung chiếm đủ chiều rộng */
+    }
+
+    /* Ép các thẻ bên trong câu hỏi (nếu có) không bị co cụm */
+    #p1-question span, 
+    #p1-question div,
+    #p1-question p {
+        display: block; 
+        max-width: 90%;         /* Giới hạn chiều rộng để chữ tự rớt dòng cho đẹp */
+        margin: 0 auto;
+    }
     </style>
 </head>
 <body>
@@ -263,7 +298,7 @@
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
 
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v20.0.0  <br>
+        Phiên bản v20.1.0  <br>
         Copyright © 2026 by Idori
     </div>
 </div>
