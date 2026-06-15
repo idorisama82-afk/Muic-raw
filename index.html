@@ -1579,7 +1579,12 @@
 
     function loadP1Question() {
         if (currentP1Index >= p1Data.length) { document.getElementById('phase1-card').style.display = 'none'; document.getElementById('phase2-card').style.display = 'block'; return; }
-        const q = p1Data[currentP1Index]; document.getElementById('p1-counter').innerText = `Câu ${currentP1Index + 1} / ${p1Data.length}`; document.getElementById('p1-question').innerText = q.q;
+        const q = p1Data[currentP1Index]; 
+        document.getElementById('p1-counter').innerText = `Câu ${currentP1Index + 1} / ${p1Data.length}`; 
+        
+        // SỬA Ở ĐÂY: Đổi innerText thành innerHTML để nó render được thẻ <b>, <i>, <br>
+        document.getElementById('p1-question').innerHTML = q.q; 
+        
         const optionsDiv = document.getElementById('p1-options'); optionsDiv.innerHTML = ""; const labels = ['A','B','C','D'];
         
         let btnElements = [];
@@ -1589,6 +1594,25 @@
             optionsDiv.appendChild(btn);
         });
 
+        // V19.2 Bùa Lú Lẫn Update
+        btnElements.forEach((btn, idx) => {
+            btn.onclick = () => { 
+                if(!isInputPaused) {
+                    let clickedIdx = idx;
+                    let targetBtn = btn;
+
+                    if(isConfused) {
+                        let otherIndices = [0,1,2,3].filter(i => i !== idx);
+                        clickedIdx = otherIndices[Math.floor(Math.random() * otherIndices.length)];
+                        targetBtn = btnElements[clickedIdx];
+                        showToast("🤡 BÙA LÚ LẪN: Ma xui quỷ khiến, tay bạn tự động bẻ lái sang đáp án khác!", "danger");
+                    }
+                    
+                    handleP1Answer(clickedIdx, targetBtn, q); 
+                }
+            };
+        });
+    }
         // V19.2 Bùa Lú Lẫn Update
         btnElements.forEach((btn, idx) => {
             btn.onclick = () => { 
