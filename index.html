@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Theo Dấu Chân Người - V19.2</title>
+    <title>Theo Dấu Chân Người</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -144,7 +144,7 @@
         
         <h3>🔥 1. CƠ CHẾ SINH TỒN CƠ BẢN</h3>
         <ul>
-            <li><b>Hệ thống Combo:</b> Trả lời đúng liên tiếp sẽ được cộng thêm % điểm số.</li>
+            <li><b>Hệ thống Combo:</b> Trả lời đúng liên tiếp sẽ được cộng thêm % điểm số (Chuỗi 4: +50%, Chuỗi 5+: +75%).</li>
             <li><b>Phần Thưởng:</b> Cứ đạt chuỗi 5, 10, 15... bạn sẽ được tặng miễn phí <b>1 Thẻ Kỹ Năng</b>.</li>
             <li><b>Phạt Anti-Cheat:</b> Rời khỏi Tab làm bài sẽ bị phạt cộng thêm thời gian gấp 4 lần. Lông Vũ giảm nửa án phạt.</li>
             <li><b>Điểm Xếp Hạng:</b> = Điểm Thực Tế - (Thời gian sử dụng x 0.1). Hãy vừa làm nhanh vừa làm đúng!</li>
@@ -153,16 +153,35 @@
         <h3>🌪️ 2. KỶ NGUYÊN HỖN MANG (TÍNH NĂNG MỚI)</h3>
         <ul>
             <li><b>Thức Tỉnh (Hóa Chao):</b> Đạt 100% Nộ (từ trả lời/xài thẻ). Hóa Chao trong 20s: Giảm nửa thời gian phạt, <b>Nhân 3 Điểm</b>, <b>MIỄN NHIỄM 100%</b> bùa chú.</li>
-            <li><b>Lệnh Truy Nã 🎯:</b> Kẻ nào ngồi Top 1 trụ quá 15s bị gắn icon. Ám toán thành công nhận thưởng nóng <b>+200đ</b>.</li>
+            <li><b>Lệnh Truy Nã 🎯:</b> Kẻ nào ngồi Top 1 trụ quá 15s bị gắn icon. Ám toán thành công (Cướp, Thẻ Đỏ...) nhận thưởng nóng <b>+200đ</b>.</li>
             <li><b>⚔️ Đấu Trường La Mã:</b> Độc quyền Chợ Đen (Mua vé 500đ). Đóng băng toàn phòng, 1v1 giải toán khô máu, thắng ẵm 600đ!</li>
             <li><b>📜 Khế Ước Ác Quỷ:</b> Nút dành riêng cho kẻ Bét Bảng. Nhận ngay 800đ và 3 Thẻ. Nhưng sai 1 câu trong 2 phút tới là về 0 điểm!</li>
-            <li><b>🤡 Bùa Lú Lẫn:</b> Kẻ dính bùa sẽ tự động bị "bẻ lái" sang đáp án sai khi click chọn đáp án mình muốn!</li>
-            <li><b>Rương Gacha Nhân Phẩm:</b> Quay 100đ/lần. Rủi ro cao, có tỷ lệ nổ <b>Găng Tay Thanos</b> chia đôi điểm nửa phòng.</li>
+            <li><b>🤡 Bùa Lú Lẫn (Thẻ số 26):</b> Kẻ dính bùa sẽ thấy 4 nút đáp án "bỏ chạy" liên tục mỗi khi rê chuột vào trong 15s.</li>
+            <li><b>Rương Gacha Nhân Phẩm:</b> Quay 100đ/lần. Có tỷ lệ nổ thẻ xịn, vé La Mã, hoặc <b>Găng Tay Thanos</b> chia đôi điểm nửa phòng.</li>
+            <li><b>Đại Hội Cổ Vũ:</b> Cả phòng góp điểm (50đ/lần). Quỹ đạt 1000đ thì toàn server húp <b>+2 Thẻ Kỹ Năng</b>.</li>
         </ul>
 
         <h3>✨ 3. HỆ THỐNG 10 NỘI TẠI (PASSIVE)</h3>
         <ul>
-            <li>Giáp Gai (Phản 50đ), Phúc Khí (30% Né), Thương Nhân (+15đ), Thời Gian Lộ (-3s), Bảo Hiểm (Không phạt sinh tồn), Tái Chế (25% giữ thẻ), Dấu Chân Tự Hào (Xong map +1 thẻ), Siêu Đạo Tặc (+50% cướp), Lông Vũ (Giảm phạt tab), Hào Quang (Sẵn 3 Thẻ).</li>
+            <li><b>🦔 Giáp Gai:</b> Phản đòn 50 điểm cho kẻ ám toán.</li>
+            <li><b>🍀 Phúc Khí:</b> 30% tỷ lệ NÉ TRÁNH hoàn toàn bùa chú.</li>
+            <li><b>💰 Thương Nhân:</b> Mỗi câu Trắc nghiệm đúng tự động bo thêm 15đ.</li>
+            <li><b>⏱️ Thời Gian Lộ:</b> Đúng 1 câu bất kỳ giảm 3s quỹ thời gian phạt.</li>
+            <li><b>🛡️ Bảo Hiểm:</b> Làm sai mất chuỗi nhưng KHÔNG kích hoạt Hình Phạt rủi ro.</li>
+            <li><b>♻️ Tái Chế:</b> 25% cơ hội xài Thẻ Kỹ Năng không bị mất thẻ.</li>
+            <li><b>🗺️ Dấu Chân Tự Hào:</b> Vượt qua 1 địa danh Bản Đồ thưởng ngay 1 Thẻ.</li>
+            <li><b>🥷 Siêu Đạo Tặc:</b> Bàn Tay Đen và Hút Máu tăng 50% uy lực.</li>
+            <li><b>🕊️ Lông Vũ:</b> Giảm một nửa án phạt thời gian khi lỡ chuyển Tab.</li>
+            <li><b>🌟 Hào Quang:</b> Sinh ra ở vạch đích, bắt đầu với 3 Thẻ thay vì 1.</li>
+        </ul>
+
+        <h3>🃏 4. KHO TÀNG 26 THẺ KỸ NĂNG</h3>
+        <ul>
+            <li><b>Nhóm Tự Cường:</b> x2 Điểm, -60s Phạt, Cân Đẩu Vân, 50/50, Thanh Tẩy, Điệp Viên.</li>
+            <li><b>Nhóm Trộm Cắp:</b> Bàn Tay Đen (Cướp 100đ Top 1), Đạo Tặc (Cướp thời gian), Hút Máu (Cả phòng).</li>
+            <li><b>Nhóm Phá Hoại (AoE):</b> Bão Tuyết, Ảo Giác, Động Đất, Nấm Lùn, Tắt Đèn, Ma Âm, Hố Đen, Cấm Thuật (Khóa rút thẻ).</li>
+            <li><b>Nhóm Thao Túng:</b> Tráo Điểm, Thẻ Đỏ (Cấm thi 20s), Check VAR (-150đ), Thao Túng Tâm Lý, <b>Bùa Lú Lẫn (Mới)</b>.</li>
+            <li><b>Nhóm FIFA World Cup:</b> Robin Hood, Hattrick, Thay Người, Siêu Phẩm 90+.</li>
         </ul>
 
         <div style="text-align: center; margin-top: 30px;">
@@ -187,7 +206,7 @@
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
 
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v19.2.0 (Khóa Đào Tạo) <br>
+        Phiên bản v19.2.1  <br>
         Copyright © 2026 by Idori
     </div>
 </div>
