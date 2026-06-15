@@ -148,14 +148,125 @@
         width: 100%;            /* Đảm bảo khung chiếm đủ chiều rộng */
     }
 
-    /* Ép các thẻ bên trong câu hỏi (nếu có) không bị co cụm */
-    #p1-question span, 
-    #p1-question div,
-    #p1-question p {
-        display: block; 
-        max-width: 90%;         /* Giới hạn chiều rộng để chữ tự rớt dòng cho đẹp */
-        margin: 0 auto;
-    }
+        /* Ép các thẻ bên trong câu hỏi (nếu có) không bị co cụm */
+        #p1-question span, 
+        #p1-question div,
+        #p1-question p {
+            display: block; 
+            max-width: 90%;         /* Giới hạn chiều rộng để chữ tự rớt dòng cho đẹp */
+            margin: 0 auto;
+        }
+        /* Hiệu ứng Đỏ - Xám di chuyển cho [Admin] */
+        .admin-tag {
+            background: linear-gradient(90deg, #ff0000, #404040, #ff0000);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: adminMove 2s linear infinite;
+            font-weight: bold;
+            margin-right: 5px; /* Cách ra một chút cho đẹp */
+        }
+
+        /* Hiệu ứng 7 màu + Viền vàng lấp lánh cho Idori */
+        /* Container chứa các chữ cái */
+        .idori-container {
+            display: inline-block;
+        }
+
+        /* Từng chữ cái một */
+        /* Từng chữ cái một - Đã thay màu Tím tươi & Xám nhạt */
+        /* Từng chữ cái một - Đã thay màu Tím nhạt & Xám đậm */
+        /* Từng chữ cái - Phối màu Neon cực cháy */
+        .letter {
+            display: inline-block;
+            animation: 
+                moveGradient 3s linear infinite,   
+                waveMove 1.5s ease-in-out infinite;
+            
+            /* Màu Gradient: Xanh Cyan (#00E5FF) - Hồng Neon (#FF007F) - Tím đậm (#4A00E0) */
+            background: linear-gradient(90deg, #00E5FF, #FF007F, #4A00E0);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            
+            /* Không viền, không bóng - để nét chữ sắc lẹm */
+            -webkit-text-stroke: none;
+            text-shadow: none;
+            font-weight: 900;
+        }
+
+        @keyframes waveMove {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); } /* Độ nảy của sóng */
+        }
+
+        @keyframes moveGradient {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        
+        @keyframes adminMove {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        @keyframes rainbowMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* Khung tin nhắn cho Admin */
+        .admin-msg-box {
+            /* Gradient đêm huyền ảo: Xanh Navy - Tím đậm - Đen */
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background-size: 300% 300%;
+            
+            /* Chuyển động chậm, nhẹ nhàng (10s) tạo cảm giác cao cấp */
+            animation: midnightShift 10s ease infinite;
+            
+            /* Viền mỏng màu xanh neon mờ để khung sắc nét */
+            border: 1px solid rgba(100, 100, 255, 0.3);
+            
+            /* Bo góc và bóng đổ tối */
+            border-radius: 12px;
+            padding: 10px 15px;
+            margin: 8px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+
+        @keyframes midnightShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes rainbowMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 400% 50%; }
+        }
+        @keyframes moveBg {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+        .chat-text-gradient {
+            /* Gradient: Vàng tươi (#FFD700) sang Trắng (#FFFFFF) -> Nổi bật hơn nhiều */
+            background: linear-gradient(90deg, #FFD700, #FFFFFF, #FFD700);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            
+            /* Animation chạy màu */
+            animation: moveGradient 3s linear infinite;
+            
+            /* Độ đậm để chữ dày dặn */
+            font-weight: 900;
+            
+            /* VIỀN & BÓNG: Cái này làm chữ tách khỏi nền */
+            /* Dùng viền đen mờ nhẹ để tạo tương phản trên nền tối */
+            -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.4); 
+            /* Thêm shadow để chữ "nổi" lên trên */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -298,7 +409,7 @@
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
 
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v20.1.0  <br>
+        Phiên bản v21.0.0  <br>
         Copyright © 2026 by Idori
     </div>
 </div>
@@ -407,6 +518,14 @@
             <h4 class="live-lb-title">🏆 TOP CHIẾN BINH LIVE</h4>
             <div class="live-lb-list" id="sidebar-lb-body"><i style="color:#757575;">Đang tải dữ liệu...</i></div>
         </div>
+        <div class="card" style="margin-top: 15px; padding: 15px; border-radius: 10px; background: #fff;">
+        <h4 style="margin: 0 0 10px 0; color: var(--primary);">💬 KÊNH CHAT</h4>
+        <div id="chat-messages" style="height: 150px; overflow-y: auto; background: #f9f9f9; padding: 5px; border: 1px solid #eee; margin-bottom: 10px; font-size: 13px;"></div>
+        <div style="display: flex; gap: 5px;">
+            <input type="text" id="chat-input" placeholder="Nhập chat..." style="width: 100%; padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px;">
+            <button class="btn" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="sendChatMessage()">Gửi</button>
+        </div>
+    </div>
     </div>
 
     <div class="main-content" id="game-main-area">
@@ -824,7 +943,9 @@
                 if(ev.type === 'global_economic_crisis') actionText = "gây Khủng Hoảng Kinh Tế (Chia đôi điểm Top 1) 📉";
                 if(ev.type === 'global_earth_hour') actionText = "kích hoạt Giờ Trái Đất (Đen thui 5s) 🌍";
                 if(ev.type === 'global_u_turn') actionText = "kích hoạt Quay Xe (Đổi chỗ Top 1 và Bét bảng) 🌪️";
-                let logLine = `<div style="margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:5px;">[${t}] <b><span style='color:var(--danger)'>${ev.by}</span></b>: <span style='color:#fff'>${actionText}</span></div>`;
+                // Thay đoạn logLine cũ bằng đoạn này:
+                let displayName = (ev.by === 'HỆ THỐNG') ? '⚙️ HỆ THỐNG' : ev.by;
+                let logLine = `<div style="margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:5px;">[${t}] <b><span style='color:var(--warning)'>${displayName}</span></b>: <span style='color:#fff'>${actionText}</span></div>`;
                 if(logDivArea.dataset.lastLog !== ev.time.toString()) { logDivArea.innerHTML = logLine + logDivArea.innerHTML; logDivArea.dataset.lastLog = ev.time.toString(); }
                 return;
             }
@@ -853,7 +974,9 @@
             else if(ev.type === 'arena_win') actionText = `đã chém gục <span style='color:var(--danger)'>${ev.loser}</span> tại Đấu Trường 🏆`;
             else if(ev.type === 'log') actionText = ev.action; 
 
-            let logLine = `<div style="margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:5px;">[${t}] <b><span style='color:#fff'>${ev.by}</span></b>: <span style='color:var(--warning)'>${actionText}</span></div>`;
+            let displayName = (ev.by === 'HỆ THỐNG') ? '⚙️ HỆ THỐNG' : ev.by;
+            let nameColor = (ev.by === 'HỆ THỐNG') ? 'var(--warning)' : '#fff';
+            let logLine = `<div style="margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:5px;">[${t}] <b><span style='color:${nameColor}'>${displayName}</span></b>: <span style='color:var(--warning)'>${actionText}</span></div>`;
             if(logDivArea.dataset.lastLog !== ev.time.toString()) { logDivArea.innerHTML = logLine + logDivArea.innerHTML; logDivArea.dataset.lastLog = ev.time.toString(); }
         }
 
@@ -1171,8 +1294,17 @@
     }
 
     function adminEndGame() { if(confirm("🛑 KẾT THÚC TRẬN?")) database.ref('room_state').set('ended'); }
-    function adminResetRoom() { if(confirm("XÓA SẠCH MỌI THỨ?")) { database.ref('room_state').set('waiting'); database.ref('room_players').remove(); database.ref('bang_xep_hang').remove(); database.ref('room_events').remove(); database.ref('game_meta').remove(); location.reload(); } }
-    
+    function adminResetRoom() { 
+        if(confirm("XÓA SẠCH MỌI THỨ (Bao gồm cả lịch sử Chat)?")) { 
+            database.ref('room_state').set('waiting'); 
+            database.ref('room_players').remove(); 
+            database.ref('bang_xep_hang').remove(); 
+            database.ref('room_events').remove(); 
+            database.ref('game_meta').remove(); 
+            database.ref('chat_messages').remove(); // <--- Thêm dòng này vô là kênh chat sạch bong
+            location.reload(); 
+        } 
+    }    
     function shuffleArray(array) { let shuffled = [...array]; for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; } return shuffled; }
 
    function deepShuffleData() {
@@ -1226,6 +1358,12 @@
         }, 1000);
         
         updateStats(); 
+        if(playerName.toLowerCase() === "idori") { 
+        pNameText = '👑 <span style="color:gold; text-shadow:0 0 5px gold; font-weight:bold;">Idori</span>'; 
+    }
+    
+    document.getElementById('player-display-name').innerHTML = pNameText; // Bắt buộc dùng innerHTML
+    // ... tiếp tục các code khác ...
     }
 
     function showPassiveDesc() {
@@ -1578,14 +1716,41 @@
             }
         }
 
+        // 1. Render Sidebar (Top 10)
         let sidebarTbody = document.getElementById('sidebar-lb-body');
-        if(sidebarTbody) sidebarTbody.innerHTML = lbArray.slice(0, 10).map((p, i) => `<div class="live-lb-item" style="${p.name === playerName ? 'background: #ffe0b2; font-weight:bold;' : ''}"><span><b>${i+1}.</b> ${p.name} ${p.name === currentBountyTarget ? '<span style="color:red; font-size:16px;">🎯</span>' : ''}</span><span style="color:var(--danger)"><b>${p.rankScore.toFixed(1)}</b>đ</span></div>`).join('');
+        if(sidebarTbody) sidebarTbody.innerHTML = lbArray.slice(0, 10).map((p, i) => {
+            let icon = i === 0 ? '🥇' : (i === 1 ? '🥈' : (i === 2 ? '🥉' : ''));
+            return `<div class="live-lb-item" style="${p.name === playerName ? 'background: #ffe0b2; font-weight:bold;' : ''}">
+                <span>${icon} <b>${i+1}.</b> ${p.name} ${p.name === currentBountyTarget ? '<span style="color:red; font-size:16px;">🎯</span>' : ''}</span>
+                <span style="color:var(--danger)"><b>${p.rankScore.toFixed(1)}</b>đ</span>
+            </div>`;
+        }).join('');
 
+        // 2. Render Admin Table
         let adminTbody = document.getElementById('admin-lb-body');
-        if(adminTbody) adminTbody.innerHTML = lbArray.map((p, i) => `<tr class="${i===0?'top-1':''}"><td>${i+1}</td><td style="font-weight:bold; font-size: 18px;">${p.name} ${p.name === currentBountyTarget ? '🎯' : ''}</td><td style="color: var(--success); font-weight: bold;">${p.score}</td><td style="color: #5f6368;">${Math.floor(p.time/60)}p ${p.time%60}s</td><td style="font-weight:bold; color:var(--danger); font-size: 20px;">${p.rankScore.toFixed(1)}</td><td style="color:${p.status==='Hoàn thành xuất sắc'?'var(--success)':'var(--warning)'}; font-weight:bold;">${p.status}</td></tr>`).join('');
+        if(adminTbody) adminTbody.innerHTML = lbArray.map((p, i) => {
+            let icon = i === 0 ? '🥇' : (i === 1 ? '🥈' : (i === 2 ? '🥉' : ''));
+            return `<tr class="${i===0?'top-1':''}">
+                <td style="font-size:20px;">${icon}</td>
+                <td style="font-weight:bold; font-size: 18px;">${p.name} ${p.name === currentBountyTarget ? '🎯' : ''}</td>
+                <td style="color: var(--success); font-weight: bold;">${p.score}</td>
+                <td style="color: #5f6368;">${Math.floor(p.time/60)}p ${p.time%60}s</td>
+                <td style="font-weight:bold; color:var(--danger); font-size: 20px;">${p.rankScore.toFixed(1)}</td>
+                <td style="color:${p.status==='Hoàn thành xuất sắc'?'var(--success)':'var(--warning)'}; font-weight:bold;">${p.status}</td>
+            </tr>`;
+        }).join('');
 
+        // 3. Render Main Leaderboard
         let mainTbody = document.getElementById('lb-body');
-        if(mainTbody) mainTbody.innerHTML = lbArray.map((p, i) => `<tr class="${i===0?'top-1':''}" style="${p.name === playerName ? 'background: #fff3e0;' : ''}"><td>${i+1}</td><td style="font-weight:bold;">${p.name} ${p.name === currentBountyTarget ? '🎯' : ''}</td><td style="font-weight:bold; color:var(--danger)">${p.rankScore.toFixed(1)}</td><td style="color:${p.status==='Hoàn thành xuất sắc'?'var(--success)':'var(--warning)'}; font-weight:bold;">${p.status}</td></tr>`).join('');
+        if(mainTbody) mainTbody.innerHTML = lbArray.map((p, i) => {
+            let icon = i === 0 ? '🥇' : (i === 1 ? '🥈' : (i === 2 ? '🥉' : ''));
+            return `<tr class="${i===0?'top-1':''}" style="${p.name === playerName ? 'background: #fff3e0;' : ''}">
+                <td style="font-size:20px;">${icon}</td>
+                <td style="font-weight:bold;">${p.name} ${p.name === currentBountyTarget ? '🎯' : ''}</td>
+                <td style="font-weight:bold; color:var(--danger)">${p.rankScore.toFixed(1)}</td>
+                <td style="color:${p.status==='Hoàn thành xuất sắc'?'var(--success)':'var(--warning)'}; font-weight:bold;">${p.status}</td>
+            </tr>`;
+        }).join('');
     });
 
     function updateFirebaseData() { 
@@ -1814,6 +1979,67 @@
     }
 
     document.addEventListener('contextmenu', function(e) { if(!isVIP) e.preventDefault(); }); document.addEventListener('keydown', function(e) { if(isVIP) return; if (e.key === 'F12' || e.keyCode === 123 || (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) || (e.ctrlKey && ['U', 'u', 'S', 's'].includes(e.key))) { e.preventDefault(); return false; } });
+    // GỬI CHAT
+    function sendChatMessage() {
+        let input = document.getElementById('chat-input');
+        let msg = input.value.trim();
+        if(msg === "") return;
+        
+        database.ref('chat_messages').push({
+            name: playerName,
+            text: msg,
+            timestamp: Date.now()
+        });
+        input.value = "";
+    }
+
+    // LẮNG NGHE CHAT (Update liên tục)
+    database.ref('chat_messages').limitToLast(20).on('child_added', (snapshot) => {
+    let msg = snapshot.val();
+    let chatDiv = document.getElementById('chat-messages');
+    let div = document.createElement('div');
+    div.style.marginBottom = "5px";
+
+    let crown = "";
+    let rankIcon = "";
+    let displayName = "";
+
+    // 1. Logic cho IDORI
+    if(msg.name.toLowerCase() === 'idori') {
+        div.className = 'admin-msg-box'; // Gán class cho khung đỏ của Idori
+        
+        crown = "👑 ";
+        let nameLetters = msg.name.split('');
+        let animatedName = nameLetters.map((char, index) => {
+            return `<span class="letter" style="animation-delay: ${index * 0.15}s">${char}</span>`;
+        }).join('');
+
+        displayName = `<span class="admin-tag">[Admin]</span> <span class="idori-container">${animatedName}</span>`;
+    } 
+    // 2. Logic cho người thường
+    else {
+        let rankClass = "";
+        if (typeof currentLeaderboard !== 'undefined') {
+            let senderIndex = currentLeaderboard.findIndex(p => p.name === msg.name);
+            if(senderIndex === 0) { rankClass = "rank-gold gold-glow rainbow-text"; rankIcon = "🥇 "; }
+            else if(senderIndex === 1) { rankClass = "rank-silver"; rankIcon = "🥈 "; }
+            else if(senderIndex === 2) { rankClass = "rank-bronze"; rankIcon = "🥉 "; }
+        }
+        displayName = `<span class="${rankClass}">${msg.name}</span>`;
+    }
+
+    // 3. Render tin nhắn (CHỖ NÀY LÀ CHỖ TUI MỚI SỬA CHO NÍ)
+    if (msg.name.toLowerCase() === 'idori') {
+        // Idori thì tin nhắn có màu gradient (chat-text-gradient)
+        div.innerHTML = `<b>${rankIcon}${crown}${displayName}:</b> <span class="chat-text-gradient">${msg.text}</span>`;
+    } else {
+        // Người khác thì tin nhắn bình thường
+        div.innerHTML = `<b>${rankIcon}${crown}${displayName}:</b> ${msg.text}`;
+    }
+    
+    chatDiv.appendChild(div);
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+});
 </script>
 </body>
 </html>
