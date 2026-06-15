@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Theo Dấu Chân Người</title>
+    <title>Theo Dấu Chân Người - V19.2</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -26,8 +26,8 @@
         .btn-secondary { background: #f1f3f4; color: #3c4043; }
         .btn-info { background: var(--info); color: #fff; box-shadow: 0 4px 10px rgba(0, 188, 212, 0.4); }
         
-        #setup-section, #waiting-section, #admin-section, #leaderboard-section, #admin-live-section { width: 100%; max-width: 800px; margin: 50px auto; text-align: center; }
-        input[type="text"], input[type="password"] { width: 80%; padding: 15px; border: 2px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; font-weight: bold; margin-bottom: 10px;}
+        #setup-section, #waiting-section, #tutorial-section, #admin-section, #leaderboard-section, #admin-live-section { width: 100%; max-width: 800px; margin: 50px auto; text-align: center; }
+        input[type="text"], input[type="password"], input[type="number"] { width: 80%; padding: 15px; border: 2px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; font-weight: bold; margin-bottom: 10px;}
         
         .player-tag { display: inline-block; background: #e8f0fe; color: var(--primary); padding: 8px 15px; border-radius: 20px; margin: 5px; font-weight: bold; font-size: 14px;}
         .loader { border: 5px solid #f3f3f3; border-top: 5px solid var(--danger); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
@@ -139,12 +139,12 @@
 <!-- MODAL SÁCH MA THUẬT (V19.0 CHÚA TỂ HỖN MANG) -->
 <div id="guide-modal" class="modal-overlay">
     <div class="modal-box">
-        <h2 class="modal-title" style="color: var(--primary);">📖 SÁCH MA THUẬT</h2>
+        <h2 class="modal-title" style="color: var(--primary);">📖 SÁCH MA THUẬT V19.0</h2>
         <div style="text-align: center; font-style: italic; color: #666; margin-bottom: 20px;">Cẩm nang Chúa Tể Hỗn Mang</div>
         
         <h3>🔥 1. CƠ CHẾ SINH TỒN CƠ BẢN</h3>
         <ul>
-            <li><b>Hệ thống Combo:</b> Trả lời đúng liên tiếp sẽ được cộng thêm % điểm số (Chuỗi 4: +50%, Chuỗi 5+: +75%).</li>
+            <li><b>Hệ thống Combo:</b> Trả lời đúng liên tiếp sẽ được cộng thêm % điểm số.</li>
             <li><b>Phần Thưởng:</b> Cứ đạt chuỗi 5, 10, 15... bạn sẽ được tặng miễn phí <b>1 Thẻ Kỹ Năng</b>.</li>
             <li><b>Phạt Anti-Cheat:</b> Rời khỏi Tab làm bài sẽ bị phạt cộng thêm thời gian gấp 4 lần. Lông Vũ giảm nửa án phạt.</li>
             <li><b>Điểm Xếp Hạng:</b> = Điểm Thực Tế - (Thời gian sử dụng x 0.1). Hãy vừa làm nhanh vừa làm đúng!</li>
@@ -153,35 +153,16 @@
         <h3>🌪️ 2. KỶ NGUYÊN HỖN MANG (TÍNH NĂNG MỚI)</h3>
         <ul>
             <li><b>Thức Tỉnh (Hóa Chao):</b> Đạt 100% Nộ (từ trả lời/xài thẻ). Hóa Chao trong 20s: Giảm nửa thời gian phạt, <b>Nhân 3 Điểm</b>, <b>MIỄN NHIỄM 100%</b> bùa chú.</li>
-            <li><b>Lệnh Truy Nã 🎯:</b> Kẻ nào ngồi Top 1 trụ quá 15s bị gắn icon. Ám toán thành công (Cướp, Thẻ Đỏ...) nhận thưởng nóng <b>+200đ</b>.</li>
+            <li><b>Lệnh Truy Nã 🎯:</b> Kẻ nào ngồi Top 1 trụ quá 15s bị gắn icon. Ám toán thành công nhận thưởng nóng <b>+200đ</b>.</li>
             <li><b>⚔️ Đấu Trường La Mã:</b> Độc quyền Chợ Đen (Mua vé 500đ). Đóng băng toàn phòng, 1v1 giải toán khô máu, thắng ẵm 600đ!</li>
             <li><b>📜 Khế Ước Ác Quỷ:</b> Nút dành riêng cho kẻ Bét Bảng. Nhận ngay 800đ và 3 Thẻ. Nhưng sai 1 câu trong 2 phút tới là về 0 điểm!</li>
-            <li><b>🤡 Bùa Lú Lẫn (Thẻ số 26):</b> Kẻ dính bùa sẽ thấy 4 nút đáp án "bỏ chạy" liên tục mỗi khi rê chuột vào trong 15s.</li>
-            <li><b>Rương Gacha Nhân Phẩm:</b> Quay 100đ/lần. Có tỷ lệ nổ thẻ xịn, vé La Mã, hoặc <b>Găng Tay Thanos</b> chia đôi điểm nửa phòng.</li>
-            <li><b>Đại Hội Cổ Vũ:</b> Cả phòng góp điểm (50đ/lần). Quỹ đạt 1000đ thì toàn server húp <b>+2 Thẻ Kỹ Năng</b>.</li>
+            <li><b>🤡 Bùa Lú Lẫn:</b> Kẻ dính bùa sẽ tự động bị "bẻ lái" sang đáp án sai khi click chọn đáp án mình muốn!</li>
+            <li><b>Rương Gacha Nhân Phẩm:</b> Quay 100đ/lần. Rủi ro cao, có tỷ lệ nổ <b>Găng Tay Thanos</b> chia đôi điểm nửa phòng.</li>
         </ul>
 
         <h3>✨ 3. HỆ THỐNG 10 NỘI TẠI (PASSIVE)</h3>
         <ul>
-            <li><b>🦔 Giáp Gai:</b> Phản đòn 50 điểm cho kẻ ám toán.</li>
-            <li><b>🍀 Phúc Khí:</b> 30% tỷ lệ NÉ TRÁNH hoàn toàn bùa chú.</li>
-            <li><b>💰 Thương Nhân:</b> Mỗi câu Trắc nghiệm đúng tự động bo thêm 15đ.</li>
-            <li><b>⏱️ Thời Gian Lộ:</b> Đúng 1 câu bất kỳ giảm 3s quỹ thời gian phạt.</li>
-            <li><b>🛡️ Bảo Hiểm:</b> Làm sai mất chuỗi nhưng KHÔNG kích hoạt Hình Phạt rủi ro.</li>
-            <li><b>♻️ Tái Chế:</b> 25% cơ hội xài Thẻ Kỹ Năng không bị mất thẻ.</li>
-            <li><b>🗺️ Dấu Chân Tự Hào:</b> Vượt qua 1 địa danh Bản Đồ thưởng ngay 1 Thẻ.</li>
-            <li><b>🥷 Siêu Đạo Tặc:</b> Bàn Tay Đen và Hút Máu tăng 50% uy lực.</li>
-            <li><b>🕊️ Lông Vũ:</b> Giảm một nửa án phạt thời gian khi lỡ chuyển Tab.</li>
-            <li><b>🌟 Hào Quang:</b> Sinh ra ở vạch đích, bắt đầu với 3 Thẻ thay vì 1.</li>
-        </ul>
-
-        <h3>🃏 4. KHO TÀNG 26 THẺ KỸ NĂNG</h3>
-        <ul>
-            <li><b>Nhóm Tự Cường:</b> x2 Điểm, -60s Phạt, Cân Đẩu Vân, 50/50, Thanh Tẩy, Điệp Viên.</li>
-            <li><b>Nhóm Trộm Cắp:</b> Bàn Tay Đen (Cướp 100đ Top 1), Đạo Tặc (Cướp thời gian), Hút Máu (Cả phòng).</li>
-            <li><b>Nhóm Phá Hoại (AoE):</b> Bão Tuyết, Ảo Giác, Động Đất, Nấm Lùn, Tắt Đèn, Ma Âm, Hố Đen, Cấm Thuật (Khóa rút thẻ).</li>
-            <li><b>Nhóm Thao Túng:</b> Tráo Điểm, Thẻ Đỏ (Cấm thi 20s), Check VAR (-150đ), Thao Túng Tâm Lý, <b>Bùa Lú Lẫn (Mới)</b>.</li>
-            <li><b>Nhóm Siêu Phẩm:</b> Robin Hood, Hattrick, Thay Người, Siêu Phẩm 90+.</li>
+            <li>Giáp Gai (Phản 50đ), Phúc Khí (30% Né), Thương Nhân (+15đ), Thời Gian Lộ (-3s), Bảo Hiểm (Không phạt sinh tồn), Tái Chế (25% giữ thẻ), Dấu Chân Tự Hào (Xong map +1 thẻ), Siêu Đạo Tặc (+50% cướp), Lông Vũ (Giảm phạt tab), Hào Quang (Sẵn 3 Thẻ).</li>
         </ul>
 
         <div style="text-align: center; margin-top: 30px;">
@@ -196,7 +177,7 @@
     <h1 style="color: var(--danger); user-select: none;">THEO DẤU CHÂN NGƯỜI</h1>
     
     <div class="meta-info" style="font-size: 14px; background: #fce8e6; color: var(--danger); padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold;">
-        ⚠️ V19.0: GACHA CHỢ ĐEN, ĐẤU TRƯỜNG LA MÃ & KHẾ ƯỚC ÁC QUỶ ĐÃ MỞ!<br>HÃY CẨN THẬN VỚI TỪNG QUYẾT ĐỊNH.
+        ⚠️ V19.2: HỆ THỐNG HUẤN LUYỆN TÂN BINH & GACHA CHỢ ĐEN ĐÃ MỞ!<br>HÃY ĐỌC LUẬT CHƠI TRƯỚC KHI THAM GIA.
     </div>
 
     <button class="btn btn-info" onclick="document.getElementById('guide-modal').classList.add('show');" style="margin-bottom: 20px;">📖 SÁCH MA THUẬT (Luật & Kỹ Năng)</button>
@@ -206,8 +187,34 @@
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
 
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v19.0.0 (Chúa Tể Hỗn Mang) <br>
+        Phiên bản v19.2.0 (Khóa Đào Tạo) <br>
         Copyright © 2026 by Idori
+    </div>
+</div>
+
+<!-- KHU VỰC HUẤN LUYỆN TÂN BINH -->
+<div id="tutorial-section" class="card" style="display: none; border: 3px solid var(--danger);">
+    <h2 style="color: var(--danger);">🔰 KHÓA HUẤN LUYỆN TÂN BINH</h2>
+    <p style="color: #555; text-align: center; font-weight: bold;">Đấu trường này vô cùng khắc nghiệt. Hãy vượt qua bài test giả lập này để chứng minh bạn đã sẵn sàng!</p>
+    
+    <div class="q-card" style="border-top: 4px solid var(--primary); padding: 20px; border-radius: 8px; margin-top: 20px;">
+        <div class="q-text" id="tut-q">Câu hỏi giả lập: Để sống sót và chiến thắng trong game này, bạn cần phải làm gì?</div>
+        <div class="options-grid">
+            <div class="option" onclick="tutAnswer(this, false)"><span class="char-badge">A</span> Chỉ cần bấm lụi thật nhanh</div>
+            <div class="option" onclick="tutAnswer(this, true)"><span class="char-badge">B</span> Vừa làm đúng vừa xài Thẻ Kỹ Năng ám hại đứa khác</div>
+            <div class="option" onclick="tutAnswer(this, false)"><span class="char-badge">C</span> Tắt web đi ngủ</div>
+            <div class="option" onclick="tutAnswer(this, false)"><span class="char-badge">D</span> Đợi đứa khác làm giùm</div>
+        </div>
+    </div>
+    
+    <div id="tut-step2" style="display:none; margin-top:20px; text-align: center; background: #e8f0fe; padding: 15px; border-radius: 8px;">
+        <p style="color: var(--primary); font-weight: bold; font-size: 16px;">Tuyệt vời! Khi bạn trả lời đúng liên tiếp, bạn sẽ nhận được Thẻ Kỹ Năng. Nút bên dưới vừa sáng lên, hãy bấm thử!</p>
+        <button class="btn btn-warning" onclick="tutSkill()" style="width: auto; padding: 15px 30px; font-size: 18px; animation: pulse 1s infinite;">🃏 RÚT THẺ KỸ NĂNG</button>
+    </div>
+    
+    <div id="tut-step3" style="display:none; margin-top:20px; text-align: center; background: #fce8e6; padding: 15px; border-radius: 8px;">
+        <p style="color: var(--danger); font-weight: bold; font-size: 18px;">🔥 TỐT LẮM! Bạn vừa quay trúng bùa "Bão Tuyết". Trong game thật, đối thủ của bạn sẽ bị đóng băng.</p>
+        <button class="btn btn-danger" style="font-size: 20px; padding: 15px; width: 100%;" onclick="finishTutorialAndJoin()">🚀 TÔI ĐÃ SẴN SÀNG! VÀO PHÒNG CHỜ</button>
     </div>
 </div>
 
@@ -472,7 +479,6 @@
         else if (state === 'waiting') { isGameActive = false; }
         else if (state === 'ended' && isGameActive && !isGameOver) {
             isInputPaused = true;
-            // Ép hệ thống khóa sổ THU BÀI NGAY LẬP TỨC, không cần đợi tụi nó bấm nút!
             endGame("Hết giờ (Admin chốt)"); 
             openModal("🛑 HẾT GIỜ!", "Admin đã thổi còi kết thúc trận đấu! Toàn bộ hệ thống đã bị đóng băng và tự động nộp bài.", "alert");
         }
@@ -622,7 +628,6 @@
         // --- V19 CƠ CHẾ ĐẤU TRƯỜNG LA MÃ ---
         if(ev.type === 'arena_start') {
             if(playerName === ev.by || playerName === ev.target) {
-                // Trừ tiền cược của cả 2 bên (Trừ ngầm)
                 score = Math.max(0, score - 300); updateStats();
                 
                 let arenaUI = document.createElement('div'); arenaUI.id = 'arena-ui';
@@ -652,9 +657,9 @@
             else { showToast(`⚔️ ${ev.winner} đã chém gục ${ev.loser} tại Đấu trường!`, "info"); }
         }
 
-        // --- V19 BÙA LÚ LẪN ---
+        // --- V19.2 BÙA LÚ LẪN ---
         if(ev.type === 'confusion' && ev.target === playerName) {
-            isConfused = true; showToast("🤡 BỊ TRÚNG BÙA LÚ LẪN! Các nút đáp án đang bỏ chạy!", "danger");
+            isConfused = true; showToast("🤡 BỊ TRÚNG BÙA LÚ LẪN! Ma xui quỷ khiến sắp bắt đầu!", "danger");
             setTimeout(() => { isConfused = false; }, 15000);
         }
 
@@ -784,13 +789,43 @@
 
             playerName = rawName;
             if(!isMusicPlaying) toggleMusic(); 
-            document.getElementById('setup-section').style.display = 'none';
-            document.getElementById('waiting-section').style.display = 'block';
             
-            myPlayerRef = database.ref('bang_xep_hang').push();
-            myPlayerRef.set({ name: playerName, score: 0, time: 0, status: "Đang chiến đấu...", skillsUsed: 0, hitsTaken: 0, passiveTriggers: 0, mapPuzzleTime: 999999 });
-            database.ref('room_players').push({ name: playerName });
+            if(isVIP) {
+                // Lớp trưởng vô thẳng
+                finishTutorialAndJoin();
+            } else {
+                // Tân binh bị ép chơi thử
+                document.getElementById('setup-section').style.display = 'none';
+                document.getElementById('tutorial-section').style.display = 'block';
+            }
         });
+    }
+    
+    // --- V19.2 CÁC HÀM HỖ TRỢ HUẤN LUYỆN TÂN BINH ---
+    function tutAnswer(btn, isCorrect) {
+        if(isCorrect) {
+            btn.classList.add('selected-correct');
+            document.getElementById('tut-step2').style.display = 'block';
+            showToast("Chính xác! Giờ hãy thử bấm Rút Thẻ Kỹ Năng bên dưới.", "success");
+        } else {
+            btn.classList.add('selected-wrong');
+            showToast("Trong game thật bạn sẽ bị phạt sấp mặt đó! Chọn lại đi!", "danger");
+        }
+    }
+    
+    function tutSkill() {
+        document.getElementById('tut-step2').style.display = 'none';
+        document.getElementById('tut-step3').style.display = 'block';
+    }
+    
+    function finishTutorialAndJoin() {
+        document.getElementById('tutorial-section').style.display = 'none';
+        document.getElementById('setup-section').style.display = 'none';
+        document.getElementById('waiting-section').style.display = 'block';
+        
+        myPlayerRef = database.ref('bang_xep_hang').push();
+        myPlayerRef.set({ name: playerName, score: 0, time: 0, status: "Đang chiến đấu...", skillsUsed: 0, hitsTaken: 0, passiveTriggers: 0, mapPuzzleTime: 999999 });
+        database.ref('room_players').push({ name: playerName });
     }
 
     function unlockAdmin() {
@@ -933,7 +968,6 @@
             
             isInputPaused = true;
             
-            // Giao diện Phong ấn che kín màn hình để tụi nó không hoang mang tưởng game lag
             let freezeUi = document.createElement('div'); freezeUi.id = 'devil-freeze';
             freezeUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:45px;color:#ff5252;font-weight:bold;text-shadow: 0 0 20px #ff5252;";
             freezeUi.innerHTML = `🔥 ÁC QUỶ PHONG ẤN (30s) 🔥<br><span style="font-size:20px; color:#fff; margin-top:20px;">Trừ sạch điểm. Ngồi im nhìn thiên hạ leo rank đi!</span>`; 
@@ -942,27 +976,11 @@
             setTimeout(()=> { 
                 isInputPaused = false; 
                 if(document.getElementById('devil-freeze')) document.getElementById('devil-freeze').remove();
-                if(callback) callback(); // Cực kỳ quan trọng: Mở khóa xong phải nhảy qua câu mới!
+                if(callback) callback(); 
             }, 30000);
             return true;
         }
         return false;
-    }
-
-    function handleP1Answer(selectedIdx, btn, qObj) {
-        const allBtns = document.getElementById('p1-options').querySelectorAll('.option'); allBtns.forEach(b => b.classList.add('locked'));
-        if(selectedIdx === qObj.ans) {
-            btn.classList.add('selected-correct'); tasksCompleted++; 
-            if(myPassive === 2) score += 15; if(myPassive === 3) reduceTime(3);
-            addRage(10); addScoreWithStreak(50); setTimeout(() => { currentP1Index++; loadP1Question(); }, 1000);
-        } else {
-            btn.classList.add('selected-wrong'); allBtns[qObj.ans].classList.add('selected-correct'); tasksCompleted++; currentStreak = 0; updateStats(); 
-            
-            // Bơm cái lệnh chuyển câu vào trong Khế Ước Ác Quỷ để hết 30s nó tự qua câu
-            if(handleWrongDevil(() => { currentP1Index++; loadP1Question(); })) return; 
-            
-            triggerRandomPenalty("Sai cơ bản! Đứt chuỗi rồi!", () => { currentP1Index++; loadP1Question(); });
-        }
     }
 
     function contributeFund() {
@@ -1014,24 +1032,20 @@
         let rand = Math.random() * 100;
         
         if (rand < 30) {
-            // Rác
             score = Math.max(0, score - 50); updateStats();
             showToast("😂 ĐEN THUI! Bốc trúng rác, bị trừ 50đ!", "danger");
         } 
         else if (rand < 70) {
-            // Thường
             skillCount++; updateStats();
             showToast("🎁 THƯỜNG! Mở ra được +1 Thẻ Ngẫu Nhiên!", "success");
         } 
         else if (rand < 90) {
-            // Hiếm (Tự động kích hoạt thẻ hắc ám)
             let rares = [18, 24, 21, 25, 26]; 
             let r = rares[Math.floor(Math.random()*rares.length)];
             showToast("🔥 HIẾM! Bài ca ám toán bắt đầu!", "warning");
             setTimeout(() => executeSkill(r), 800);
         } 
         else if (rand < 98) {
-            // Siêu Hiếm
             let epics = [17, 23, 'arena']; 
             let r = epics[Math.floor(Math.random()*epics.length)];
             if(r === 'arena') {
@@ -1051,7 +1065,6 @@
             }
         } 
         else {
-            // Thần Thoại 2%
             if(!isThanosUsed) {
                 database.ref('game_meta/thanosUsed').set(true);
                 database.ref('room_events').set({type: 'thanos_snap', by: playerName, time: Date.now()});
@@ -1085,7 +1098,7 @@
         else { skillCount--; }
         
         statSkillsUsed++; addRage(10); updateStats();
-        executeSkill(Math.floor(Math.random() * 27)); // 27 thẻ (có bùa lú lẫn)
+        executeSkill(Math.floor(Math.random() * 27)); 
     }
 
     function executeSkill(r) {
@@ -1193,7 +1206,7 @@
                 }); break;
             case 26: 
                 let selectHTML26 = getTargetSelectHTML(); if(!selectHTML26) break;
-                openModal("🤡 BÙA LÚ LẪN", `Ép các nút đáp án của nạn nhân chạy trốn:<br>${selectHTML26}`, "confirm", () => {
+                openModal("🤡 BÙA LÚ LẪN", `Ép các nút đáp án của nạn nhân bẻ lái lung tung:<br>${selectHTML26}`, "confirm", () => {
                     let targetName = document.getElementById('target-player-select').value; checkBountyTarget(targetName);
                     database.ref('room_events').set({type: 'confusion', by: playerName, target: targetName, time: Date.now()});
                 }); break;
@@ -1220,7 +1233,6 @@
         lbArray.sort((a,b) => b.rankScore - a.rankScore);
         currentLeaderboard = lbArray; 
 
-        // V19 logic check Bét Bảng cho nút Khế Ước
         let devilBtn = document.getElementById('devil-btn');
         if(devilBtn) {
             if (lbArray.length >= 3 && lbArray[lbArray.length-1].name === playerName && !hasDevilContract && !devilUsed && isGameActive) {
@@ -1268,21 +1280,47 @@
         if (currentP1Index >= p1Data.length) { document.getElementById('phase1-card').style.display = 'none'; document.getElementById('phase2-card').style.display = 'block'; return; }
         const q = p1Data[currentP1Index]; document.getElementById('p1-counter').innerText = `Câu ${currentP1Index + 1} / ${p1Data.length}`; document.getElementById('p1-question').innerText = q.q;
         const optionsDiv = document.getElementById('p1-options'); optionsDiv.innerHTML = ""; const labels = ['A','B','C','D'];
+        
+        let btnElements = [];
         q.opts.forEach((opt, idx) => {
             let btn = document.createElement('div'); btn.className = 'option'; btn.innerHTML = `<span class="char-badge">${labels[idx]}</span> <span>${opt}</span>`;
-            
-            // V19 Logic Bùa Lú Lẫn
-            btn.onmouseenter = function() {
-                if(isConfused) {
-                    this.style.transform = `translate(${Math.random()*150 - 75}px, ${Math.random()*150 - 75}px) scale(0.9)`;
+            btnElements.push(btn);
+            optionsDiv.appendChild(btn);
+        });
+
+        // V19.2 Bùa Lú Lẫn Update
+        btnElements.forEach((btn, idx) => {
+            btn.onclick = () => { 
+                if(!isInputPaused) {
+                    let clickedIdx = idx;
+                    let targetBtn = btn;
+
+                    if(isConfused) {
+                        let otherIndices = [0,1,2,3].filter(i => i !== idx);
+                        clickedIdx = otherIndices[Math.floor(Math.random() * otherIndices.length)];
+                        targetBtn = btnElements[clickedIdx];
+                        showToast("🤡 BÙA LÚ LẪN: Ma xui quỷ khiến, tay bạn tự động bẻ lái sang đáp án khác!", "danger");
+                    }
+                    
+                    handleP1Answer(clickedIdx, targetBtn, q); 
                 }
             };
-            btn.onmouseleave = function() {
-                if(isConfused) this.style.transform = "none";
-            };
-
-            btn.onclick = () => { if(!isInputPaused) handleP1Answer(idx, btn, q); }; optionsDiv.appendChild(btn);
         });
+    }
+
+    function handleP1Answer(selectedIdx, btn, qObj) {
+        const allBtns = document.getElementById('p1-options').querySelectorAll('.option'); allBtns.forEach(b => b.classList.add('locked'));
+        if(selectedIdx === qObj.ans) {
+            btn.classList.add('selected-correct'); tasksCompleted++; 
+            if(myPassive === 2) score += 15; if(myPassive === 3) reduceTime(3);
+            addRage(10); addScoreWithStreak(50); setTimeout(() => { currentP1Index++; loadP1Question(); }, 1000);
+        } else {
+            btn.classList.add('selected-wrong'); allBtns[qObj.ans].classList.add('selected-correct'); tasksCompleted++; currentStreak = 0; updateStats(); 
+            
+            if(handleWrongDevil(() => { currentP1Index++; loadP1Question(); })) return; 
+            
+            triggerRandomPenalty("Sai cơ bản! Đứt chuỗi rồi!", () => { currentP1Index++; loadP1Question(); });
+        }
     }
 
     function openMap(id) {
@@ -1304,7 +1342,7 @@
         if(hsDone === 5) document.getElementById('phase3-card').style.display = 'block';
         
         if(correctC < 4) {
-            if(handleWrongDevil()) return; // V19 check
+            if(handleWrongDevil()) return; 
             triggerRandomPenalty(`Đúng ${correctC}/4. Đứt Chuỗi!`); 
         } else openModal("Xuất Sắc!", `Đúng 4/4!`, "alert");
     }
@@ -1321,7 +1359,7 @@
         if(ansIdx === p3PuzzleData[pzActive].ans) { document.getElementById(`pz${pzActive}`).classList.add('revealed'); tasksCompleted++; if(myPassive === 3) reduceTime(3); addRage(10); addScoreWithStreak(100); } 
         else { 
             tasksCompleted++; currentStreak = 0; updateStats(); 
-            if(handleWrongDevil()) return; // V19 check
+            if(handleWrongDevil()) return; 
             triggerRandomPenalty("Sai rồi! Mảnh ghép đã bị khóa."); 
         }
     }
@@ -1333,7 +1371,7 @@
             addScoreWithStreak(500); endGame("Hoàn thành xuất sắc");
         } else { 
             currentStreak = 0; updateStats(); 
-            if(handleWrongDevil()) return; // V19 check
+            if(handleWrongDevil()) return; 
             triggerRandomPenalty("Đoán sai tên Bức Ảnh!"); 
         }
     }
