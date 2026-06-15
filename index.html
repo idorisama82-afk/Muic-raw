@@ -263,7 +263,7 @@
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
 
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v19.2.2  <br>
+        Phiên bản v19.3.0  <br>
         Copyright © 2026 by Idori
     </div>
 </div>
@@ -585,7 +585,38 @@
             }
         }
     });
-
+    // TẠO HÀM ĐẾM NGƯỢC HIỆU ỨNG TRÊN GÓC MÀN HÌNH
+    function showDebuffTimer(id, icon, name, duration, onComplete) {
+        let container = document.getElementById('debuff-container');
+        if(!container) {
+            container = document.createElement('div');
+            container.id = 'debuff-container';
+            container.style.cssText = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:99999; display:flex; flex-direction:column; gap:10px; pointer-events:none;';
+            document.body.appendChild(container);
+        }
+        let box = document.getElementById('debuff-' + id);
+        if(box) box.remove(); // Reset nếu bị quăng bùa bồi thêm
+        
+        box = document.createElement('div');
+        box.id = 'debuff-' + id;
+        box.style.cssText = 'background:rgba(0,0,0,0.85); color:#fff; padding:10px 25px; border-radius:30px; font-weight:bold; font-size:18px; border:2px solid #ff5252; box-shadow:0 4px 15px rgba(0,0,0,0.4); text-align:center;';
+        container.appendChild(box);
+        
+        let t = duration;
+        box.innerHTML = `${icon} ${name}: <span style="color:#ffeb3b; font-size:22px;">${t}s</span>`;
+        
+        let cd = setInterval(() => {
+            t--;
+            if(document.getElementById('debuff-' + id)) {
+                document.getElementById('debuff-' + id).innerHTML = `${icon} ${name}: <span style="color:#ffeb3b; font-size:22px;">${t}s</span>`;
+            }
+            if(t <= 0) {
+                clearInterval(cd);
+                if(document.getElementById('debuff-' + id)) document.getElementById('debuff-' + id).remove();
+                if(onComplete) onComplete();
+            }
+        }, 1000);
+    }
     database.ref('room_events').on('value', (snapshot) => {
         if(!isGameActive && document.getElementById('admin-live-section').style.display !== 'block') return;
         let ev = snapshot.val();
@@ -736,7 +767,7 @@
         // --- V19.2 BÙA LÚ LẪN ---
         if(ev.type === 'confusion' && ev.target === playerName) {
             isConfused = true; showToast("🤡 BỊ TRÚNG BÙA LÚ LẪN! Ma xui quỷ khiến sắp bắt đầu!", "danger");
-            setTimeout(() => { isConfused = false; }, 15000);
+            showDebuffTimer('confuse', '🤡', 'Bùa Lú Lẫn', 15, () => { isConfused = false; });
         }
 
         // THỰC THI SỰ KIỆN HẮC ÁM (Khác)
@@ -744,43 +775,55 @@
             isInputPaused = true;
             let freezeUi = document.createElement('div'); freezeUi.id = 'global-freeze';
             freezeUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,180,255,0.85);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:45px;color:white;font-weight:bold;";
-            freezeUi.innerHTML = `❄️ ĐÓNG BĂNG 10s ❄️`; document.body.appendChild(freezeUi);
-            setTimeout(() => { if(document.getElementById('global-freeze')) document.getElementById('global-freeze').remove(); isInputPaused = false; }, 10000);
+            document.body.appendChild(freezeUi);
+            let t = 10; freezeUi.innerHTML = `❄️ ĐÓNG BĂNG: <span style="font-size:80px; color:#ffeb3b;">${t}s</span> ❄️`;
+            let cd = setInterval(() => {
+                t--; if(freezeUi) freezeUi.innerHTML = `❄️ ĐÓNG BĂNG: <span style="font-size:80px; color:#ffeb3b;">${t}s</span> ❄️`;
+                if(t <= 0) { clearInterval(cd); if(freezeUi) freezeUi.remove(); isInputPaused = false; }
+            }, 1000);
         }
 
         if(ev.type === 'red_card' && ev.target === playerName) {
             isInputPaused = true;
             let freezeUi = document.createElement('div'); freezeUi.id = 'global-freeze';
-            freezeUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(229,57,53,0.9);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:45px;color:white;font-weight:bold;";
-            freezeUi.innerHTML = `🟥 THẺ ĐỎ (20s) 🟥`; document.body.appendChild(freezeUi);
-            setTimeout(() => { if(document.getElementById('global-freeze')) document.getElementById('global-freeze').remove(); isInputPaused = false; }, 20000);
+            freezeUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(229,57,53,0.95);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:45px;color:white;font-weight:bold;text-align:center;";
+            document.body.appendChild(freezeUi);
+            let t = 20; freezeUi.innerHTML = `🟥 THẺ ĐỎ (CẤM THI) 🟥<br><span style="font-size:80px; color:#ffeb3b;">${t}s</span>`;
+            let cd = setInterval(() => {
+                t--; if(freezeUi) freezeUi.innerHTML = `🟥 THẺ ĐỎ (CẤM THI) 🟥<br><span style="font-size:80px; color:#ffeb3b;">${t}s</span>`;
+                if(t <= 0) { clearInterval(cd); if(freezeUi) freezeUi.remove(); isInputPaused = false; }
+            }, 1000);
         }
 
         if(ev.type === 'blackout' && ev.by !== playerName) {
             let blackUi = document.createElement('div'); blackUi.id = 'global-blackout';
-            blackUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;display:flex;align-items:center;justify-content:center;color:white;font-size:30px;font-weight:bold;";
-            blackUi.innerHTML = `🌑 TẮT ĐÈN 🌑`; document.body.appendChild(blackUi); 
-            setTimeout(() => { if(document.getElementById('global-blackout')) document.getElementById('global-blackout').remove(); }, 10000);
+            blackUi.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-size:30px;font-weight:bold;";
+            document.body.appendChild(blackUi); 
+            let t = 10; blackUi.innerHTML = `🌑 TẮT ĐÈN 🌑<br><span style="font-size:60px; color:#ffeb3b;">${t}s</span>`;
+            let cd = setInterval(() => {
+                t--; if(blackUi) blackUi.innerHTML = `🌑 TẮT ĐÈN 🌑<br><span style="font-size:60px; color:#ffeb3b;">${t}s</span>`;
+                if(t <= 0) { clearInterval(cd); if(blackUi) blackUi.remove(); }
+            }, 1000);
         }
 
         if(ev.type === 'silence' && ev.by !== playerName) {
             isSilenced = true; showToast(`🤫 BỊ CẤM THUẬT rút thẻ 30s!`, "danger");
-            setTimeout(() => { isSilenced = false; }, 30000);
+            showDebuffTimer('silence', '🤫', 'Cấm Thuật', 30, () => { isSilenced = false; });
         }
 
         if(ev.type === 'curse' && ev.by !== playerName) {
             document.getElementById('game-main-area').classList.add('cursed-vision');
-            setTimeout(() => { document.getElementById('game-main-area').classList.remove('cursed-vision'); }, 15000);
+            showDebuffTimer('curse', '👁️', 'Ảo Giác', 15, () => { document.getElementById('game-main-area').classList.remove('cursed-vision'); });
         }
 
         if(ev.type === 'earthquake' && ev.by !== playerName) {
             document.getElementById('game-main-area').classList.add('shaking-vision');
-            setTimeout(() => { document.getElementById('game-main-area').classList.remove('shaking-vision'); }, 10000);
+            showDebuffTimer('earth', '🌋', 'Động Đất', 10, () => { document.getElementById('game-main-area').classList.remove('shaking-vision'); });
         }
 
         if(ev.type === 'shrink' && ev.by !== playerName) {
             document.getElementById('game-main-area').classList.add('shrunk-vision');
-            setTimeout(() => { document.getElementById('game-main-area').classList.remove('shrunk-vision'); }, 15000);
+            showDebuffTimer('shrink', '🍄', 'Nấm Lùn', 15, () => { document.getElementById('game-main-area').classList.remove('shrunk-vision'); });
         }
 
         if(ev.type === 'time_steal' && ev.target === playerName) {
