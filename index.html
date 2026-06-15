@@ -1592,27 +1592,8 @@
             let btn = document.createElement('div'); btn.className = 'option'; btn.innerHTML = `<span class="char-badge">${labels[idx]}</span> <span>${opt}</span>`;
             btnElements.push(btn);
             optionsDiv.appendChild(btn);
-        });
+    });
 
-        // V19.2 Bùa Lú Lẫn Update
-        btnElements.forEach((btn, idx) => {
-            btn.onclick = () => { 
-                if(!isInputPaused) {
-                    let clickedIdx = idx;
-                    let targetBtn = btn;
-
-                    if(isConfused) {
-                        let otherIndices = [0,1,2,3].filter(i => i !== idx);
-                        clickedIdx = otherIndices[Math.floor(Math.random() * otherIndices.length)];
-                        targetBtn = btnElements[clickedIdx];
-                        showToast("🤡 BÙA LÚ LẪN: Ma xui quỷ khiến, tay bạn tự động bẻ lái sang đáp án khác!", "danger");
-                    }
-                    
-                    handleP1Answer(clickedIdx, targetBtn, q); 
-                }
-            };
-        });
-    }
         // V19.2 Bùa Lú Lẫn Update
         btnElements.forEach((btn, idx) => {
             btn.onclick = () => { 
