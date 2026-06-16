@@ -411,7 +411,7 @@
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
 
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v24.3.0  <br>
+        Phiên bản v24.4.0  <br>
         Copyright © 2026 by Yukiluna Idori
     </div>
 </div>
@@ -520,9 +520,22 @@
 
     <!-- KHU VỰC THI ĐẤU -->
     <div class="main-content" id="game-main-area">
-
-        <!-- TUI ĐÃ XÓA KHUNG CHAT HTML HÀNG FAKE RỒI! BÂY GIỜ CHAT CỦA JS SẼ HOẠT ĐỘNG TRỞ LẠI! -->
-
+        <!-- BẮT ĐẦU: KÊNH CHAT (HÀNG REAL - ĐÃ FIX LỖI GỬI) -->
+        <div class="card" id="chat-container" style="margin-bottom: 35px !important; padding-bottom: 25px !important; border-top: 5px solid #1a73e8; z-index: 10;">
+            <h3 style="color: var(--primary); margin-top: 0; margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; gap: 8px;">
+                💬 KÊNH CHAT THẾ GIỚI
+            </h3>
+            
+            <div id="chat-messages" style="height: 220px; overflow-y: auto; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 20px !important; display: flex; flex-direction: column; gap: 10px;">
+                <!-- Tin nhắn hiển thị ở đây -->
+            </div>
+            
+            <div style="display: flex; gap: 10px; align-items: stretch; margin-bottom: 5px !important;">
+                <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." style="flex: 1; margin: 0 !important; text-align: left; padding: 12px 15px !important; box-sizing: border-box; font-size: 16px; border: 2px solid #ccc; border-radius: 8px; height: 48px;" onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                <button class="btn" style="background: var(--primary); color: white; width: auto; margin: 0 !important; padding: 0 25px !important; min-width: 90px; white-space: nowrap; font-weight: bold; border-radius: 8px; border: none; box-sizing: border-box; height: 48px; display: flex; align-items: center; justify-content: center;" onclick="sendChatMessage()">Gửi</button>
+            </div>
+        </div>
+        <!-- KẾT THÚC: KÊNH CHAT -->
         <div class="card q-card" id="phase1-card">
             <h2 style="color: var(--primary); margin-bottom: 5px;">GĐ 1: TÌM ĐƯỜNG CỨU NƯỚC</h2>
             <div class="q-number" id="p1-counter">Câu 1 / 25</div>
