@@ -377,7 +377,7 @@
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
 
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v23.1.1  <br>
+        Phiên bản v23.2.2  <br>
         Copyright © 2026 by Yukiluna Idori
     </div>
 </div>
@@ -446,8 +446,8 @@
     
     <div style="display: flex; gap: 15px; margin-top: 20px;">
         <button class="btn btn-danger" onclick="adminEndGame()" style="flex: 2; padding: 15px; font-size: 18px; background: #d32f2f;">🛑 KẾT THÚC & TỔNG KẾT TRẬN</button>
-        <button class="btn btn-warning" onclick="adminResetGameOnly()" style="margin: 5px;">🧹 Xóa Data Game (Giữ Chat)</button>
-        <button class="btn btn-danger" onclick="adminResetFull()" style="margin: 5px;">🚨 Xóa Sạch (Cả Game + Chat)</button>
+        <button class="btn btn-warning" onclick="adminResetGameOnly()" style="flex: 2; padding: 15px; font-size: 18px; background: #9d00ff;">🧹 Xóa Data Game (Giữ Chat)</button>
+        <button class="btn btn-danger" onclick="adminResetFull()" style="flex: 2; padding: 15px; font-size: 18px; background: #ffff00;">🚨 Xóa Sạch (Cả Game + Chat)</button>
     </div>
 </div>
 
@@ -482,6 +482,10 @@
             <h4 class="live-lb-title">🏆 TOP CHIẾN BINH LIVE</h4>
             <div class="live-lb-list" id="sidebar-lb-body"><i style="color:#757575;">Đang tải dữ liệu...</i></div>
         </div>
+    </div>
+    </div>
+
+    <div class="main-content" id="game-main-area">
         <div class="card" style="margin-top: 15px; padding: 15px; border-radius: 10px; background: #fff;">
         <h4 style="margin: 0 0 10px 0; color: var(--primary);">💬 KÊNH CHAT</h4>
         <div id="chat-messages" style="height: 150px; overflow-y: auto; background: #f9f9f9; padding: 5px; border: 1px solid #eee; margin-bottom: 10px; font-size: 13px;"></div>
@@ -489,17 +493,12 @@
             <input type="text" id="chat-input" placeholder="Nhập chat..." style="width: 100%; padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px;">
             <button class="btn" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="sendChatMessage()">Gửi</button>
         </div>
-    </div>
-    </div>
-
-    <div class="main-content" id="game-main-area">
         <div class="card q-card" id="phase1-card">
             <h2 style="color: var(--primary); margin-bottom: 5px;">GĐ 1: TÌM ĐƯỜNG CỨU NƯỚC</h2>
             <div class="q-number" id="p1-counter">Câu 1 / 25</div>
             <div class="q-text" id="p1-question">Nội dung câu hỏi...</div>
             <div class="options-grid" id="p1-options"></div>
         </div>
-
         <div class="card" id="phase2-card" style="border-top: 6px solid var(--warning); display: none;">
             <h2 style="color: var(--warning); margin-bottom: 5px;">GĐ 2: DẤU CHÂN LỊCH SỬ (Form BGD)</h2>
             <p style="color: #5f6368; font-size: 14px; text-align: center;">*Bấm vào 5 địa danh. Trả lời Đúng/Sai.</p>
