@@ -283,6 +283,42 @@
         #phase1-card {
             margin-top: 30px !important;
         }
+        @keyframes legendsShine {
+        to { background-position: 200% center; }
+    }
+    .legends-tribute {
+        text-align: center;
+        margin: 40px auto;
+        padding: 25px;
+        background: rgba(0, 0, 0, 0.4); /* Nền tối mờ để chữ Vàng nổi bật */
+        border-radius: 15px;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.1);
+    }
+    .legends-tribute .respect-text {
+        font-size: 22px;
+        color: #e0e0e0;
+        font-weight: bold;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+    .legends-tribute .last-dance {
+        font-size: 42px; /* Chữ siêu to */
+        font-weight: 900;
+        letter-spacing: 4px;
+        background: linear-gradient(90deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+        background-size: 200% auto;
+        color: #000;
+        background-clip: text;
+        text-fill-color: transparent;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: legendsShine 3s linear infinite;
+        text-shadow: 0px 5px 20px rgba(255, 215, 0, 0.6);
+        font-family: 'Arial Black', Impact, sans-serif;
+    }
     </style>
 </head>
 <body>
@@ -300,8 +336,8 @@
 
 <div id="guide-modal" class="modal-overlay">
     <div class="modal-box">
-        <h2 class="modal-title" style="color: var(--primary);">📖 SÁCH MA THUẬT</h2>
-        <div style="text-align: center; font-style: italic; color: #666; margin-bottom: 20px;">Cẩm nang Chúa Tể Hỗn Mang - Kỷ Nguyên V24</div>
+        <h2 class="modal-title" style="color: var(--primary);">📖 CẨM NANG HƯỚNG DẪN</h2>
+        <div style="text-align: center; font-style: italic; color: #666; margin-bottom: 20px;">Cẩm nang hướng dẫn - Bước Chuyển Mình Của Thời Đại</div>
         
         <h3>🔥 1. CƠ CHẾ SINH TỒN CƠ BẢN</h3>
         <ul>
@@ -311,16 +347,12 @@
             <li><b>Điểm Xếp Hạng:</b> = Điểm Thực Tế - (Thời gian sử dụng x 0.1). Hãy vừa làm nhanh vừa làm đúng!</li>
         </ul>
 
-        <h3>🌪️ 2. KỶ NGUYÊN HỖN MANG (TÍNH NĂNG MỚI)</h3>
+        <h3>🌪️ 2. CẬP NHẬT MỚI</h3>
         <ul>
-            <li><b>🌍 Sự Kiện Toàn Cầu (Global Events):</b> Hệ thống sẽ ngẫu nhiên thả các sự kiện chấn động toàn server như: Tốc Chiến (x2 Điểm), Sương Mù Biên Giới (Che BXH), Đại Đoàn Kết, Tiếp Tế Quân Nhu, hoặc Khủng Hoảng Kinh Tế...</li>
-            <li><b>Thức Tỉnh (Hóa Chao):</b> Đạt 100% Nộ (từ trả lời/xài thẻ). Hóa Chao trong 20s: Giảm nửa thời gian phạt, <b>Nhân 3 Điểm</b>, <b>MIỄN NHIỄM 100%</b> bùa chú.</li>
-            <li><b>Lệnh Truy Nã 🎯:</b> Kẻ nào ngồi Top 1 trụ quá 15s bị gắn icon. Ám toán thành công (Cướp, Thẻ Đỏ...) nhận thưởng nóng <b>+200đ</b>.</li>
-            <li><b>⚔️ Đấu Trường La Mã:</b> Độc quyền Chợ Đen (Mua vé 500đ). Đóng băng toàn phòng, 1v1 giải toán khô máu, thắng ẵm 600đ!</li>
-            <li><b>📜 Khế Ước Ác Quỷ:</b> Nút dành riêng cho kẻ Bét Bảng. Nhận ngay 800đ và 3 Thẻ. Nhưng sai 1 câu trong 2 phút tới là về 0 điểm!</li>
-            <li><b>🤡 Bùa Lú Lẫn (Thẻ số 26):</b> Kẻ dính bùa sẽ thấy 4 nút đáp án "bỏ chạy" liên tục mỗi khi rê chuột vào trong 15s.</li>
-            <li><b>🎰 Rương Gacha Chợ Đen:</b> Quay 100đ/lần. Có tỷ lệ nổ thẻ xịn, vé La Mã, Găng Tay Thanos (chia đôi điểm nửa phòng), hoặc siêu phẩm <b>💎 JACKPOT THẦN THOẠI (10⁻⁹%)</b> nhận ngay 999 Thẻ!</li>
-            <li><b>Đại Hội Cổ Vũ:</b> Cả phòng góp điểm (50đ/lần). Quỹ đạt 1000đ thì toàn server húp <b>+2 Thẻ Kỹ Năng</b>.</li>
+            <li><b>🐐 SIÊU PHẨM Messi! (M10) (27):</b> Tặng 500 điểm!!! (Trước màn trình diễn đỉnh cao của Messi khi anh đã lập một cú Hattrick trong trận đấu với Algeria tại FIFA World Cup 2026 khi đã bước qua tuổi 39, thực sự ấn tượng và bùng nổ nhằm tôn trọng và công nhận cho một huyền thoại chúng tôi đã tạo một chiêu thức dành cho một trong hai G.O.A.T đương đại của bóng đá thế giới)</li>
+            <li><b>🎰 Rương Gacha Chợ Đen:</b> Tối ưu giao diện (Nhận ra giao diện gacha còn thiếu sót và khá đơn điệu, chúng tôi quyết định cải tiến giao diện lên một mức độ cao hơn)</li>
+            <li><b>Admin Command:</b> Cập nhật bộ lệnh cho Admin (Dưới tư cách là nhà phát triển trò chơi, chúng tôi nhận ra rằng việc tổ chức trò chơi theo cách ngoại lệ khi có mặt Admin là thực sự quan trọng, nên đã bổ sung một số câu lệnh nhắm tổ chức các trò chơi phong phú hơn)</li>
+            <li><b>Kênh Chat:</b> Hệ thống kiểm duyệt trò chuyện (Chúng tôi nhận ra vấn dề lớn nhất khi tạo ra một kênh chat là việc quản lí người chơi trò chuyện văn minh, lịch sự nhằm giúp cả hai bên người gửi và người nhận. Về người nhận bảo vệ người nhận trước các ý kiển công kích và từ ngữ thiếu tôn trọng, còn người gửi tránh các rủi ro pháp lý của luật pháp Việt Nam và Quốc tế)</li>
         </ul>
 
         <h3>✨ 3. HỆ THỐNG 10 NỘI TẠI (Sinh ra đã có 1 cái ngẫu nhiên)</h3>
@@ -338,7 +370,7 @@
             <li><b>🌟 Hào Quang (9):</b> Sinh ra ở vạch đích! Vừa bắt đầu game đã có sẵn 3 Thẻ Kỹ Năng trong túi thay vì 1 Thẻ như dân thường.</li>
         </ul>
 
-        <h3>🃏 KHO TÀNG 28 THẺ KỸ NĂNG (Phân theo 5 nhóm)</h3>
+        <h3>🃏 KHO TÀNG 29 THẺ KỸ NĂNG (Phân theo 5 nhóm)</h3>
         <p>Người chơi có thể nhận được thẻ khi đạt chuỗi Combo liên tiếp, rút ngẫu nhiên hoặc mua trong Chợ Đen.</p>
 
         <h4>💪 NHÓM TỰ CƯỜNG (Buff bản thân)</h4>
@@ -364,8 +396,6 @@
 
         <h4>🤡 NHÓM THAO TÚNG & HÃM HẠI</h4>
         <ul>
-            <li><b>🟥 Thẻ Đỏ (18):</b> Chọn 1 nạn nhân, đuổi khỏi sân (khóa cứng màn hình) trong 20s.</li>
-            <li><b>📺 Check VAR (19):</b> Báo trọng tài tước thẳng 150 điểm của kẻ Top 1.</li>
             <li><b>😵 Thao Túng Tâm Lý (25):</b> Chọn 1 nạn nhân, hệ thống ép tay nạn nhân tự động tick vào đáp án sai ở câu tiếp theo.</li>
             <li><b>🤡 Bùa Lú Lẫn (26):</b> Chọn 1 nạn nhân. Trong 15s tiếp theo, nạn nhân click đáp án này hệ thống sẽ tự động "bẻ lái" sang ô đáp án sai khác.</li>
         </ul>
@@ -383,13 +413,19 @@
             <li><b>🌑 Tắt Đèn (24):</b> Phủ một màu đen kịt lên toàn màn hình trong 10s.</li>
         </ul>
 
-        <h4>👑 NHÓM SIÊU PHẨM (FIFA WORLD CUP)</h4>
+        <h4>👑 NHÓM SIÊU PHẨM (FIFA WORLD CUP 2026)</h4>
         <ul>
             <li><b>🏹 Robin Hood (13):</b> Tước đoạt điểm của Top 1 để đem tráo với điểm của kẻ Bét Bảng.</li>
             <li><b>⚽ Hattrick (17):</b> Ghi bàn nổ tung lưới hệ thống, nhận liền tay 300 điểm.</li>
+            <li><b>🟥 Thẻ Đỏ (18):</b> Chọn 1 nạn nhân, đuổi khỏi sân (khóa cứng màn hình) trong 20s.</li>
+            <li><b>📺 Check VAR (19):</b> Báo trọng tài tước thẳng 150 điểm của kẻ Top 1.</li>
             <li><b>🐐 Siêu Phẩm 90+ (CR7) (23):</b> Xóa sổ toàn bộ thời gian đang bị phạt hiện có, và quy đổi thời gian đó cộng thẳng thành Điểm số!</li>
-            <li><b>🐐 SIÊU PHẨM Messi! (M10) (27):</b> Tặng 500 điêm!!!</li>
+            <li><b>🐐 Siêu Phẩm Messi! (M10) (27):</b> Tặng 500 điểm!!!</li>
         </ul>
+                <div class="legends-tribute">
+            <div class="respect-text">Respect Cristiano Ronaldo and Lionel Messi</div>
+            <div class="last-dance">THE LAST DANCE OF LEGENDS</div>
+        </div>
 
         <div style="text-align: center; margin-top: 30px;">
             <button class="btn btn-danger" onclick="document.getElementById('guide-modal').classList.remove('show');" style="width: 200px;">ĐÓNG SÁCH</button>
@@ -402,10 +438,10 @@
     <h1 style="color: var(--danger); user-select: none;">THEO DẤU CHÂN NGƯỜI</h1>
     
     <div class="meta-info" style="font-size: 14px; background: #fce8e6; color: var(--danger); padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold;">
-        ⚠️ V19.2: HỆ THỐNG HUẤN LUYỆN TÂN BINH & GACHA CHỢ ĐEN ĐÃ MỞ!<br>HÃY ĐỌC LUẬT CHƠI TRƯỚC KHI THAM GIA.
+        V26 Bước đi cùng thời đại<br>HÃY ĐỌC LUẬT CHƠI TRƯỚC KHI THAM GIA.
     </div>
 
-    <button class="btn btn-info" onclick="document.getElementById('guide-modal').classList.add('show');" style="margin-bottom: 20px;">📖 SÁCH MA THUẬT (Luật & Kỹ Năng)</button>
+    <button class="btn btn-info" onclick="document.getElementById('guide-modal').classList.add('show');" style="margin-bottom: 20px;">📖 CẨM NANG GIƠI THIỆU (Luật & Kỹ Năng)</button>
 
     <input type="text" id="playerName" placeholder="Nhập Tên / Mã Sinh Viên...">
     <button class="btn btn-danger" onclick="joinLobby()">🚀 VÀO PHÒNG CHỜ</button>
