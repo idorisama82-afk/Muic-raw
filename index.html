@@ -388,6 +388,7 @@
             <li><b>🏹 Robin Hood (13):</b> Tước đoạt điểm của Top 1 để đem tráo với điểm của kẻ Bét Bảng.</li>
             <li><b>⚽ Hattrick (17):</b> Ghi bàn nổ tung lưới hệ thống, nhận liền tay 300 điểm.</li>
             <li><b>🐐 Siêu Phẩm 90+ (CR7) (23):</b> Xóa sổ toàn bộ thời gian đang bị phạt hiện có, và quy đổi thời gian đó cộng thẳng thành Điểm số!</li>
+            <li><b>🐐 SIÊU PHẨM Messi! (M10) (27):</b> Tặng 500 điêm!!!</li>
         </ul>
 
         <div style="text-align: center; margin-top: 30px;">
@@ -411,7 +412,7 @@
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
 
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v25.0.0 (Chat văn minh, nói chuyện văn hoá) <br>
+        Phiên bản v26.0.0 (Chat văn minh, nói chuyện văn hoá) <br>
         Copyright © 2026 by Yukiluna Idori
     </div>
 </div>
@@ -687,5 +688,515 @@
         input.value = "";
     };
 </script>   
+<!-- BẮT ĐẦU BẢN VÁ GACHA ANIMATION CHO IDORI -->
+<!-- BẮT ĐẦU BẢN VÁ GACHA ANIMATION CHO IDORI -->
+<script>
+    // 1. Chèn CSS Animation & Hiệu ứng Mạ vàng Metallic
+    if (!document.getElementById('gacha-styles')) {
+        let style = document.createElement('style');
+        style.id = 'gacha-styles';
+        style.innerHTML = `
+            @keyframes gachaSpin {
+                0% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg); }
+                25% { transform: scale(1.2) rotate(-10deg); }
+                50% { transform: scale(1) rotate(10deg); filter: hue-rotate(180deg); }
+                75% { transform: scale(1.2) rotate(-10deg); }
+                100% { transform: scale(1) rotate(0deg); filter: hue-rotate(360deg); }
+            }
+            @keyframes gachaPop {
+                0% { transform: scale(0.5); opacity: 0; }
+                70% { transform: scale(1.3); opacity: 1; }
+                100% { transform: scale(1); }
+            }
+            @keyframes metallicShine {
+                to { background-position: 200% center; }
+            }
+            .gacha-spinning { animation: gachaSpin 0.3s infinite linear; }
+            .gacha-popping { animation: gachaPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+            .gacha-icon { font-size: 80px; margin: 20px 0; text-shadow: 0 0 20px rgba(255,255,255,0.5); display: inline-block; }
+            
+            /* Class mạ vàng ánh kim chuyển động */
+            .jackpot-metallic {
+                background: linear-gradient(90deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+                background-size: 200% auto;
+                color: #000;
+                background-clip: text;
+                text-fill-color: transparent;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                animation: metallicShine 3s linear infinite;
+                font-weight: bold;
+                text-shadow: 0px 0px 10px rgba(255, 215, 0, 0.3);
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // 2. Ghi đè hàm mở Modal Gacha (Lấy lại giao diện bảng gốc siêu đẹp)
+    window.openBlackMarket = function() {
+        if(isInputPaused) return;
+        let now = Date.now();
+        let remain = Math.max(0, Math.ceil((10000 - (now - lastGachaTime))/1000));
+        
+        let btnHtml = remain > 0 
+            ? `<button class="btn" style="background:#555;color:#aaa; cursor:not-allowed; padding: 15px; width: 100%; font-size: 16px; border-radius: 5px; border: none;" disabled>⏳ Nạp năng lượng... (${remain}s)</button>` 
+            : `<button id="btn-start-gacha" class="btn" style="background:linear-gradient(45deg, #ff9800, #e91e63); color:#fff; font-size:18px; font-weight:bold; padding:12px; width: 100%; border:none; border-radius: 5px; box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3);" onclick="startGachaAnimation()">🎰 QUAY GACHA (100đ)</button>`;
+
+        let html = `
+            <div id="gacha-content-wrapper">
+                <!-- KHU VỰC 1: BẢNG TỶ LỆ GỐC (Hiển thị ban đầu) -->
+                <div id="gacha-original-table" style="text-align:center;">
+                    <p style="color:#5f6368; font-size:14px; margin-bottom:15px;">Hệ thống rủi ro cực cao. Càng OP tỷ lệ rớt càng thấp!</p>
+                    <table style="width:100%; border-collapse:collapse; margin-bottom:15px; font-size:14px; text-align:left;">
+                        <tr style="background:#f1f3f4;"><td style="padding:8px;">⚪ <b>Rác (30%)</b></td><td>Bị trừ 50đ</td></tr>
+                        <tr><td style="padding:8px;">🟢 <b style="color:#4caf50;">Thường (40%)</b></td><td>+1 Thẻ ngẫu nhiên</td></tr>
+                        <tr style="background:#f1f3f4;"><td style="padding:8px;">🔵 <b style="color:#2196f3;">Hiếm (20%)</b></td><td>Thẻ Đỏ, Tắt Đèn, Bùa Lú, Thao Túng</td></tr>
+                        <tr><td style="padding:8px; color:var(--danger);">🟣 <b>Siêu Hiếm (8%)</b></td><td>Hattrick, CR7, ⚔️ La Mã</td></tr>
+                        <tr style="background:#fff3e0;"><td style="padding:8px; color:#ff9800; font-weight:bold;">🟡 <b>Jackpot Găng Tay (2%)</b></td><td style="color:#ff9800;">💥 Găng Tay Thanos</td></tr>
+                        <tr style="background:#000; border: 2px solid #ffd700;">
+                            <!-- ĐÃ THÊM CLASS MẠ VÀNG VÀO ĐÂY -->
+                            <td style="padding:8px;" class="jackpot-metallic">💎 THẦN THOẠI (10⁻⁹%)</td>
+                            <td class="jackpot-metallic">+999 THẺ KỸ NĂNG</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- KHU VỰC 2: ANIMATION (Ẩn đi, chỉ hiện khi bấm quay) -->
+                <div id="gacha-animation-area" style="display:none; text-align: center; padding: 20px 0;">
+                    <div id="gacha-display-icon" class="gacha-icon">🎁</div>
+                    <div id="gacha-status-text" style="color:#5f6368; font-size:18px; margin-top: 10px;"></div>
+                </div>
+            </div>
+            
+            <!-- KHU VỰC NÚT BẤM -->
+            <div id="gacha-action-area" style="display:flex; flex-direction:column; gap:10px;">
+                ${btnHtml}
+                <button class="btn btn-warning" style="width: 100%; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 5px;" onclick="closeModal()">Đã Hiểu</button>
+            </div>
+        `;
+        
+        openModal("🎰 HỘP GACHA CHỢ ĐEN", html, "none");
+    };
+
+    // 3. Xử lý Logic Hiệu ứng
+    window.startGachaAnimation = function() {
+        if(score < 100) return showToast("❌ Không đủ 100đ! Về kiếm thêm điểm đi ní!", "danger");
+        
+        score -= 100; 
+        lastGachaTime = Date.now(); 
+        updateStats();
+        
+        document.getElementById('gacha-original-table').style.display = 'none';
+        document.getElementById('gacha-animation-area').style.display = 'block';
+        
+        let icon = document.getElementById('gacha-display-icon');
+        let status = document.getElementById('gacha-status-text');
+        let actionArea = document.getElementById('gacha-action-area');
+        
+        actionArea.style.display = 'none';
+        
+        icon.className = 'gacha-icon gacha-spinning';
+        status.innerHTML = "<span style='color:#2196f3; font-weight:bold;'>🔄 Đang test nhân phẩm...</span>";
+        
+        let suspenseAudio = new Audio('https://www.myinstants.com/media/sounds/drumroll.mp3'); 
+        suspenseAudio.play().catch(e=>{});
+
+        setTimeout(() => {
+            finishGachaResult(icon, status, actionArea);
+        }, 2500);
+    };
+
+    // 4. Trả kết quả (Jackpot 10^-9%)
+    window.finishGachaResult = function(icon, status, actionArea) {
+        icon.className = 'gacha-icon gacha-popping';
+        pushLocalLog("đã cúng 100đ cho Gacha Chợ Đen 🎰");
+        
+        let rand = Math.random();
+        
+        actionArea.style.display = 'flex';
+        actionArea.innerHTML = `<button class="btn btn-warning" style="width:100%; padding:12px; font-size:16px; font-weight:bold; border-radius:5px;" onclick="closeModal()">Nhận Lệnh</button>`;
+
+        if (rand < 0.00000000001) { 
+            skillCount += 999; updateStats();
+            database.ref('chat_messages').push({ name: 'HỆ THỐNG', text: `🚨 SIÊU CẤP CẢNH BÁO: Kẻ được chọn [${playerName}] vừa nổ JACKPOT 999 THẺ (Tỷ lệ 10⁻⁹%)!!!`, timestamp: Date.now() });
+            icon.innerHTML = "💎";
+            icon.style.textShadow = "0 0 50px #00ffff";
+            status.innerHTML = `<span class="jackpot-metallic" style="font-size:24px; display:inline-block;">JACKPOT THẦN THOẠI!<br>+999 THẺ KỸ NĂNG</span>`;
+            showToast("💎 QUÁ ĐỈNH! BẠN VỪA PHÁ ĐẢO SERVER!", "success");
+        } 
+        else if (rand < 0.30) {
+            score = Math.max(0, score - 50); updateStats();
+            icon.innerHTML = "💩";
+            status.innerHTML = `<span style="color:#ff5252; font-size:22px; font-weight:bold;">ĐEN THUI!<br>Trúng rác, bị trừ 50đ</span>`;
+            showToast("😂 Trúng ngay rác!", "danger");
+        } 
+        else if (rand < 0.70) {
+            skillCount++; updateStats();
+            icon.innerHTML = "🟢";
+            status.innerHTML = `<span style="color:#4caf50; font-size:22px; font-weight:bold;">THƯỜNG!<br>+1 Thẻ Kỹ Năng Ngẫu Nhiên</span>`;
+            showToast("🎁 Tàm tạm, được 1 thẻ!", "success");
+        } 
+        else if (rand < 0.90) {
+            let rares = [18, 24, 21, 25, 26]; 
+            let r = rares[Math.floor(Math.random()*rares.length)];
+            icon.innerHTML = "🔵";
+            status.innerHTML = `<span style="color:#2196f3; font-size:22px; font-weight:bold;">HIẾM!<br>Nhận một thẻ ám toán đặc biệt!</span>`;
+            showToast("🔥 Chuẩn bị xả chiêu!", "warning");
+            setTimeout(() => executeSkill(r), 500);
+        } 
+        else if (rand < 0.98) {
+            let epics = [17, 23, 'arena']; 
+            let r = epics[Math.floor(Math.random()*epics.length)];
+            icon.innerHTML = "🟣";
+            
+            if(r === 'arena') {
+                status.innerHTML = `<span style="color:#9c27b0; font-size:22px; font-weight:bold;">SIÊU HIẾM!<br>Vé Đấu Trường La Mã ⚔️</span>`;
+                setTimeout(() => {
+                    let selectHTMLA = getTargetSelectHTML(); 
+                    if(!selectHTMLA) return showToast("Phòng chưa có ai để thách đấu!", "danger");
+                    openModal("⚔️ THÁCH ĐẤU LA MÃ", `Miễn phí vé từ Gacha!<br>Chọn đối thủ khô máu:<br>${selectHTMLA}`, "confirm", () => {
+                        let targetName = document.getElementById('target-player-select').value;
+                        let a = Math.floor(Math.random()*50)+10, b = Math.floor(Math.random()*50)+10;
+                        database.ref('room_events').set({type: 'arena_start', by: playerName, target: targetName, q: `${a} + ${b} = ?`, ans: a+b, time: Date.now()});
+                    });
+                }, 1000);
+            } else {
+                status.innerHTML = `<span style="color:#9c27b0; font-size:22px; font-weight:bold;">SIÊU HIẾM!<br>Nhận Thẻ Siêu Cấp!</span>`;
+                setTimeout(() => executeSkill(r), 500);
+            }
+        } 
+        else {
+            if(!isThanosUsed) {
+                database.ref('game_meta/thanosUsed').set(true);
+                database.ref('room_events').set({type: 'thanos_snap', by: playerName, time: Date.now()});
+                icon.innerHTML = "💥";
+                status.innerHTML = `<span style="color:#ff9800; font-size:22px; font-weight:bold;">JACKPOT GĂNG TAY!<br>Búng Tay Vô Cực!</span>`;
+                showToast("💥 Thanos đã thức tỉnh!", "danger");
+            } else {
+                score += 800; updateStats();
+                icon.innerHTML = "💰";
+                status.innerHTML = `<span style="color:#ffeb3b; font-size:22px; font-weight:bold;">TRÙNG LẶP THANOS!<br>Đền bù 800đ!</span>`;
+                showToast("💰 Nhận nóng 800đ đền bù!", "success");
+            }
+        }
+    };
+</script>
+<!-- BẮT ĐẦU BẢN VÁ ULTIMATE CHO IDORI -->
+<script>
+    // ==========================================
+    // 0. KHAI BÁO BIẾN CẤM CHAT TOÀN CỤC
+    // ==========================================
+    window.isMuted = false;
+
+    // ==========================================
+    // 1. CSS GACHA & HIỆU ỨNG ÁNH KIM
+    // ==========================================
+    if (!document.getElementById('gacha-styles')) {
+        let style = document.createElement('style');
+        style.id = 'gacha-styles';
+        style.innerHTML = `
+            @keyframes gachaSpin { 0% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg); } 25% { transform: scale(1.2) rotate(-10deg); } 50% { transform: scale(1) rotate(10deg); filter: hue-rotate(180deg); } 75% { transform: scale(1.2) rotate(-10deg); } 100% { transform: scale(1) rotate(0deg); filter: hue-rotate(360deg); } }
+            @keyframes gachaPop { 0% { transform: scale(0.5); opacity: 0; } 70% { transform: scale(1.3); opacity: 1; } 100% { transform: scale(1); } }
+            @keyframes metallicShine { to { background-position: 200% center; } }
+            .gacha-spinning { animation: gachaSpin 0.3s infinite linear; }
+            .gacha-popping { animation: gachaPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+            .gacha-icon { font-size: 80px; margin: 20px 0; text-shadow: 0 0 20px rgba(255,255,255,0.5); display: inline-block; }
+            .jackpot-metallic {
+                background: linear-gradient(90deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+                background-size: 200% auto; color: #000; background-clip: text; text-fill-color: transparent;
+                -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+                animation: metallicShine 3s linear infinite; font-weight: bold;
+                text-shadow: 0px 0px 10px rgba(255, 215, 0, 0.3);
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // ==========================================
+    // 2. GIAO DIỆN & LOGIC GACHA (CÓ M10)
+    // ==========================================
+    window.openBlackMarket = function() {
+        if(isInputPaused) return;
+        let now = Date.now();
+        let remain = Math.max(0, Math.ceil((10000 - (now - lastGachaTime))/1000));
+        
+        let btnHtml = remain > 0 
+            ? `<button class="btn" style="background:#555;color:#aaa; cursor:not-allowed; padding: 15px; width: 100%; font-size: 16px; border-radius: 5px; border: none;" disabled>⏳ Nạp năng lượng... (${remain}s)</button>` 
+            : `<button id="btn-start-gacha" class="btn" style="background:linear-gradient(45deg, #ff9800, #e91e63); color:#fff; font-size:18px; font-weight:bold; padding:12px; width: 100%; border:none; border-radius: 5px; box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3);" onclick="startGachaAnimation()">🎰 QUAY GACHA (100đ)</button>`;
+
+        let html = `
+            <div id="gacha-content-wrapper">
+                <div id="gacha-original-table" style="text-align:center;">
+                    <p style="color:#5f6368; font-size:14px; margin-bottom:15px;">Hệ thống rủi ro cực cao. Càng OP tỷ lệ rớt càng thấp!</p>
+                    <table style="width:100%; border-collapse:collapse; margin-bottom:15px; font-size:14px; text-align:left;">
+                        <tr style="background:#f1f3f4;"><td style="padding:8px;">⚪ <b>Rác (30%)</b></td><td>Bị trừ 50đ</td></tr>
+                        <tr><td style="padding:8px;">🟢 <b style="color:#4caf50;">Thường (40%)</b></td><td>+1 Thẻ ngẫu nhiên</td></tr>
+                        <tr style="background:#f1f3f4;"><td style="padding:8px;">🔵 <b style="color:#2196f3;">Hiếm (20%)</b></td><td>Thẻ Đỏ, Tắt Đèn, Bùa Lú, Thao Túng</td></tr>
+                        <tr><td style="padding:8px; color:var(--danger);">🟣 <b>Siêu Hiếm (8%)</b></td><td>Hattrick, CR7, M10, ⚔️ La Mã</td></tr>
+                        <tr style="background:#fff3e0;"><td style="padding:8px; color:#ff9800; font-weight:bold;">🟡 <b>Jackpot (2%)</b></td><td style="color:#ff9800;">💥 Găng Tay Thanos</td></tr>
+                        <tr style="background:#000; border: 2px solid #ffd700;">
+                            <td style="padding:8px;" class="jackpot-metallic">💎 THẦN THOẠI (10⁻⁹%)</td>
+                            <td class="jackpot-metallic">+999 THẺ KỸ NĂNG</td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="gacha-animation-area" style="display:none; text-align: center; padding: 20px 0;">
+                    <div id="gacha-display-icon" class="gacha-icon">🎁</div>
+                    <div id="gacha-status-text" style="color:#5f6368; font-size:18px; margin-top: 10px;"></div>
+                </div>
+            </div>
+            <div id="gacha-action-area" style="display:flex; flex-direction:column; gap:10px;">
+                ${btnHtml}
+                <button class="btn btn-warning" style="width: 100%; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 5px;" onclick="closeModal()">Đã Hiểu</button>
+            </div>
+        `;
+        openModal("🎰 HỘP GACHA CHỢ ĐEN", html, "none");
+    };
+
+    window.startGachaAnimation = function() {
+        if(score < 100) return showToast("❌ Không đủ 100đ!", "danger");
+        score -= 100; lastGachaTime = Date.now(); updateStats();
+        
+        document.getElementById('gacha-original-table').style.display = 'none';
+        document.getElementById('gacha-animation-area').style.display = 'block';
+        
+        let icon = document.getElementById('gacha-display-icon');
+        let status = document.getElementById('gacha-status-text');
+        let actionArea = document.getElementById('gacha-action-area');
+        
+        actionArea.style.display = 'none';
+        icon.className = 'gacha-icon gacha-spinning';
+        status.innerHTML = "<span style='color:#2196f3; font-weight:bold;'>🔄 Đang test nhân phẩm...</span>";
+        
+        let suspenseAudio = new Audio('https://www.myinstants.com/media/sounds/drumroll.mp3'); 
+        suspenseAudio.play().catch(e=>{});
+
+        setTimeout(() => { finishGachaResult(icon, status, actionArea); }, 2500);
+    };
+
+    window.finishGachaResult = function(icon, status, actionArea) {
+        icon.className = 'gacha-icon gacha-popping';
+        pushLocalLog("đã cúng 100đ cho Gacha Chợ Đen 🎰");
+        
+        let rand = Math.random();
+        actionArea.style.display = 'flex';
+        actionArea.innerHTML = `<button class="btn btn-warning" style="width:100%; padding:12px; font-size:16px; font-weight:bold; border-radius:5px;" onclick="closeModal()">Nhận Lệnh</button>`;
+
+        if (rand < 0.00000000001) { 
+            skillCount += 999; updateStats();
+            database.ref('chat_messages').push({ name: 'HỆ THỐNG', text: `🚨 CẢNH BÁO: Kẻ được chọn [${playerName}] vừa nổ JACKPOT 999 THẺ (10⁻⁹%)!!!`, timestamp: Date.now() });
+            icon.innerHTML = "💎"; icon.style.textShadow = "0 0 50px #00ffff";
+            status.innerHTML = `<span class="jackpot-metallic" style="font-size:24px; display:inline-block;">JACKPOT THẦN THOẠI!<br>+999 THẺ KỸ NĂNG</span>`;
+        } 
+        else if (rand < 0.30) {
+            score = Math.max(0, score - 50); updateStats();
+            icon.innerHTML = "💩"; status.innerHTML = `<span style="color:#ff5252; font-size:22px; font-weight:bold;">ĐEN THUI!<br>Trúng rác, bị trừ 50đ</span>`;
+        } 
+        else if (rand < 0.70) {
+            skillCount++; updateStats();
+            icon.innerHTML = "🟢"; status.innerHTML = `<span style="color:#4caf50; font-size:22px; font-weight:bold;">THƯỜNG!<br>+1 Thẻ Kỹ Năng Ngẫu Nhiên</span>`;
+        } 
+        else if (rand < 0.90) {
+            let rares = [18, 24, 21, 25, 26]; 
+            let r = rares[Math.floor(Math.random()*rares.length)];
+            icon.innerHTML = "🔵"; status.innerHTML = `<span style="color:#2196f3; font-size:22px; font-weight:bold;">HIẾM!<br>Nhận một thẻ ám toán đặc biệt!</span>`;
+            setTimeout(() => executeSkill(r), 500);
+        } 
+        else if (rand < 0.98) {
+            let epics = [17, 23, 'arena', 'm10']; 
+            let r = epics[Math.floor(Math.random()*epics.length)];
+            icon.innerHTML = "🟣";
+            
+            if(r === 'm10') {
+                status.innerHTML = `<span style="color:#00e5ff; font-size:22px; font-weight:bold;">SIÊU PHẨM M10!<br>Ankara Messi!</span>`;
+                setTimeout(() => {
+                    score += 500; updateStats();
+                    showToast("🐐 Ankara Messi! Nhận 500đ!", "success");
+                    database.ref('chat_messages').push({ name: 'HỆ THỐNG', text: `🐐 ĐỈNH CAO: [${playerName}] vừa kích hoạt skill M10 - Rê bóng qua 5 người, ẵm gọn 500đ!`, timestamp: Date.now() });
+                }, 1000);
+            }
+            else if(r === 'arena') {
+                status.innerHTML = `<span style="color:#9c27b0; font-size:22px; font-weight:bold;">SIÊU HIẾM!<br>Vé Đấu Trường La Mã ⚔️</span>`;
+                setTimeout(() => {
+                    let selectHTMLA = getTargetSelectHTML(); 
+                    if(!selectHTMLA) return showToast("Phòng chưa có ai để thách đấu!", "danger");
+                    openModal("⚔️ THÁCH ĐẤU LA MÃ", `Miễn phí vé từ Gacha!<br>Chọn đối thủ khô máu:<br>${selectHTMLA}`, "confirm", () => {
+                        let targetName = document.getElementById('target-player-select').value;
+                        let a = Math.floor(Math.random()*50)+10, b = Math.floor(Math.random()*50)+10;
+                        database.ref('room_events').set({type: 'arena_start', by: playerName, target: targetName, q: `${a} + ${b} = ?`, ans: a+b, time: Date.now()});
+                    });
+                }, 1000);
+            } else {
+                status.innerHTML = `<span style="color:#9c27b0; font-size:22px; font-weight:bold;">SIÊU HIẾM!<br>Nhận Thẻ Siêu Cấp!</span>`;
+                setTimeout(() => executeSkill(r), 500);
+            }
+        } 
+        else {
+            if(!isThanosUsed) {
+                database.ref('game_meta/thanosUsed').set(true);
+                database.ref('room_events').set({type: 'thanos_snap', by: playerName, time: Date.now()});
+                icon.innerHTML = "💥"; status.innerHTML = `<span style="color:#ff9800; font-size:22px; font-weight:bold;">JACKPOT GĂNG TAY!<br>Búng Tay Vô Cực!</span>`;
+            } else {
+                score += 800; updateStats();
+                icon.innerHTML = "💰"; status.innerHTML = `<span style="color:#ffeb3b; font-size:22px; font-weight:bold;">TRÙNG LẶP THANOS!<br>Đền bù 800đ!</span>`;
+            }
+        }
+    };
+
+    // ==========================================
+    // 3. TẠO TAI MẮT LẮNG NGHE LỆNH ADMIN
+    // ==========================================
+    database.ref('room_events').on('value', snapshot => {
+        let ev = snapshot.val();
+        if (!ev || !ev.type || (Date.now() - ev.time > 5000)) return; 
+
+        if (ev.type === 'admin_give_card' && ev.target === playerName) {
+            skillCount += (ev.amount || 1); updateStats();
+            showToast(`🎁 QUÁ ĐÃ! Idori vừa lén độ cho bạn ${ev.amount} thẻ!`, "success");
+        }
+
+        if (ev.type === 'admin_set_score' && ev.target === playerName) {
+            score = ev.newScore; updateStats();
+            showToast(`⚡ Admin vừa điều chỉnh điểm của bạn thành ${ev.newScore}đ!`, "warning");
+        }
+
+        if (ev.type === 'admin_mute_chat' && ev.target === playerName) {
+            window.isMuted = true; showToast(`🤐 BẠN ĐÃ BỊ Admin CẤM CHAT!`, "danger");
+        }
+
+        if (ev.type === 'admin_unmute_chat' && ev.target === playerName) {
+            window.isMuted = false; showToast(`🗣️ BẠN ĐÃ ĐƯỢC MỞ KHÓA CHAT!`, "success");
+        }
+
+        if (ev.type === 'admin_ban' && ev.target === playerName) {
+            isInputPaused = true;
+            if (typeof timerInterval !== 'undefined') clearInterval(timerInterval); 
+            if (typeof myPlayerRef !== 'undefined' && myPlayerRef) myPlayerRef.remove();
+            
+            document.body.innerHTML = `
+                <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                    <span style="font-size:120px;">🚫</span>
+                    <h1 style="color:#ff5252; font-family:sans-serif; text-align:center; margin: 20px;">BẠN ĐÃ BỊ ADMIN ĐÁ KHỎI SERVER!</h1>
+                    <p style="color:#fff; font-size:24px;">Lý do: Vi phạm các điều khoản thi đấu</p>
+                </div>
+            `;
+        }
+    });
+
+    // ==========================================
+    // 4. TRUNG TÂM XỬ LÝ LỆNH TRÊN KÊNH CHAT
+    // ==========================================
+    window.sendChatMessage = function() {
+        let inputEl = document.getElementById('chat-input');
+        if(!inputEl) return;
+        let text = inputEl.value.trim();
+        if (text === '') return;
+
+        // Bị cấm chat thì khóa mõm
+        if (window.isMuted && playerName.toLowerCase() !== 'idori' && !isVIP) {
+            showToast("🤐 Bạn đang bị cấm chat! Cãi nhau vô ích!", "danger");
+            inputEl.value = '';
+            return;
+        }
+
+        // CHỈ IDORI / VIP MỚI ĐƯỢC PHÉP XÀI LỆNH CÓ DẤU XUYỆC ( / )
+        if ((playerName.toLowerCase() === 'idori' || isVIP) && text.startsWith('/')) {
+            // Gom nhiều khoảng trắng thành 1 để cắt cho chuẩn
+            let cleanText = text.replace(/\s+/g, ' '); 
+            let parts = cleanText.split(' ');
+            let cmd = parts[0].toLowerCase();
+            
+            // ----------------------------------------------------
+            // XỬ LÝ ĐẶC BIỆT CHO LỆNH THÔNG BÁO (Bất chấp khoảng trắng)
+            // ----------------------------------------------------
+            if (cmd === '/thongbao' || cmd === '/tb' || cmd === '/loa') {
+                let msg = parts.slice(1).join(' ').trim();
+                if (msg !== '') {
+                    database.ref('chat_messages').push({ name: 'HỆ THỐNG', text: `📢 Admin: ${msg}`, timestamp: Date.now() });
+                } else {
+                    showToast("❌ Gõ thiếu nội dung thông báo rồi!", "warning");
+                }
+                inputEl.value = ''; 
+                return;
+            }
+
+            // ----------------------------------------------------
+            // CÁC LỆNH TÁC ĐỘNG LÊN NGƯỜI CHƠI KHÁC
+            // ----------------------------------------------------
+            let target = parts.slice(1).join(' ');
+            if (['/tangdiem', '/trudiem', '/tangthe'].includes(cmd)) {
+                target = parts.slice(1, parts.length - 1).join(' '); // Cắt bỏ số liệu ở cuối để chừa lại cái Tên
+            }
+            
+            // Dò tìm ID nạn nhân trên bảng xếp hạng
+            let p = typeof currentLeaderboard !== 'undefined' ? currentLeaderboard.find(x => x.name.toLowerCase() === target.toLowerCase()) : null;
+
+            if (cmd === '/tangdiem' && parts.length >= 3) {
+                let amount = parseInt(parts[parts.length - 1]);
+                if (p && !isNaN(amount)) {
+                    database.ref('room_events').set({ type: 'admin_set_score', by: playerName, target: p.name, newScore: Number(p.score) + amount, time: Date.now() });
+                    showToast(`📈 Đã buff ${amount}đ cho ${p.name}`, "success");
+                } else showToast(`❌ Lỗi! Sai tên hoặc chưa nhập số điểm!`, "danger");
+            }
+            else if (cmd === '/trudiem' && parts.length >= 3) {
+                let amount = parseInt(parts[parts.length - 1]);
+                if (p && !isNaN(amount)) {
+                    database.ref('room_events').set({ type: 'admin_set_score', by: playerName, target: p.name, newScore: Math.max(0, Number(p.score) - amount), time: Date.now() });
+                    showToast(`📉 Đã trừ đứt ${amount}đ của ${p.name}`, "success");
+                } else showToast(`❌ Lỗi! Sai tên hoặc chưa nhập số điểm!`, "danger");
+            }
+            else if (cmd === '/tangthe' && parts.length >= 3) {
+                let amount = parseInt(parts[parts.length - 1]);
+                if (p && !isNaN(amount)) {
+                    database.ref('room_events').set({ type: 'admin_give_card', by: playerName, target: p.name, amount: amount, time: Date.now() });
+                    showToast(`🃏 Đã nhét ${amount} thẻ vào túi ${p.name}`, "success");
+                } else showToast(`❌ Lỗi! Sai tên hoặc chưa nhập số thẻ!`, "danger");
+            }
+            else if ((cmd === '/kick' || cmd === '/ban' || cmd === '/banacc') && parts.length >= 2) {
+                if(p) {
+                    database.ref('room_events').set({ type: 'admin_ban', by: playerName, target: p.name, time: Date.now() });
+                    showToast(`🚫 Đã cho ${p.name} bay màu!`, "success");
+                } else showToast(`❌ Không tìm thấy ${target}`, "danger");
+            }
+            else if (cmd === '/khoamom' && parts.length >= 2) {
+                if(p) {
+                    database.ref('room_events').set({ type: 'silence', by: playerName, target: p.name, time: Date.now() });
+                    showToast(`🤫 Đã cấm rút thẻ đối với ${p.name}`, "success");
+                } else showToast(`❌ Không tìm thấy ${target}`, "danger");
+            }
+            else if (cmd === '/camchat' && parts.length >= 2) {
+                if(p) {
+                    database.ref('room_events').set({ type: 'admin_mute_chat', by: playerName, target: p.name, time: Date.now() });
+                    showToast(`🤐 Đã cấm ${p.name} gáy trên kênh chat`, "success");
+                } else showToast(`❌ Không tìm thấy ${target}`, "danger");
+            }
+            else if (cmd === '/mochat' && parts.length >= 2) {
+                if(p) {
+                    database.ref('room_events').set({ type: 'admin_unmute_chat', by: playerName, target: p.name, time: Date.now() });
+                    showToast(`🗣️ Đã mở khóa chat cho ${p.name}`, "success");
+                } else showToast(`❌ Không tìm thấy ${target}`, "danger");
+            }
+            else if (cmd === '/m10') {
+                database.ref('room_events').set({ type: 'global_supply_drop', by: playerName, time: Date.now() }); 
+                database.ref('chat_messages').push({ name: 'HỆ THỐNG', text: `🐐 Admin vừa tung skill M10! Tặng toàn server +2 Thẻ!`, timestamp: Date.now() });
+            }
+            else {
+                showToast(`❌ Lệnh không hợp lệ! Xem lại cú pháp!`, "warning");
+            }
+            
+            inputEl.value = ''; 
+            return; 
+        }
+
+        // CHAT BÌNH THƯỜNG DÀNH CHO DÂN ĐEN
+        database.ref('chat_messages').push({
+            name: playerName,
+            text: text,
+            timestamp: Date.now()
+        });
+        inputEl.value = '';
+    };
+</script>
+<!-- KẾT THÚC BẢN VÁ ULTIMATE -->
 </body>
 </html>
