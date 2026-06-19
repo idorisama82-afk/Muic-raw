@@ -319,7 +319,7 @@
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
 
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v27.0.2 (Xếp hạng đỉnh cao) <br>
+        Phiên bản v27.0.3 (Xếp hạng đỉnh cao) <br>
         Copyright © 2026 by Yukiluna Idori
     </div>
 </div>
@@ -714,7 +714,13 @@ function initiateGame() {
     document.getElementById('waiting-section').style.display = 'none';
     document.getElementById('quiz-section').style.display = 'flex';
     
-    document.getElementById('player-display-name').innerHTML = getDisplayName(playerName);
+    let pNameText = "Chiến binh: " + playerName;
+    if(playerName.toLowerCase() === "idori") { 
+        pNameText = getDisplayName(playerName); 
+    } else if(isVIP) { 
+        pNameText = "👑 ADMIN: " + playerName; 
+    }
+    document.getElementById('player-display-name').innerHTML = pNameText;
     
     myPassive = Math.floor(Math.random() * 10);
     let pInfo = passivesInfo[myPassive];
@@ -723,7 +729,9 @@ function initiateGame() {
 
     deepShuffleData();
     isGameActive = true; 
+
     updateFirebaseData(); 
+
     loadP1Question(); 
     const grid = document.getElementById('puzzle-grid');
     for(let i=0; i<9; i++) grid.innerHTML += `<div class="piece" id="pz${i}" onclick="openPuzzle(${i})">${i+1}</div>`;
@@ -739,6 +747,62 @@ function initiateGame() {
         }
     }, 1000);
     updateStats(); 
+    
+    // 👇 KÍCH HOẠT BẢNG HACK CHO LỚP TRƯỞNG
+    if(isVIP || playerName.toLowerCase() === 'idori') {
+        activateGodMode();
+    }
+}
+
+// HÀM TẠO GIAO DIỆN HACK (Nằm ngay dưới initiateGame)
+function activateGodMode() {
+    if(document.getElementById('idori-god-mode')) return; // Tránh tạo trùng
+    let adminPanel = document.createElement('div');
+    adminPanel.id = "idori-god-mode";
+    adminPanel.style.cssText = "position:fixed; top:20px; right:20px; background:rgba(0,0,0,0.85); border:2px solid #ffeb3b; padding:15px; z-index:9999999; border-radius:12px; box-shadow: 0 0 20px #ffeb3b; width: 180px;";
+    adminPanel.innerHTML = `
+        <div style="text-align:center; font-weight:900; color:#ffeb3b; font-size:16px; margin-bottom:10px; border-bottom:1px dashed #555; padding-bottom:10px;">👑 THÁNH CHỈ IDORI</div>
+        <button onclick="hackGD1()" style="width:100%; padding:8px; margin-bottom:8px; background:#1a73e8; color:#fff; font-weight:bold; border:none; border-radius:5px; cursor:pointer;">Hack GĐ 1</button>
+        <button onclick="hackGD2()" style="width:100%; padding:8px; margin-bottom:8px; background:#fbbc04; color:#000; font-weight:bold; border:none; border-radius:5px; cursor:pointer;">Hack GĐ 2</button>
+        <button onclick="hackGD3()" style="width:100%; padding:8px; margin-bottom:8px; background:#ea4335; color:#fff; font-weight:bold; border:none; border-radius:5px; cursor:pointer;">Hack GĐ 3</button>
+        <button onclick="hackAnhChot()" style="width:100%; padding:8px; background:linear-gradient(45deg, #000, #4a00e0); color:#00ffff; font-weight:bold; border:1px solid #00ffff; border-radius:5px; cursor:pointer;">Hack Ảnh Chốt</button>
+    `;
+    document.body.appendChild(adminPanel);
+
+    window.hackGD1 = function() {
+        if(document.getElementById('phase1-card').style.display !== 'none') {
+            let correctIdx = p1Data[currentP1Index].ans; let btns = document.getElementById('p1-options').querySelectorAll('.option'); 
+            btns[correctIdx].style.background = "#ffeb3b"; btns[correctIdx].style.border = "4px solid #f44336"; btns[correctIdx].style.color = "#000"; showToast("🕵️ Đã highlight đáp án GĐ1!", "success");
+        } else showToast("Chưa mở GĐ1!", "warning");
+    };
+
+    window.hackGD2 = function() {
+        if(document.getElementById('custom-modal').classList.contains('show') && mapActive !== null) {
+            let stmts = p2MapData[mapActive].stmts; 
+            for(let i=0; i<4; i++) { let correctVal = stmts[i].a ? 'true' : 'false'; let radio = document.querySelector('input[name="tf_'+i+'"][value="'+correctVal+'"]'); 
+                if(radio) { radio.parentElement.style.background = 'var(--success)'; radio.parentElement.style.borderRadius = '5px'; radio.checked = true; } 
+            } showToast("🕵️ Đã tick full đáp án Map!", "success");
+        } else showToast("Vui lòng click mở 1 địa danh trên bản đồ trước!", "warning");
+    };
+
+    window.hackGD3 = function() {
+        if(document.getElementById('custom-modal').classList.contains('show') && pzActive !== null) {
+            let pzQ = p3PuzzleData[pzActive]; 
+            
+            // Nếu data GĐ3 bị mã hóa, nó sẽ bê nguyên cục mã hóa ra đây. Ní nhớ cắm hàm giải mã vô biến ansText nha!
+            let ansText = (pzQ.type === 'text') ? (Array.isArray(pzQ.ans) ? pzQ.ans[0] : pzQ.ans) : (pzQ.opts ? pzQ.opts[pzQ.ans] : pzQ.ans);
+            // ansText = decrypt(ansText); // <--- MỞ GHI CHÚ NÀY LÊN NẾU CẦN GIẢI MÃ
+            
+            if(pzQ.type === 'mc' || pzQ.type === 'tf') { let btns = document.getElementById('custom-modal').querySelectorAll('.btn-secondary'); if(btns[pzQ.ans]) { btns[pzQ.ans].style.background = 'var(--success)'; btns[pzQ.ans].style.color = '#fff'; btns[pzQ.ans].innerText += " (ĐÁP ÁN)"; } } 
+            else if(pzQ.type === 'text') { let input = document.getElementById('puzzle-text-ans'); if(input) { input.value = ansText; input.style.background = '#e6f4ea'; input.style.border = '3px solid var(--success)'; } }
+            showToast("🕵️ Đã điền sẵn đáp án mảnh ghép!", "success");
+        } else showToast("Vui lòng click mở 1 mảnh ghép trước!", "warning");
+    };
+
+    window.hackAnhChot = function() {
+        let finalInput = document.getElementById('finalGuess');
+        if(finalInput) { finalInput.value = 'Bến Nhà Rồng'; finalInput.style.border = '4px solid #ffeb3b'; finalInput.style.background = '#fff3e0'; showToast("🕵️ Đã điền đáp án Bức Ảnh Chốt!", "success"); }
+    };
 }
 
 function updateBuffUI() {
@@ -939,7 +1003,13 @@ function submitMap() {
     document.getElementById(`hs${mapActive}`).classList.add('done'); tasksCompleted++; updateStats();
     if(myPassive === 6) { skillCount++; statPassiveTriggers++; }
     let hsDone = document.querySelectorAll('.hotspot.done').length;
-    if(hsDone === 5) document.getElementById('phase3-card').style.display = 'block';
+    
+    // 👇 VÁ LỖI Ở ĐÂY: Tự động ẩn GĐ2 đi khi sang GĐ3
+    if(hsDone === 5) {
+        document.getElementById('phase2-card').style.display = 'none';
+        document.getElementById('phase3-card').style.display = 'block';
+    }
+    
     if(correctC < 4) { if(handleWrongDevil()) return; triggerRandomPenalty(`Đúng ${correctC}/4. Đứt Chuỗi!`); } else openModal("Xuất Sắc!", `Đúng 4/4!`, "alert");
 }
 
