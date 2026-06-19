@@ -319,7 +319,7 @@
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
 
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v27.0.0 (Xếp hạng đỉnh cao) <br>
+        Phiên bản v27.0.1 (Xếp hạng đỉnh cao) <br>
         Copyright © 2026 by Yukiluna Idori
     </div>
 </div>
@@ -963,9 +963,34 @@ function checkPuzzle(ansValue) {
     else { tasksCompleted++; currentStreak = 0; updateStats(); if(handleWrongDevil()) return; triggerRandomPenalty("Sai rồi! Mảnh ghép đã bị khóa."); }
 }
 function submitFinal() {
-    if(isInputPaused) return; let guess = document.getElementById('finalGuess').value.toLowerCase().trim();
-    if(['bến nhà rồng', 'ben nha rong', 'nha rong', 'nhà rồng'].includes(guess)) { if(myPassive === 3) reduceTime(3); statMapPuzzleTime = elapsedTime; addScoreWithStreak(500); endGame("Hoàn thành xuất sắc"); } 
-    else { currentStreak = 0; updateStats(); if(handleWrongDevil()) return; triggerRandomPenalty("Đoán sai tên Bức Ảnh!"); }
+    if(isInputPaused) return; 
+    let guess = document.getElementById('finalGuess').value.toLowerCase().trim();
+    
+    // 👇 NÍ ĐIỀN CÁC ĐÁP ÁN ĐÚNG CỦA BỨC ẢNH CHỐT VÀO ĐÂY (Giữ nguyên mảng mã hóa của ní)
+    let correctAnswers = ['bến nhà rồng', 'ben nha rong', 'nha rong', 'nhà rồng', 'ben cang nha rong', 'Bến cảng nhà rồng']; 
+    
+    if(correctAnswers.includes(guess)) { 
+        if(myPassive === 3) reduceTime(3); 
+        statMapPuzzleTime = elapsedTime; 
+        
+        // --- BAREM ĐIỂM MỚI ---
+        // Đếm số mảnh ghép ĐÃ LẬT (có class 'revealed')
+        let revealedCount = document.querySelectorAll('.piece.revealed').length;
+        
+        // Công thức: 1000 điểm - (số mảnh lật * 100).
+        // Nếu không lật mảnh nào = 1000đ. Lật hết 9 mảnh thì còn 100đ.
+        let basePoints = 1000 - (revealedCount * 100);
+        if (basePoints < 100) basePoints = 100; // Đáy thấp nhất là 100đ
+        
+        addScoreWithStreak(basePoints); 
+        endGame("Hoàn thành xuất sắc"); 
+    } 
+    else { 
+        currentStreak = 0; 
+        updateStats(); 
+        if(handleWrongDevil()) return; 
+        triggerRandomPenalty("Đoán sai tên Bức Ảnh!"); 
+    }
 }
 
 function triggerRandomPenalty(customMsg = "", callback = null) {
@@ -1098,9 +1123,37 @@ function executeSkill(r) {
             if(top1 && top1 !== playerName) { let sAmt = (myPassive === 7) ? 150 : 100; database.ref('room_events').set({type: 'steal', by: playerName, target: top1, amount: sAmt, time: Date.now()}); score += sAmt; updateStats(); checkBountyTarget(top1); openModal("😈 BÀN TAY ĐEN", `Cướp ${sAmt}đ của Top 1: <b>${getDisplayName(top1)}</b>!`, "alert"); } 
             else { score += 100; updateStats(); openModal("👑 VINH QUANG", "Bạn đang TOP 1, tặng thẳng 100đ!", "alert"); } break;
         case 4: 
-            if(document.getElementById('phase1-card').style.display !== 'none') { let correctIdx = p1Data[currentP1Index].ans; let btns = document.getElementById('p1-options').querySelectorAll('.option'); btns[correctIdx].style.border = "4px solid var(--success)"; btns[correctIdx].style.background = "#e6f4ea"; openModal("🕵️ ĐIỆP VIÊN", "Đáp án đúng GĐ1 đã được bôi xanh.", "alert"); } 
-            else if(document.getElementById('phase2-card').style.display !== 'none') { let targetMap = mapActive !== null ? mapActive : 0; if(document.getElementById(`hs${targetMap}`).classList.contains('done')) { for(let i=0; i<5; i++) { if(!document.getElementById(`hs${i}`).classList.contains('done')) { targetMap = i; break; } } } let ansText = p2MapData[targetMap].stmts.map((s, i) => `Ý ${i+1}: <b>${s.a ? 'Đúng' : 'Sai'}</b>`).join('<br>'); openModal("🕵️ ĐIỆP VIÊN", `📍 Bí mật Địa danh số ${targetMap+1}:<br><br>${ansText}`, "alert"); } 
-            else if(document.getElementById('phase3-card').style.display !== 'none') { let targetPz = pzActive !== null ? pzActive : 0; if(document.getElementById(`pz${targetPz}`).classList.contains('revealed')) { for(let i=0; i<9; i++) { if(!document.getElementById(`pz${i}`).classList.contains('revealed')) { targetPz = i; break; } } } let pzQ = p3PuzzleData[targetPz]; let ansText = (pzQ.type === 'text') ? pzQ.ans[0] : pzQ.opts[pzQ.ans]; openModal("🕵️ ĐIỆP VIÊN", `🧩 Đáp án mảnh ghép số ${targetPz+1}:<br><br><b style="color:var(--danger); font-size:22px;">${ansText}</b><br><br><i style="font-size:14px; color:#666;">(⚠️ Không hỗ trợ leak Bức Ảnh Chốt)</i>`, "alert"); } break;
+            if(document.getElementById('phase1-card').style.display !== 'none') { 
+                let correctIdx = p1Data[currentP1Index].ans; let btns = document.getElementById('p1-options').querySelectorAll('.option'); btns[correctIdx].style.border = "4px solid var(--success)"; btns[correctIdx].style.background = "#e6f4ea"; openModal("🕵️ ĐIỆP VIÊN", "Đáp án đúng GĐ1 đã được bôi xanh.", "alert"); 
+            } 
+            else if(document.getElementById('phase2-card').style.display !== 'none') { 
+                let targetMap = mapActive !== null ? mapActive : 0; if(document.getElementById(`hs${targetMap}`).classList.contains('done')) { for(let i=0; i<5; i++) { if(!document.getElementById(`hs${i}`).classList.contains('done')) { targetMap = i; break; } } } let ansText = p2MapData[targetMap].stmts.map((s, i) => `Ý ${i+1}: <b>${s.a ? 'Đúng' : 'Sai'}</b>`).join('<br>'); openModal("🕵️ ĐIỆP VIÊN", `📍 Bí mật Địa danh số ${targetMap+1}:<br><br>${ansText}`, "alert"); 
+            } 
+            else if(document.getElementById('phase3-card').style.display !== 'none') { 
+                let targetPz = pzActive !== null ? pzActive : 0; 
+                if(document.getElementById(`pz${targetPz}`).classList.contains('revealed')) { for(let i=0; i<9; i++) { if(!document.getElementById(`pz${i}`).classList.contains('revealed')) { targetPz = i; break; } } } 
+                let pzQ = p3PuzzleData[targetPz]; 
+                
+                // Fix lỗi undefined cho data đã mã hóa
+                let ansText = "";
+                if (pzQ.type === 'text') { ansText = Array.isArray(pzQ.ans) ? pzQ.ans[0] : pzQ.ans; } 
+                else if (pzQ.opts && Array.isArray(pzQ.opts)) { ansText = pzQ.opts[pzQ.ans]; } 
+                else { ansText = pzQ.ans; }
+
+                if (document.getElementById('custom-modal').classList.contains('show') && pzActive !== null) {
+                    if(pzQ.type === 'mc' || pzQ.type === 'tf') {
+                        let btns = document.getElementById('custom-modal').querySelectorAll('.btn-secondary');
+                        if(btns[pzQ.ans]) { btns[pzQ.ans].style.background = 'var(--success)'; btns[pzQ.ans].style.color = '#fff'; btns[pzQ.ans].innerText += " (✓ ĐÁP ÁN)"; }
+                    } else if(pzQ.type === 'text') {
+                        let input = document.getElementById('puzzle-text-ans');
+                        if(input) { input.value = ansText; input.style.borderColor = 'var(--success)'; input.style.backgroundColor = '#e6f4ea'; }
+                    }
+                    showToast("🕵️ ĐIỆP VIÊN: Đã bôi xanh đáp án trên bảng!", "success");
+                } else {
+                    openModal("🕵️ ĐIỆP VIÊN", `🧩 Đáp án mảnh ghép số ${targetPz+1}:<br><br><b style="color:var(--danger); font-size:22px;">${ansText}</b><br><br><i style="font-size:14px; color:#666;">(⚠️ Càng lật nhiều ảnh, điểm chốt sẽ càng giảm!)</i>`, "alert"); 
+                }
+            } 
+            break;
         case 5: database.ref('room_events').set({type: 'curse', by: playerName, time: Date.now()}); openModal("👁️ ẢO GIÁC", "Làm nhòe màn hình đối thủ 15s!", "alert"); break;
         case 6: let selectHTML6 = getTargetSelectHTML(); if(!selectHTML6) break; openModal("🔄 TRÁO ĐIỂM CHỈ ĐỊNH", `Chọn nạn nhân:<br>${selectHTML6}`, "confirm", () => { let targetName = document.getElementById('target-player-select').value; let targetData = currentLeaderboard.find(p => p.name === targetName); if(targetData) { let myOldScore = score; score = targetData.score; updateStats(); checkBountyTarget(targetName); database.ref('room_events').set({type: 'swap', by: playerName, target: targetName, targetNewScore: myOldScore, time: Date.now()}); } }); break;
         case 7: let others = currentLeaderboard.filter(p => p.name !== playerName); if (others.length > 0) { let rndTarget = others[Math.floor(Math.random() * others.length)]; let myOldScore = score; score = rndTarget.score; updateStats(); checkBountyTarget(rndTarget.name); database.ref('room_events').set({type: 'swap', by: playerName, target: rndTarget.name, targetNewScore: myOldScore, time: Date.now()}); openModal("🎲 ĐỊNH MỆNH", `Tráo điểm ngẫu nhiên với <b>${getDisplayName(rndTarget.name)}</b>!`, "alert"); } else { score += 100; updateStats(); openModal("🎲 ĐỊNH MỆNH", "Tặng an ủi 100đ!", "alert"); } break;
@@ -1276,7 +1329,20 @@ database.ref('room_events').on('value', (snapshot) => {
     if(ev.type === 'global_intel_leak') {
         if(document.getElementById('phase1-card').style.display !== 'none') { let correctIdx = p1Data[currentP1Index].ans; let btns = document.getElementById('p1-options').querySelectorAll('.option'); if(btns[correctIdx]) { btns[correctIdx].style.border = "4px solid var(--success)"; btns[correctIdx].style.background = "#e6f4ea"; } showToast("🕵️ LỘ BÍ MẬT QUÂN SỰ! Đáp án đúng đã bị rò rỉ!", "success"); } 
         else if (document.getElementById('phase2-card').style.display !== 'none') { if (document.getElementById('custom-modal').classList.contains('show') && mapActive !== null) { let stmts = p2MapData[mapActive].stmts; for(let i=0; i<4; i++) { let correctVal = stmts[i].a ? 'true' : 'false'; let radio = document.querySelector(`input[name="tf_${i}"][value="${correctVal}"]`); if(radio) { radio.parentElement.style.background = 'var(--success)'; radio.parentElement.style.borderRadius = '5px'; radio.checked = true; } } showToast("🕵️ LỘ BÍ MẬT! Đáp án Đúng/Sai đã được tự động điền!", "success"); } else { showToast("🕵️ BÍ MẬT GĐ2 BỊ LỘ! Nhưng bạn chưa mở địa danh nào!", "warning"); } } 
-        else if (document.getElementById('phase3-card').style.display !== 'none') { if (document.getElementById('custom-modal').classList.contains('show') && pzActive !== null) { let pzQ = p3PuzzleData[pzActive]; if(pzQ.type === 'mc' || pzQ.type === 'tf') { let btns = document.getElementById('custom-modal').querySelectorAll('.btn-secondary'); if(btns[pzQ.ans]) { btns[pzQ.ans].style.background = 'var(--success)'; btns[pzQ.ans].style.color = '#fff'; btns[pzQ.ans].innerText += " (✓ ĐÁP ÁN)"; } } else if(pzQ.type === 'text') { let input = document.getElementById('puzzle-text-ans'); if(input) { input.value = pzQ.ans[0]; input.style.borderColor = 'var(--success)'; input.style.backgroundColor = '#e6f4ea'; } } showToast("🕵️ LỘ BÍ MẬT! Đáp án mảnh ghép đã hiển thị!", "success"); } else { showToast("🕵️ BÍ MẬT GĐ3 BỊ LỘ! (Không tác dụng cho Bức Ảnh Chốt)", "warning"); } }
+        else if (document.getElementById('phase3-card').style.display !== 'none') { 
+            if (document.getElementById('custom-modal').classList.contains('show') && pzActive !== null) { 
+                let pzQ = p3PuzzleData[pzActive]; 
+                let ansText = (pzQ.type === 'text') ? (Array.isArray(pzQ.ans) ? pzQ.ans[0] : pzQ.ans) : (pzQ.opts ? pzQ.opts[pzQ.ans] : pzQ.ans);
+                if(pzQ.type === 'mc' || pzQ.type === 'tf') { let btns = document.getElementById('custom-modal').querySelectorAll('.btn-secondary'); if(btns[pzQ.ans]) { btns[pzQ.ans].style.background = 'var(--success)'; btns[pzQ.ans].style.color = '#fff'; btns[pzQ.ans].innerText += " (✓ ĐÁP ÁN)"; } } 
+                else if(pzQ.type === 'text') { let input = document.getElementById('puzzle-text-ans'); if(input) { input.value = ansText; input.style.borderColor = 'var(--success)'; input.style.backgroundColor = '#e6f4ea'; } } showToast("🕵️ LỘ BÍ MẬT! Đáp án mảnh ghép đã hiển thị!", "success"); 
+            } else { 
+                let targetPz = 0;
+                for(let i=0; i<9; i++) { if(!document.getElementById(`pz${i}`).classList.contains('revealed')) { targetPz = i; break; } }
+                let pzQ = p3PuzzleData[targetPz]; 
+                let ansText = (pzQ.type === 'text') ? (Array.isArray(pzQ.ans) ? pzQ.ans[0] : pzQ.ans) : (pzQ.opts ? pzQ.opts[pzQ.ans] : pzQ.ans);
+                openModal("🕵️ LỘ BÍ MẬT QUÂN SỰ", `🧩 Đáp án mảnh ghép số ${targetPz+1}:<br><br><b style="color:var(--danger); font-size:22px;">${ansText}</b>`, "alert");
+            } 
+        }
     }
     if(ev.type === 'global_national_unity') {
         if(currentLeaderboard.length > 1) { let bot = currentLeaderboard[currentLeaderboard.length - 1]; let totalScore = currentLeaderboard.reduce((sum, p) => sum + p.score, 0); let avgScore = Math.floor(totalScore / currentLeaderboard.length); if(playerName === bot.name) { score = avgScore; updateStats(); showToast(`🤝 ĐẠI ĐOÀN KẾT! Phép màu! Điểm của bạn được kéo lên ${avgScore}đ!`, "success"); } else { showToast("🤝 ĐẠI ĐOÀN KẾT! Người chót bảng đã được kéo điểm lên mức trung bình!", "info"); } }
