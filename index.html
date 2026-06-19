@@ -319,7 +319,7 @@
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="font-size: 12px; width: auto; margin-top: 15px;">👨‍💻 Máy Chiếu (Admin)</button>
 
     <div style="margin-top: 30px; font-size: 13px; color: #757575; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
-        Phiên bản v27.0.1 (Xếp hạng đỉnh cao) <br>
+        Phiên bản v27.0.2 (Xếp hạng đỉnh cao) <br>
         Copyright © 2026 by Yukiluna Idori
     </div>
 </div>
@@ -966,8 +966,8 @@ function submitFinal() {
     if(isInputPaused) return; 
     let guess = document.getElementById('finalGuess').value.toLowerCase().trim();
     
-    // 👇 NÍ ĐIỀN CÁC ĐÁP ÁN ĐÚNG CỦA BỨC ẢNH CHỐT VÀO ĐÂY (Giữ nguyên mảng mã hóa của ní)
-    let correctAnswers = ['bến nhà rồng', 'ben nha rong', 'nha rong', 'nhà rồng', 'ben cang nha rong', 'Bến cảng nhà rồng']; 
+    // 👇 CHỖ NÀY NÍ TỰ KIỂM TRA ĐÁP ÁN (Giữ nguyên logic của ní)
+    let correctAnswers = ['bến nhà rồng', 'ben nha rong', 'Ben cang nha rong', 'bến cảng nhà rồng']; 
     
     if(correctAnswers.includes(guess)) { 
         if(myPassive === 3) reduceTime(3); 
@@ -978,7 +978,7 @@ function submitFinal() {
         let revealedCount = document.querySelectorAll('.piece.revealed').length;
         
         // Công thức: 1000 điểm - (số mảnh lật * 100).
-        // Nếu không lật mảnh nào = 1000đ. Lật hết 9 mảnh thì còn 100đ.
+        // Không lật mảnh nào = 1000đ. Lật hết 9 mảnh thì còn 100đ.
         let basePoints = 1000 - (revealedCount * 100);
         if (basePoints < 100) basePoints = 100; // Đáy thấp nhất là 100đ
         
@@ -1134,24 +1134,17 @@ function executeSkill(r) {
                 if(document.getElementById(`pz${targetPz}`).classList.contains('revealed')) { for(let i=0; i<9; i++) { if(!document.getElementById(`pz${i}`).classList.contains('revealed')) { targetPz = i; break; } } } 
                 let pzQ = p3PuzzleData[targetPz]; 
                 
-                // Fix lỗi undefined cho data đã mã hóa
+                // 👇 [CHỖ CHỈNH DATA MÃ HÓA]
                 let ansText = "";
                 if (pzQ.type === 'text') { ansText = Array.isArray(pzQ.ans) ? pzQ.ans[0] : pzQ.ans; } 
                 else if (pzQ.opts && Array.isArray(pzQ.opts)) { ansText = pzQ.opts[pzQ.ans]; } 
                 else { ansText = pzQ.ans; }
+                
+                // --- Ní gọi hàm giải mã biến ansText ở đây (vd: ansText = decrypt(ansText);) ---
+                
+                // 👆 ---------------------------------
 
-                if (document.getElementById('custom-modal').classList.contains('show') && pzActive !== null) {
-                    if(pzQ.type === 'mc' || pzQ.type === 'tf') {
-                        let btns = document.getElementById('custom-modal').querySelectorAll('.btn-secondary');
-                        if(btns[pzQ.ans]) { btns[pzQ.ans].style.background = 'var(--success)'; btns[pzQ.ans].style.color = '#fff'; btns[pzQ.ans].innerText += " (✓ ĐÁP ÁN)"; }
-                    } else if(pzQ.type === 'text') {
-                        let input = document.getElementById('puzzle-text-ans');
-                        if(input) { input.value = ansText; input.style.borderColor = 'var(--success)'; input.style.backgroundColor = '#e6f4ea'; }
-                    }
-                    showToast("🕵️ ĐIỆP VIÊN: Đã bôi xanh đáp án trên bảng!", "success");
-                } else {
-                    openModal("🕵️ ĐIỆP VIÊN", `🧩 Đáp án mảnh ghép số ${targetPz+1}:<br><br><b style="color:var(--danger); font-size:22px;">${ansText}</b><br><br><i style="font-size:14px; color:#666;">(⚠️ Càng lật nhiều ảnh, điểm chốt sẽ càng giảm!)</i>`, "alert"); 
-                }
+                openModal("🕵️ ĐIỆP VIÊN", `🧩 Đáp án mảnh ghép số ${targetPz+1}:<br><br><b style="color:var(--danger); font-size:22px;">${ansText}</b><br><br><i style="font-size:14px; color:#666;">(⚠️ Càng lật nhiều ảnh, điểm chốt sẽ càng giảm!)</i>`, "alert"); 
             } 
             break;
         case 5: database.ref('room_events').set({type: 'curse', by: playerName, time: Date.now()}); openModal("👁️ ẢO GIÁC", "Làm nhòe màn hình đối thủ 15s!", "alert"); break;
@@ -1332,14 +1325,22 @@ database.ref('room_events').on('value', (snapshot) => {
         else if (document.getElementById('phase3-card').style.display !== 'none') { 
             if (document.getElementById('custom-modal').classList.contains('show') && pzActive !== null) { 
                 let pzQ = p3PuzzleData[pzActive]; 
+                
+                // 👇 [CHỖ CHỈNH DATA MÃ HÓA 1] 
                 let ansText = (pzQ.type === 'text') ? (Array.isArray(pzQ.ans) ? pzQ.ans[0] : pzQ.ans) : (pzQ.opts ? pzQ.opts[pzQ.ans] : pzQ.ans);
+                // --- Ní giải mã ansText ở đây ---
+                
                 if(pzQ.type === 'mc' || pzQ.type === 'tf') { let btns = document.getElementById('custom-modal').querySelectorAll('.btn-secondary'); if(btns[pzQ.ans]) { btns[pzQ.ans].style.background = 'var(--success)'; btns[pzQ.ans].style.color = '#fff'; btns[pzQ.ans].innerText += " (✓ ĐÁP ÁN)"; } } 
                 else if(pzQ.type === 'text') { let input = document.getElementById('puzzle-text-ans'); if(input) { input.value = ansText; input.style.borderColor = 'var(--success)'; input.style.backgroundColor = '#e6f4ea'; } } showToast("🕵️ LỘ BÍ MẬT! Đáp án mảnh ghép đã hiển thị!", "success"); 
             } else { 
                 let targetPz = 0;
                 for(let i=0; i<9; i++) { if(!document.getElementById(`pz${i}`).classList.contains('revealed')) { targetPz = i; break; } }
                 let pzQ = p3PuzzleData[targetPz]; 
+                
+                // 👇 [CHỖ CHỈNH DATA MÃ HÓA 2]
                 let ansText = (pzQ.type === 'text') ? (Array.isArray(pzQ.ans) ? pzQ.ans[0] : pzQ.ans) : (pzQ.opts ? pzQ.opts[pzQ.ans] : pzQ.ans);
+                // --- Ní giải mã ansText ở đây ---
+                
                 openModal("🕵️ LỘ BÍ MẬT QUÂN SỰ", `🧩 Đáp án mảnh ghép số ${targetPz+1}:<br><br><b style="color:var(--danger); font-size:22px;">${ansText}</b>`, "alert");
             } 
         }
