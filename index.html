@@ -128,7 +128,7 @@
             display: flex; justify-content: center; align-items: center; overflow: hidden;
             border: 1px solid rgba(255,255,255,0.3);
         }
-        .card-image-box img { width: 100%; height: 100%; object-fit: cover; }
+        .card-image-box img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
 
         .card-name-box { background: rgba(0, 0, 0, 0.8); padding: 6px; border-radius: 4px; width: 100%; box-sizing: border-box; text-align: center; font-weight: bold; font-size: 11px; border: 1px solid rgba(255,255,255,0.3); color: #fff;}
         .card-desc-box { background: rgba(0, 0, 0, 0.8); padding: 6px; border-radius: 4px; text-align: center; font-size: 9px; line-height: 1.3; overflow: hidden; margin-top: 5px; border: 1px solid rgba(255,255,255,0.3); color: #f1f1f1;}
@@ -715,7 +715,20 @@ function updateStats() {
     else if(skillCount > 0) { sBtn.innerText = "⚡ DÙNG KỸ NĂNG MAP (" + skillCount + ")"; sBtn.style.display = "block"; } 
     else { sBtn.style.display = "none"; }
 
-    if(myPlayerRef) { myPlayerRef.update({ gems: gems, score: score, totalVal: calcTotalValue() }); }
+    // Đẩy dữ liệu số lượng từng loại thẻ lên Firebase để xếp hạng
+    if(myPlayerRef) { 
+        myPlayerRef.update({ 
+            gems: gems, 
+            score: score, 
+            totalVal: calcTotalValue(),
+            cntLSR: myGallery.LSR.length,
+            cntUSR: myGallery.USR.length,
+            cntSSR: myGallery.SSR.length,
+            cntUR: myGallery.UR.length,
+            cntSR: myGallery.SR.length,
+            cntR: myGallery.R.length
+        }); 
+    }
 }
 
 function showPassiveDesc() { 
@@ -1324,6 +1337,9 @@ window.claimMilestone = function(idx) {
     }
 };
 
+// ==========================================
+// 6. THƯ VIỆN BỘ SƯU TẬP & THÀNH TỰU DẠNG DỌC CHUẨN
+// ==========================================
 window.openGallery = function() {
     let allCards = [];
     for(let tier in myGallery) allCards = allCards.concat(myGallery[tier]);
@@ -1369,17 +1385,18 @@ window.openGallery = function() {
             let count = myGallery[tier].filter(x => x === cData.name).length;
             
             if(isOwned) {
-                html += `<div style="width: 140px; aspect-ratio: 2.2/3.5; border-radius: 8px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;" class="owned-card tier-${tier}" onclick="viewCardDetail('${cData.name}', '${tier}', '${cData.desc.replace(/'/g,"\\'")}', '${cData.img || ''}')">
-                    <div style="font-size:14px; font-weight:900; text-align:center;">${tier}</div>
-                    <div class="card-image-box" style="height: 50px; margin: 2px 0; border: none; background: transparent;">
-                        ${cData.img ? `<img src="${cData.img}" alt="${cData.name}" style="border-radius:4px;">` : `<span style="font-size: 20px; opacity: 0.5;">👤</span>`}
+                html += `<div style="width: 140px; aspect-ratio: 2.1/3.6; border-radius: 8px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;" class="owned-card tier-${tier}" onclick="viewCardDetail('${cData.name}', '${tier}', '${cData.desc.replace(/'/g,"\\'")}', '${cData.img || ''}')">
+                    <div style="font-size:15px; font-weight:900; text-align:center; color: #fff; text-shadow: 1px 1px 3px #000;">${tier}</div>
+                    <div class="card-image-box" style="flex: 1; min-height: 45px; margin: 4px 0; border: none; background: transparent; display: flex; justify-content: center; align-items: center;">
+                        ${cData.img ? `<img src="${cData.img}" alt="${cData.name}" style="border-radius:4px; max-height:100%; max-width:100%; object-fit:contain;">` : `<span style="font-size: 28px; opacity: 0.8; color: #fff;">👤</span>`}
                     </div>
-                    <div style="background:rgba(0,0,0,0.6); padding:4px; border-radius:4px; font-size:11px; font-weight:bold; text-align:center;">${cData.name} (x${count})</div>
+                    <div style="background:rgba(0,0,0,0.8); padding:5px; border-radius:4px; font-size:11px; font-weight:bold; text-align:center; color:#fff; border: 1px solid rgba(255,255,255,0.3); margin-bottom: 4px;">${cData.name} (x${count})</div>
+                    <div style="background:rgba(0,0,0,0.8); padding:5px; border-radius:4px; font-size:9px; text-align:center; color:#fff; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; border: 1px solid rgba(255,255,255,0.3); line-height: 1.3;">${cData.desc}</div>
                 </div>`;
             } else {
-                html += `<div style="width: 140px; aspect-ratio: 2.2/3.5; border-radius: 8px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; align-items:center; justify-content: center;" class="locked-card">
-                    <div style="font-size: 24px; margin-bottom: 5px;">🔒</div>
-                    <b class="card-name-text" style="font-size:11px; text-align:center;">Đang khóa</b>
+                html += `<div style="width: 140px; aspect-ratio: 2.1/3.6; border-radius: 8px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; align-items:center; justify-content: center;" class="locked-card">
+                    <div style="font-size: 26px; margin-bottom: 5px; color:#555;">🔒</div>
+                    <b class="card-name-text" style="font-size:11px; text-align:center; color:#555;">Đang khóa</b>
                 </div>`;
             }
         });
@@ -1409,14 +1426,36 @@ window.viewCardDetail = function(name, tier, desc, img) {
 }
 
 // ==========================================
-// 7. BẢNG XẾP HẠNG & KẾT THÚC GAME
+// 7. BẢNG XẾP HẠNG & KẾT THÚC GAME (RANK THEO ĐỘ HIẾM THẺ)
 // ==========================================
 database.ref('room_players').on('value', (snapshot) => {
     let players = [];
     snapshot.forEach(child => { players.push(child.val()); });
-    document.getElementById('lobby-count').innerText = players.length;
+    if(document.getElementById('lobby-count')) document.getElementById('lobby-count').innerText = players.length;
     
-    players.sort((a,b) => (b.totalVal || 0) - (a.totalVal || 0));
+    // THUẬT TOÁN XẾP HẠNG GACHA: Ưu tiên đọ thẻ xịn trước
+    players.sort((a,b) => {
+        let aLSR = a.cntLSR || 0, bLSR = b.cntLSR || 0;
+        if(aLSR !== bLSR) return bLSR - aLSR;
+        
+        let aUSR = a.cntUSR || 0, bUSR = b.cntUSR || 0;
+        if(aUSR !== bUSR) return bUSR - aUSR;
+        
+        let aSSR = a.cntSSR || 0, bSSR = b.cntSSR || 0;
+        if(aSSR !== bSSR) return bSSR - aSSR;
+        
+        let aUR = a.cntUR || 0, bUR = b.cntUR || 0;
+        if(aUR !== bUR) return bUR - aUR;
+        
+        let aSR = a.cntSR || 0, bSR = b.cntSR || 0;
+        if(aSR !== bSR) return bSR - aSR;
+        
+        let aR = a.cntR || 0, bR = b.cntR || 0;
+        if(aR !== bR) return bR - aR;
+        
+        // Nếu y xì đúc nhau thẻ, phân thắng bại bằng Tổng Tài Sản (Score + Gems)
+        return (b.totalVal || 0) - (a.totalVal || 0);
+    });
     
     let html = players.map((p, i) => {
         let icon = i === 0 ? '🥇' : (i === 1 ? '🥈' : (i === 2 ? '🥉' : '')); 
@@ -1425,7 +1464,14 @@ database.ref('room_players').on('value', (snapshot) => {
             let animatedName = "Idori".split('').map((char, index) => `<span class="letter" style="animation-delay: ${index * 0.15}s">${char}</span>`).join('');
             dName = `<span class="admin-tag">[Admin]</span> <span class="idori-container">${animatedName}</span>`;
         }
-        return `<tr class="${i===0?'top-1':''}"><td>${icon} ${i+1}</td><td style="font-weight:bold; color:#333;">${dName}</td><td style="color:#00bcd4; font-weight: bold;">${p.gems || 0}</td><td style="color:var(--success); font-weight: bold;">${p.score || 0}</td><td style="font-weight:bold; color:var(--danger); font-size: 18px;">${p.totalVal || 0}</td></tr>`;
+        
+        // Hiển thị thêm thành tích thẻ xịn nhất của họ trên BXH cho thiên hạ sợ
+        let bestCardDisplay = "";
+        if((p.cntLSR || 0) > 0) bestCardDisplay = `<br><span style="color:#ff0044; font-size:11px; text-shadow: 0 0 2px #ff0044;">(Sở hữu ${p.cntLSR} thẻ LSR)</span>`;
+        else if((p.cntUSR || 0) > 0) bestCardDisplay = `<br><span style="color:#00e5ff; font-size:11px; text-shadow: 0 0 2px #00e5ff;">(Sở hữu ${p.cntUSR} thẻ USR)</span>`;
+        else if((p.cntSSR || 0) > 0) bestCardDisplay = `<br><span style="color:#ffd32a; font-size:11px;">(Sở hữu ${p.cntSSR} thẻ SSR)</span>`;
+
+        return `<tr class="${i===0?'top-1':''}"><td>${icon} ${i+1}</td><td style="font-weight:bold; color:#333;">${dName} ${bestCardDisplay}</td><td style="color:#00bcd4; font-weight: bold;">${p.gems || 0}</td><td style="color:var(--success); font-weight: bold;">${p.score || 0}</td><td style="font-weight:bold; color:var(--danger); font-size: 18px;">${p.totalVal || 0}</td></tr>`;
     }).join('');
     
     let sidebarLbHtml = players.slice(0, 5).map((p, i) => {
@@ -1436,17 +1482,6 @@ database.ref('room_players').on('value', (snapshot) => {
     if(document.getElementById('admin-lb-body')) document.getElementById('admin-lb-body').innerHTML = html;
     if(document.getElementById('final-lb-body')) document.getElementById('final-lb-body').innerHTML = html;
 });
-
-function showFinalLeaderboard() {
-    isInputPaused = true; isGameActive = false; clearInterval(timerInterval);
-    document.getElementById('quiz-section').style.display = 'none';
-    document.getElementById('admin-section').style.display = 'none';
-    document.getElementById('setup-section').style.display = 'none';
-    document.getElementById('waiting-section').style.display = 'none';
-    document.getElementById('custom-modal').classList.remove('show');
-    document.getElementById('leaderboard-section').style.display = 'block';
-}
-
 // ==========================================
 // 8. KÊNH CHAT BỘ ĐÀM
 // ==========================================
@@ -1466,6 +1501,103 @@ database.ref('chat_messages').limitToLast(15).on('child_added', (snapshot) => {
     else div.innerHTML = `<b style="color:var(--primary); margin-bottom:2px;">${msg.name}:</b> <span style="color:#333;">${msg.text}</span>`;
     chatDiv.appendChild(div); chatDiv.scrollTop = chatDiv.scrollHeight;
 });
+// 1. CẬP NHẬT HÀM XEM CHI TIẾT THẺ (FULL ẢNH KHÔNG BỊ CẮT)
+window.viewCardDetail = function(name, tier, desc, img) {
+    let imgTag = (img && img !== 'undefined' && img !== '') 
+        ? `<img src="${img}" alt="${name}" style="width: 100%; height: 100%; object-fit: contain;">` 
+        : `<span style="font-size: 50px; opacity: 0.5;">👤</span>`;
+
+    let html = `
+        <div style="width: 260px; height: 380px; margin: 0 auto; border-radius: 12px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+            <div class="tier-${tier}" style="position: absolute; inset: 0; border-radius: 8px; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 12px; box-sizing: border-box; color: white;">
+                
+                <div style="display:flex; justify-content: center; align-items: center; gap: 8px;">
+                    <span style="font-size:26px;">${tier === 'LSR' ? '👑' : (tier === 'USR' ? '💎' : '🌟')}</span>
+                    <span class="card-tier-title" style="font-size: 26px; margin:0;">${tier}</span>
+                </div>
+                
+                <div style="flex: 1; margin: 10px 0; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
+                    ${imgTag}
+                </div>
+                
+                <div class="card-name-box" style="font-size: 15px; margin-bottom: 5px;">${name}</div>
+                <div class="card-desc-box" style="font-size: 12px; display: block; overflow: visible; padding: 8px;">${desc}</div>
+            </div>
+        </div>
+        <button class="btn btn-warning" style="margin-top: 25px;" onclick="openGallery()">Quay Lại</button>
+    `;
+    openModal(`CHI TIẾT THẺ`, html);
+}
+
+// 2. CẬP NHẬT HÀM LẬT THẺ GACHA (CÓ HIỆN ẢNH)
+window.renderNextStackCard = function() {
+    let container = document.getElementById('fc-stack-slot-container');
+    if(!container) return;
+    
+    if(currentStackIndex >= currentStackResults.length) {
+        showAllCardsSummary();
+        return;
+    }
+    
+    let c = currentStackResults[currentStackIndex];
+    let counter = document.getElementById('stack-counter');
+    if(counter) counter.innerText = `Thẻ ${currentStackIndex + 1} / ${currentStackResults.length}`;
+    
+    let imgTag = (c.data.img) 
+        ? `<img src="${c.data.img}" style="width: 100%; height: 100%; object-fit: contain;">` 
+        : `<span style="font-size: 40px; opacity: 0.5;">👤</span>`;
+
+    container.innerHTML = `
+        <div class="fc-card-slot" onclick="flipStackCard(this, '${c.tier}')" style="width: 190px; aspect-ratio: 2.1/3.6;">
+            <div class="fc-card-inner" id="active-stack-card">
+                <div class="fc-card-front">
+                    <span style="font-size:45px;">📦</span>
+                    <div style="font-size:13px; margin-top:10px; animation: pulse 1s infinite;">Bấm để lật thẻ</div>
+                </div>
+                <div class="fc-card-back tier-${c.tier}" style="padding: 10px; display: flex; flex-direction: column;">
+                    <div class="card-tier-title" style="font-size: 22px;">${c.tier}</div>
+                    
+                    <div style="flex: 1; margin: 6px 0; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
+                        ${imgTag}
+                    </div>
+                    
+                    <div class="card-name-box" style="font-size:12px;">${c.data.name}</div>
+                    <div class="card-desc-box" style="font-size:10px;">${c.data.desc}</div>
+                </div>
+            </div>
+        </div>
+    `;
+};
+
+// 3. CẬP NHẬT BẢNG TỔNG KẾT PACK (CÓ HIỆN ẢNH THU NHỎ)
+window.showAllCardsSummary = function() {
+    let container = document.getElementById('fc-stack-slot-container'); if(container) container.style.display = 'none';
+    let skipBtn = document.getElementById('skip-pack-btn'); if(skipBtn) skipBtn.style.display = 'none';
+    let counter = document.getElementById('stack-counter'); if(counter) counter.innerText = "TỔNG KẾT PACK";
+    
+    let grid = document.getElementById('all-cards-grid');
+    if(grid) {
+        grid.style.display = 'flex';
+        grid.innerHTML = currentStackResults.map(c => `
+            <div class="fc-card-slot" style="width: 110px; aspect-ratio: 2.1/3.6;">
+                <div class="fc-card-inner flipped" style="transition:none; cursor:default;">
+                    <div class="fc-card-back tier-${c.tier}" style="padding: 6px; display: flex; flex-direction: column;">
+                        <div class="card-tier-title" style="font-size:16px; margin-bottom: 4px;">${c.tier}</div>
+                        
+                        <div style="flex: 1; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); border-radius: 4px; overflow: hidden; margin-bottom: 4px; border: 1px solid rgba(255,255,255,0.2);">
+                            ${c.data.img ? `<img src="${c.data.img}" style="width: 100%; height: 100%; object-fit: contain;">` : `<span style="font-size: 20px; opacity: 0.5;">👤</span>`}
+                        </div>
+                        
+                        <div class="card-name-box" style="font-size:9px; padding:3px; margin:0;">${c.data.name}</div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    let collectBtn = document.getElementById('collect-pack-btn');
+    if(collectBtn) collectBtn.style.display = 'block';
+};
 </script>
 </body>
 </html>
