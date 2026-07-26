@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,35 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
+        /* Khung cuộn dành riêng cho Sàn đấu giá / Giao dịch */
+        .scrollable-list {
+            max-height: 50vh; /* Giới hạn chiều cao tối đa bằng 50% màn hình */
+            overflow-y: auto; /* Tự động hiện thanh cuộn dọc khi danh sách quá dài */
+            padding-right: 8px; /* Giữ khoảng cách để nội dung không đè lên thanh cuộn */
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+        /* Custom thanh cuộn cho mượt và chuẩn tông màu game */
+        .scrollable-list::-webkit-scrollbar { width: 6px; }
+        .scrollable-list::-webkit-scrollbar-track { background: #f8f9fa; border-radius: 4px; }
+        .scrollable-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        .scrollable-list::-webkit-scrollbar-thumb:hover { background: #1557b0; }
+        /* ĐỒNG HỒ ĐẾM NGƯỢC CHUẨN IDORI */
+        .countdown-badge {
+            background-color: #eaf2ff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 900;
+            font-size: 15px;
+            color: red;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border: 1px solid #d2e3fc;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
         /* ==========================================
            HIỆU ỨNG THÔNG BÁO BAY GIỮA MÀN HÌNH (BROADCAST)
            ========================================== */
@@ -50,6 +79,7 @@
         
         /* SIDEBAR */
         .sidebar { flex: 0 0 320px; height: calc(100vh - 30px); overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .sidebar > * { flex-shrink: 0; } /* Lệnh cấm bóp dẹp các khối bên trong */
         .main-content { flex: 1; display: flex; flex-direction: column; height: calc(100vh - 30px); gap: 15px; transition: filter 0.5s ease, transform 0.5s ease; transform-origin: top center;} 
         
         .timer-box { font-size: 2.2rem; font-weight: bold; color: var(--danger); font-family: monospace; line-height: 1; text-align: center;}
@@ -283,24 +313,29 @@
         <button class="btn btn-danger" style="margin-bottom: 20px; background: #9c27b0;" onclick="adminClearChatOnly()">🗑️ Xóa Sạch Riêng Lịch Sử Kênh Chat</button>
         
         <h3 style="text-align: left; color: var(--primary); border-bottom: 2px solid #ccc; padding-bottom: 10px;">🏆 BẢNG XẾP HẠNG TRỰC TIẾP</h3>
-        <table class="lb-table">
-            <thead>
-                <tr>
-                    <th style="background-color: var(--primary);">Top</th>
-                    <th style="background-color: var(--primary);">Chiến Binh</th>
-                    <th style="background-color: var(--primary);">Gems 💎</th>
-                    <th style="background-color: var(--primary);">Điểm 🎯</th>
-                    <th style="background-color: var(--danger);">Thẻ Xịn 🃏</th>
-                    <th style="background-color: var(--primary);">Tổng Tài Sản</th>
-                </tr>
-            </thead>
-            <tbody id="admin-lb-body"></tbody>
-        </table>
+        
+        <!-- BỌC BẢNG TRONG KHUNG CUỘN ĐỘC LẬP -->
+        <div style="max-height: 40vh; overflow-y: auto; border-radius: 8px; border: 1px solid #ddd; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
+            <table class="lb-table" style="margin-top: 0;">
+                <thead style="position: sticky; top: 0; z-index: 10; outline: 1px solid #ddd;">
+                    <tr>
+                        <th style="background-color: var(--primary); color: white;">Top</th>
+                        <th style="background-color: var(--primary); color: white;">Chiến Binh</th>
+                        <th style="background-color: var(--primary); color: white;">Gems 💎</th>
+                        <th style="background-color: var(--primary); color: white;">Điểm 🎯</th>
+                        <th style="background-color: var(--danger); color: #fff;">Thẻ Xịn 🃏</th>
+                        <th style="background-color: var(--primary); color: white;">Tổng Tài Sản</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-lb-body"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <!-- ================= MÀN HÌNH CHƠI GAME CHÍNH ================= -->
 <div id="quiz-section" class="container" style="display: none;">
+    <!-- THANH BÊN (SIDEBAR) TRẮNG CHỨA FULL KỸ NĂNG, NỘI TẠI, CHUỖI COMBO -->
     <!-- THANH BÊN (SIDEBAR) TRẮNG CHỨA FULL KỸ NĂNG, NỘI TẠI, CHUỖI COMBO -->
     <div class="sidebar card" style="margin-bottom:0; box-shadow: none;">
         <div style="text-align: center; margin-bottom: 5px; font-size: 18px; font-weight:bold;" id="player-display-name">Tên</div>
@@ -334,18 +369,18 @@
             <button class="btn btn-secondary" style="border-color: var(--primary); color: var(--primary); background: transparent; padding: 6px; font-size: 11px; margin-top: 8px;" onclick="openGallery()">📖 BỘ SƯU TẬP THẺ</button>
         </div>
 
-        <button class="btn btn-danger" id="skill-btn" onclick="drawSkill()" style="font-weight: 900; padding: 10px; display: none;">⚡ DÙNG KỸ NĂNG MAP (<span id="skill-cnt">0</span>)</button>
-        <button class="btn" style="background: linear-gradient(90deg, #ff00cc, #9c27b0); color: white; font-size: 15px; padding: 10px; border: 1px solid #ff00cc;" onclick="openGachaCenter()">🎰 TRUNG TÂM GACHA</button>
-        <!-- NÚT GIAO DỊCH TỰ DO (CHỢ ĐEN + GIVEAWAY) -->
-        <button class="btn" style="background: linear-gradient(90deg, #11998e, #38ef7d); color: white; font-size: 15px; padding: 10px; border: 1px solid #11998e; margin-top: 10px;" onclick="openFreeTrade()">🌍 SÀN GIAO DỊCH TỰ DO</button>
-        <!-- NÚT GIAO DỊCH TRỰC TIẾP (LIVE TRADE) -->
-        <button class="btn" style="background: linear-gradient(90deg, #8E2DE2, #4A00E0); color: white; font-size: 15px; padding: 10px; border: 1px solid #4A00E0; margin-top: 10px;" onclick="openLiveTradeMenu()">🤝 GIAO DỊCH LIVE (MỜI BẠN)</button>
-        <button class="btn" style="background: linear-gradient(90deg, #d35400, #c0392b); color: white; font-size: 15px; padding: 10px; border: 1px solid #c0392b; margin-top: 10px;" onclick="openAuctionHouse()">🔨 NHÀ ĐẤU GIÁ (AUCTION)</button>
-        <!-- BXH LIVE THU NHỎ -->
-        <div class="sidebar-lb">
+        <!-- BẢNG XẾP HẠNG LIVE (DUY NHẤT MỘT KHỐI ĐỂ TRÁNH LỖI DOM) -->
+        <div class="sidebar-lb" style="margin-top: 5px;">
             <div style="font-weight: bold; color: var(--primary); font-size: 12px; margin-bottom: 5px; text-align: center;">🏆 BXH LIVE (TÀI SẢN)</div>
             <div id="sidebar-lb-list"><i>Đang cập nhật...</i></div>
         </div>
+
+        <!-- CÁC NÚT BẤM CHỨC NĂNG -->
+        <button class="btn btn-danger" id="skill-btn" onclick="drawSkill()" style="font-weight: 900; padding: 10px; display: none;">⚡ DÙNG KỸ NĂNG MAP (<span id="skill-cnt">0</span>)</button>
+        <button class="btn" style="background: linear-gradient(90deg, #ff00cc, #9c27b0); color: white; font-size: 15px; padding: 10px; border: 1px solid #ff00cc;" onclick="openGachaCenter()">🎰 TRUNG TÂM GACHA</button>
+        <button class="btn" style="background: linear-gradient(90deg, #11998e, #38ef7d); color: white; font-size: 15px; padding: 10px; border: 1px solid #11998e; margin-top: 10px;" onclick="openFreeTrade()">🌍 SÀN GIAO DỊCH TỰ DO</button>
+        <button class="btn" style="background: linear-gradient(90deg, #8E2DE2, #4A00E0); color: white; font-size: 15px; padding: 10px; border: 1px solid #8E2DE2; margin-top: 10px;" onclick="openLiveTradeMenu()">🤝 GIAO DỊCH LIVE (MỜI BẠN)</button>
+        <button class="btn" style="background: linear-gradient(90deg, #d35400, #c0392b); color: white; font-size: 15px; padding: 10px; border: 1px solid #c0392b; margin-top: 10px;" onclick="openAuctionHouse()">🔨 NHÀ ĐẤU GIÁ (AUCTION)</button>
     </div>
 
     <!-- KHU VỰC TRUNG TÂM MAP & CHAT -->
@@ -383,14 +418,29 @@
 </div>
 
 <!-- ================= MÀN HÌNH TỔNG KẾT ================= -->
-<div id="leaderboard-section" class="card" style="display: none; max-width: 1100px; margin: 50px auto;">
-    <h1 style="color: var(--danger); font-size: 36px;">🏆 BẢNG VÀNG DANH DỰ 🏆</h1>
-    <h3 style="color: #666;">Xếp hạng dựa trên Nhân Phẩm (Ưu tiên Thẻ Xịn > Tổng Tài Sản)</h3>
-    <table class="lb-table">
-        <thead><tr><th>Top</th><th>Chiến Binh</th><th>Gems 💎</th><th>Điểm 🎯</th><th style="background: var(--danger); color: #fff;">Thẻ Xịn 🃏</th><th style="background: var(--warning); color: #000; font-size: 18px;">Tổng Tài Sản</th></tr></thead>
-        <tbody id="final-lb-body"></tbody>
-    </table>
-    <button class="btn btn-secondary" style="margin-top: 30px; padding: 15px;" onclick="location.reload()">Trở Về Màn Hình Chính</button>
+<!-- ================= MÀN HÌNH TỔNG KẾT ================= -->
+<div id="leaderboard-section" class="card" style="display: none; max-width: 1100px; margin: 30px auto; padding-bottom: 20px;">
+    <h1 style="color: var(--danger); font-size: 36px; margin-bottom: 5px;">🏆 BẢNG VÀNG DANH DỰ 🏆</h1>
+    <h3 style="color: #666; margin-top: 0; margin-bottom: 15px;">Xếp hạng dựa trên Nhân Phẩm (Ưu tiên Thẻ Xịn > Tổng Tài Sản)</h3>
+    
+    <!-- BỌC BẢNG TRONG KHUNG CUỘN ĐỘC LẬP -->
+    <div style="max-height: 55vh; overflow-y: auto; border-radius: 8px; border: 1px solid #ddd; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
+        <table class="lb-table" style="margin-top: 0;">
+            <thead style="position: sticky; top: 0; z-index: 10; outline: 1px solid #ddd;">
+                <tr>
+                    <th style="background-color: var(--primary); color: white;">Top</th>
+                    <th style="background-color: var(--primary); color: white;">Chiến Binh</th>
+                    <th style="background-color: var(--primary); color: white;">Gems 💎</th>
+                    <th style="background-color: var(--primary); color: white;">Điểm 🎯</th>
+                    <th style="background-color: var(--danger); color: #fff;">Thẻ Xịn 🃏</th>
+                    <th style="background-color: var(--warning); color: #000; font-size: 18px;">Tổng Tài Sản</th>
+                </tr>
+            </thead>
+            <tbody id="final-lb-body"></tbody>
+        </table>
+    </div>
+    
+    <button class="btn btn-secondary" style="margin-top: 20px; padding: 15px;" onclick="location.reload()">Trở Về Màn Hình Chính</button>
 </div>
 
 <script>
@@ -1610,68 +1660,54 @@ database.ref('chat_messages').limitToLast(15).on('child_added', (snapshot) => {
     chatDiv.appendChild(div); chatDiv.scrollTop = chatDiv.scrollHeight;
 });
 // ==========================================
-// HÀM XỬ LÝ PACK ĐỊNH MỆNH (CHỐNG TRÙNG THẺ, ƯU TIÊN THẺ THẤP)
+// THÔNG BÁO BAY GIỮA MÀN HÌNH (GLOBAL BROADCAST)
+// ==========================================
+window.showGlobalBroadcast = function(msg) {
+    let banner = document.createElement('div');
+    banner.className = 'global-broadcast-banner';
+    banner.innerHTML = `📢 ${msg}`;
+    document.body.appendChild(banner);
+    setTimeout(() => banner.classList.add('show'), 100);
+    setTimeout(() => { banner.classList.remove('show'); setTimeout(() => banner.remove(), 600); }, 5000);
+};
+
+database.ref('chat_messages').limitToLast(1).on('child_added', (snap) => {
+    if(!isGameActive) return; let msg = snap.val(); if(Date.now() - msg.timestamp > 3000) return; 
+    if(["HỆ THỐNG", "SÀN GIAO DỊCH", "TRẠM TRADE", "NHÀ ĐẤU GIÁ"].includes(msg.name)) showGlobalBroadcast(msg.text);
+});
+
+// ==========================================
+// HÀM XỬ LÝ PACK ĐỊNH MỆNH
 // ==========================================
 window.rollMissingPack = function(cost) {
     if(gems < cost) return showToast(`Không đủ ${cost}💎 để mua Pack này!`, "danger");
-    
-    // Khai báo thứ tự ưu tiên vét máng từ thấp lên cao
-    let tierPriority = ['R', 'SR', 'UR', 'SSR', 'USR', 'LSR'];
     let missingCards = [];
-    
-    // Quét toàn bộ dữ liệu thẻ theo thứ tự ưu tiên
-    for (let tier of tierPriority) {
-        let cardsInTier = cardDatabase[tier];
-        // Lọc ra các thẻ mà thư viện của người chơi chưa có
-        let unowned = cardsInTier.filter(c => !myGallery[tier].includes(c.name));
-        
-        // Ném các thẻ chưa có vào mảng chờ
-        unowned.forEach(c => missingCards.push({ tier: tier, data: c }));
-    }
-    
-    // Nếu mảng rỗng (nghĩa là đã full thẻ toàn game)
-    if(missingCards.length === 0) {
-        return showToast("🏆 Đỉnh cao! Bạn đã full 100% bộ sưu tập, không thể mở thêm!", "success");
-    }
+    ['R', 'SR', 'UR', 'SSR', 'USR', 'LSR'].forEach(tier => {
+        cardDatabase[tier].filter(c => !myGallery[tier].includes(c.name)).forEach(c => missingCards.push({ tier: tier, data: c }));
+    });
+    if(missingCards.length === 0) return showToast("🏆 Đỉnh cao! Bạn đã full 100% bộ sưu tập!", "success");
     
     closeModal(); 
-    
     setTimeout(() => {
         gems -= cost; 
-        updateStats();
-        
-        // Cắt tối đa 10 thẻ đầu tiên trong mảng (Tự động ưu tiên thẻ bậc thấp vì đã xếp R trước)
         let results = missingCards.slice(0, 10);
-        
-        // Nhét thẳng vào túi đồ của người chơi
-        results.forEach(c => {
-            myGallery[c.tier].push(c.data.name);
-        });
-        
+        results.forEach(c => myGallery[c.tier].push(c.data.name));
         updateStats(); 
-        
-        // Xử lý thông báo nếu số thẻ còn thiếu ít hơn 10
-        let msg = results.length < 10 ? `Chỉ còn ${results.length} thẻ là full bộ! Mở thôi!` : "Mua Pack Định Mệnh Thành Công!";
-        displayGachaResult(results, msg);
-        
-        database.ref('chat_messages').push({ name: "HỆ THỐNG", text: `🎯 TIN CHUẨN: [${playerName}] vừa đập Pack Định Mệnh, hốt trọn ${results.length} thẻ mới toanh!`, timestamp: Date.now() });
+        displayGachaResult(results, results.length < 10 ? `Chỉ còn ${results.length} thẻ là full bộ!` : "Mua Pack Định Mệnh Thành Công!");
+        database.ref('chat_messages').push({ name: "HỆ THỐNG", text: `🎯 TIN CHUẨN: [${playerName}] vừa đập Pack Định Mệnh lụm ${results.length} thẻ mới!`, timestamp: Date.now() });
     }, 300);
 };
+
 // ==========================================
-// HỆ THỐNG TRADE THẺ (GHÉP PHÔI TRÙNG BẬC)
+// TRẠM ĐỔI THẺ (ÉP PHÔI TRÙNG)
 // ==========================================
 window.openTradeCenter = function() {
     let html = `
         <div style="text-align:left; color: var(--text);">
-            <p style="font-size:13px; color:#555; background: #e8f0fe; padding: 10px; border-radius: 8px; border-left: 4px solid var(--primary);">
-                💡 <b>Luật Trade:</b> Hệ thống chỉ dùng những <b>thẻ bị trùng (phôi bản sao)</b> để đúc ra thẻ ở bậc cao hơn. Thẻ gốc luôn được giữ lại 1 bản an toàn!
-            </p>
-            
+            <p style="font-size:13px; color:#555; background: #e8f0fe; padding: 10px; border-radius: 8px;">💡 <b>Luật Trade:</b> Hệ thống chỉ dùng phôi trùng. Giữ lại 1 thẻ gốc an toàn!</p>
             <div style="display:flex; flex-direction:column; gap:10px; margin-top: 15px;">
-                ${renderTradeOption('R', 'SR', 5)}
-                ${renderTradeOption('SR', 'UR', 4)}
-                ${renderTradeOption('UR', 'SSR', 4)}
-                ${renderTradeOption('SSR', 'USR', 3)}
+                ${renderTradeOption('R', 'SR', 5)} ${renderTradeOption('SR', 'UR', 4)}
+                ${renderTradeOption('UR', 'SSR', 4)} ${renderTradeOption('SSR', 'USR', 3)}
                 ${renderTradeOption('USR', 'LSR', 3)}
             </div>
         </div>
@@ -1681,834 +1717,528 @@ window.openTradeCenter = function() {
 };
 
 function renderTradeOption(fromTier, toTier, cost) {
-    // Tính tổng số phôi trùng hiện có của bậc này
-    let counts = {};
-    let dupeCount = 0;
+    let counts = {}; let dupeCount = 0;
     myGallery[fromTier].forEach(c => counts[c] = (counts[c] || 0) + 1);
-    for(let name in counts) {
-        if(counts[name] > 1) dupeCount += (counts[name] - 1);
-    }
-    
+    for(let name in counts) if(counts[name] > 1) dupeCount += (counts[name] - 1);
     let canTrade = dupeCount >= cost;
-    let btnHtml = canTrade 
-        ? `<button class="btn btn-warning" style="width:auto; margin:0; padding:8px 15px; font-weight:bold;" onclick="executeTrade('${fromTier}', '${toTier}', ${cost})">Trade Ngay</button>`
-        : `<button class="btn" style="width:auto; margin:0; padding:8px 15px; background:#e0e0e0; color:#888; cursor:not-allowed;" disabled>Thiếu Phôi</button>`;
-
-    return `
-        <div style="background: #fff; border: 2px dashed ${canTrade ? 'var(--warning)' : '#ccc'}; border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-            <div>
-                <div style="font-weight:bold; font-size:15px; color:#333;">Đổi <span style="color:var(--danger);">${cost} phôi ${fromTier}</span> ➡️ <span style="color:var(--primary);">1 Thẻ ${toTier}</span></div>
-                <div style="font-size:12px; color:#666; margin-top:2px;">Phôi trùng đang có: <b style="color:${canTrade ? 'var(--success)' : 'var(--danger)'}; font-size:14px;">${dupeCount}/${cost}</b></div>
-            </div>
-            ${btnHtml}
-        </div>
-    `;
+    let btnHtml = canTrade ? `<button class="btn btn-warning" style="width:auto; margin:0; padding:8px 15px;" onclick="executeTrade('${fromTier}', '${toTier}', ${cost})">Trade Ngay</button>` : `<button class="btn" style="width:auto; margin:0; padding:8px 15px; background:#e0e0e0; color:#888;" disabled>Thiếu Phôi</button>`;
+    return `<div style="background: #fff; border: 2px dashed ${canTrade ? 'var(--warning)' : '#ccc'}; border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center;"><div><div style="font-weight:bold;">Đổi <span style="color:var(--danger);">${cost} phôi ${fromTier}</span> ➡️ <span style="color:var(--primary);">1 Thẻ ${toTier}</span></div><div style="font-size:12px; color:#666;">Đang có: <b>${dupeCount}/${cost}</b></div></div>${btnHtml}</div>`;
 }
 
 window.executeTrade = function(fromTier, toTier, cost) {
-    let counts = {};
-    let duplicateNames = [];
-    
-    // Lọc tìm chính xác tên các thẻ bị trùng
+    let counts = {}; let duplicateNames = [];
     myGallery[fromTier].forEach(c => counts[c] = (counts[c] || 0) + 1);
-    for(let name in counts) {
-        while(counts[name] > 1) { 
-            duplicateNames.push(name);
-            counts[name]--;
-        }
-    }
-    
+    for(let name in counts) while(counts[name] > 1) { duplicateNames.push(name); counts[name]--; }
     if(duplicateNames.length < cost) return showToast(`Lỗi: Không đủ phôi trùng ${fromTier}!`, "danger");
-    
     closeModal();
-    
     setTimeout(() => {
-        // Đốt phôi
-        let cardsToRemove = duplicateNames.slice(0, cost);
-        cardsToRemove.forEach(cardToRm => {
-            let idx = myGallery[fromTier].indexOf(cardToRm);
-            if(idx !== -1) myGallery[fromTier].splice(idx, 1);
-        });
-        
-        // Random ra thẻ ở tier xịn hơn
-        let pool = cardDatabase[toTier];
-        let newCard = pool[Math.floor(Math.random() * pool.length)];
-        myGallery[toTier].push(newCard.name);
-        
-        updateStats();
-        
-        // Hiển thị ra màn hình kiểu mở Gacha
-        let results = [{ tier: toTier, data: newCard }];
-        displayGachaResult(results, `✨ ÉP THẺ THÀNH CÔNG! ✨`);
-        
-        database.ref('chat_messages').push({ name: "HỆ THỐNG", text: `♻️ TRADE: [${playerName}] vừa hiến tế ${cost} phôi ${fromTier} để đúc ra siêu phẩm ${toTier} lấp lánh!`, timestamp: Date.now() });
+        duplicateNames.slice(0, cost).forEach(cardToRm => { let idx = myGallery[fromTier].indexOf(cardToRm); if(idx !== -1) myGallery[fromTier].splice(idx, 1); });
+        let newCard = cardDatabase[toTier][Math.floor(Math.random() * cardDatabase[toTier].length)];
+        myGallery[toTier].push(newCard.name); updateStats();
+        displayGachaResult([{ tier: toTier, data: newCard }], `✨ ÉP THẺ THÀNH CÔNG! ✨`);
+        database.ref('chat_messages').push({ name: "TRẠM TRADE", text: `♻️ [${playerName}] hiến tế ${cost} phôi ${fromTier} đúc ra siêu phẩm ${toTier}!`, timestamp: Date.now() });
     }, 400);
 };
-// ==========================================
-// HÀM DÙNG CHUNG: LẤY THẺ TRÙNG CỦA BẢN THÂN
-// ==========================================
-window.getMyDupes = function() {
-    let allCards = []; let counts = {};
-    for(let t in myGallery) {
-        myGallery[t].forEach(c => {
-            counts[c] = (counts[c] || 0) + 1;
-            if(counts[c] > 1 && !allCards.find(x => x.card === c)) { allCards.push({ tier: t, card: c }); }
-        });
-    }
-    return allCards;
-}
 
 // ==========================================
-// 1. HỆ THỐNG GIAO DỊCH TỰ DO (ALL-IN-ONE + GIVEAWAY)
+// HÀM LẤY TẤT CẢ THẺ (CHO PHÉP MANG ĐI CHỢ/ĐẤU GIÁ)
 // ==========================================
+window.getAllMyCards = function() {
+    let allCards = [];
+    for(let t in myGallery) {
+        let uniqueCards = [...new Set(myGallery[t])]; 
+        uniqueCards.forEach(c => allCards.push({ tier: t, card: c }));
+    }
+    return allCards;
+};
+
+// ==========================================
+// SÀN GIAO DỊCH TỰ DO (CHỢ ĐEN) - ONLINE 24/24 NGẦM
+// ==========================================
+window.globalFreeTrades = [];
+database.ref('room_free_trades').on('value', snap => {
+    window.globalFreeTrades = [];
+    snap.forEach(child => {
+        // FIX LỖI TÀNG HÌNH: Đã bọc ngoặc nhọn để vòng lặp không bị chết ngang sau 1 đơn!
+        window.globalFreeTrades.push({ id: child.key, ...child.val() });
+    });
+    let c = document.getElementById('freetrade-content');
+    if(c && c.dataset.mode === "list") renderFreeTrades(); 
+});
+
 window.openFreeTrade = function() {
     let html = `
         <div style="display:flex; gap:10px; margin-bottom: 15px;">
-            <button class="btn" style="flex:1; background: var(--danger); color: white; margin: 0;" onclick="viewFreeTrade()">📜 Chợ Giao Dịch</button>
+            <button class="btn" style="flex:1; background: var(--danger); color: white; margin: 0;" onclick="showFreeTradeList()">📜 Chợ Giao Dịch</button>
             <button class="btn btn-warning" style="flex:1; margin: 0;" onclick="openCreateFreeTrade()">✍️ Lên Đơn Mới</button>
         </div>
-        <div id="freetrade-content" style="max-height: 400px; overflow-y:auto; padding-right: 5px;"></div>
-        <button class="btn btn-secondary" style="margin-top:15px;" onclick="closeModal()">Rời Trạm</button>
+        <div id="freetrade-content" data-mode="list" style="max-height: 45vh; overflow-y: auto; padding: 5px; background: transparent; border-radius: 8px;"></div>
+        <button class="btn btn-secondary" style="margin-top:15px; width:100%; padding:12px;" onclick="closeModal()">Rời Trạm</button>
     `;
     openModal("🤝 TRUNG TÂM GIAO DỊCH TỰ DO", html);
-    viewFreeTrade();
+    showFreeTradeList();
+};
+
+window.showFreeTradeList = function() {
+    let c = document.getElementById('freetrade-content');
+    if(c) { c.dataset.mode = "list"; c.style.border = "none"; c.style.background = "transparent"; }
+    renderFreeTrades();
 };
 
 window.openCreateFreeTrade = function() {
     let content = document.getElementById('freetrade-content');
+    if(!content) return;
     
-    let myDupes = getMyDupes();
+    content.dataset.mode = "form"; 
+    content.style.border = "2px dashed var(--danger)";
+    content.style.background = "#fff";
+    
+    let myCards = window.getAllMyCards();
+    if(myCards.length === 0 && gems === 0) {
+        content.innerHTML = "<div style='padding:20px; color:var(--danger); font-weight:bold; text-align:center;'>Kho đồ trống rỗng, không có gì để giao dịch!</div>";
+        return;
+    }
+
     let offerOptions = `<option value='none'>🚫 Không đưa Thẻ (Chỉ đưa Gems)</option>`;
-    myDupes.forEach(c => { offerOptions += `<option value='{"tier":"${c.tier}", "card":"${c.card}"}'>[${c.tier}] ${c.card}</option>` });
+    myCards.forEach(c => offerOptions += `<option value='{"tier":"${c.tier}", "card":"${c.card}"}'>[${c.tier}] ${c.card}</option>`);
     
     let reqOptions = `<option value='none'>🚫 Không nhận Thẻ (Chỉ nhận Gems)</option>`;
-    const tierOrder = ['LSR', 'USR', 'SSR', 'UR', 'SR', 'R'];
-    tierOrder.forEach(t => {
-        cardDatabase[t].forEach(c => {
-            reqOptions += `<option value='{"tier":"${t}", "card":"${c.name}"}'>[${t}] ${c.name}</option>`;
-        });
-    });
+    ['LSR', 'USR', 'SSR', 'UR', 'SR', 'R'].forEach(t => cardDatabase[t].forEach(c => reqOptions += `<option value='{"tier":"${t}", "card":"${c.name}"}'>[${t}] ${c.name}</option>`));
 
     content.innerHTML = `
-        <div style="background:#fff; padding:15px; border-radius:10px; text-align:left; border: 2px dashed var(--danger);">
-            <h4 style="margin:0 0 5px 0; color:var(--primary); font-size: 13px;">📤 BẠN ĐƯA RA (Cọc trước):</h4>
-            <select id="trade-offer-card" style="width:100%; padding:10px; margin-bottom:5px; border-radius:5px; border:1px solid #ccc; font-weight:bold; background:#e8f0fe;">${offerOptions}</select>
-            <input type="number" id="trade-offer-gems" value="0" min="0" placeholder="Số Gems đưa ra..." style="width:100%; padding:10px; margin-bottom:20px; box-sizing:border-box; border-radius:5px; border:1px solid #ccc; font-weight:bold; background:#e8f0fe;">
+        <div style="padding:15px; text-align:left;">
+            <h4 style="margin:0 0 5px 0; color:var(--primary); font-size: 13px;">📤 BẠN ĐƯA RA (Cọc cả thẻ duy nhất):</h4>
+            <select id="trade-offer-card" style="width:100%; padding:12px; margin-bottom:5px; border-radius:5px; background:#e8f0fe; font-weight:bold;">${offerOptions}</select>
+            <input type="number" id="trade-offer-gems" value="0" min="0" style="width:100%; padding:12px; margin-bottom:20px; border-radius:5px; background:#e8f0fe; font-weight:bold; box-sizing: border-box;">
             
             <h4 style="margin:0 0 5px 0; color:var(--success); font-size: 13px;">📥 BẠN MUỐN NHẬN LẠI:</h4>
-            <select id="trade-req-card" style="width:100%; padding:10px; margin-bottom:5px; border-radius:5px; border:1px solid #ccc; font-weight:bold; background:#e6f4ea;">${reqOptions}</select>
-            <input type="number" id="trade-req-gems" value="0" min="0" placeholder="Số Gems yêu cầu..." style="width:100%; padding:10px; margin-bottom:15px; box-sizing:border-box; border-radius:5px; border:1px solid #ccc; font-weight:bold; background:#e6f4ea;">
+            <select id="trade-req-card" style="width:100%; padding:12px; margin-bottom:5px; border-radius:5px; background:#e6f4ea; font-weight:bold;">${reqOptions}</select>
+            <input type="number" id="trade-req-gems" value="0" min="0" style="width:100%; padding:12px; margin-bottom:15px; border-radius:5px; background:#e6f4ea; font-weight:bold; box-sizing: border-box;">
             
-            <button class="btn btn-warning" onclick="postFreeTrade()">Đăng Lệnh Lên Sàn</button>
+            <button class="btn btn-warning" style="padding:15px; font-size:16px;" onclick="postFreeTrade()">Đăng Lệnh Lên Sàn</button>
         </div>
     `;
-}
+};
 
 window.postFreeTrade = function() {
-    let offerVal = document.getElementById('trade-offer-card').value;
-    let reqVal = document.getElementById('trade-req-card').value;
-    let offerGems = parseInt(document.getElementById('trade-offer-gems').value) || 0;
-    let reqGems = parseInt(document.getElementById('trade-req-gems').value) || 0;
+    let offerVal = document.getElementById('trade-offer-card').value; let reqVal = document.getElementById('trade-req-card').value;
+    let offerGems = parseInt(document.getElementById('trade-offer-gems').value) || 0; let reqGems = parseInt(document.getElementById('trade-req-gems').value) || 0;
     
-    if(offerGems < 0) offerGems = 0;
-    if(reqGems < 0) reqGems = 0;
-    
-    if(offerVal === 'none' && offerGems === 0) return showToast("Không được tay không bắt giặc! Phải cọc ra gì đó!", "warning");
+    if(offerVal === 'none' && offerGems === 0) return showToast("Không được tay không bắt giặc!", "warning");
     if(gems < offerGems) return showToast("Không đủ Gems để cọc tiền!", "danger");
 
-    let offerTier = 'none', offerCard = 'none';
+    let offerTier = 'none', offerCard = 'none', reqTier = 'none', reqCard = 'none';
     if(offerVal !== 'none') { let o = JSON.parse(offerVal); offerTier = o.tier; offerCard = o.card; }
-    let reqTier = 'none', reqCard = 'none';
     if(reqVal !== 'none') { let r = JSON.parse(reqVal); reqTier = r.tier; reqCard = r.card; }
 
-    // Tịch thu đồ cọc
     if(offerCard !== 'none') {
         let idx = myGallery[offerTier].indexOf(offerCard);
-        if(idx === -1) return showToast("Lỗi: Không tìm thấy phôi thẻ của bạn!", "danger");
+        if(idx === -1) return showToast("Lỗi: Không tìm thấy thẻ!", "danger");
         myGallery[offerTier].splice(idx, 1);
     }
-    
-    gems -= offerGems;
-    updateStats();
+    gems -= offerGems; updateStats();
 
-    database.ref('room_free_trades').push({ 
-        poster: playerName, 
-        offerTier: offerTier, offerCard: offerCard, offerGems: offerGems,
-        reqTier: reqTier, reqCard: reqCard, reqGems: reqGems,
-        time: Date.now() 
+    database.ref('room_free_trades').push({ poster: playerName, offerTier, offerCard, offerGems, reqTier, reqCard, reqGems, time: Date.now() }).then(() => {
+        showToast("Niêm yết lên Sàn thành công!", "success");
+        database.ref('chat_messages').push({ name: "SÀN GIAO DỊCH", text: `📢 [${playerName}] vừa quăng 1 kèo trade lên sàn! Vào xem ngay!`, timestamp: Date.now() });
+        showFreeTradeList(); 
+    }).catch(err => {
+        if(offerCard !== 'none') myGallery[offerTier].push(offerCard);
+        gems += offerGems; updateStats();
+        showToast("Lỗi mạng Firebase: " + err.message, "danger");
     });
+};
+
+window.renderFreeTrades = function() {
+    let contentDiv = document.getElementById('freetrade-content');
+    if(!contentDiv || contentDiv.dataset.mode !== "list") return; 
     
-    if(reqVal === 'none' && reqGems === 0) {
-        showToast("Đã phát quà Giveaway thành công!", "success");
-        database.ref('chat_messages').push({ name: "SÀN GIAO DỊCH", text: `🎁 ĐẠI GIA PHÁT QUÀ: [${playerName}] vừa quăng một gói Giveaway lên sàn! Ai nhanh tay thì hốt!`, timestamp: Date.now() });
-    } else {
-        showToast("Niêm yết thành công lên Sàn Giao Dịch Tự Do!", "success");
-        database.ref('chat_messages').push({ name: "SÀN GIAO DỊCH", text: `📢 [${playerName}] vừa quăng 1 lệnh mua bán tự do lên sàn. Anh em vào check kèo!`, timestamp: Date.now() });
+    if(window.globalFreeTrades.length === 0) {
+        contentDiv.innerHTML = "<div style='text-align:center; padding: 40px 20px; color:#666; background:#f8f9fa; border-radius:8px; border:1px solid #ddd;'><b>Sàn đang trống trải!</b><br>Lên đơn ngay đi bạn ơi!</div>";
+        return;
     }
-    viewFreeTrade();
-}
-
-window.viewFreeTrade = function() {
-    let content = document.getElementById('freetrade-content');
-    if(!content) return;
-    content.innerHTML = "<div style='text-align:center; padding: 20px;'><i>Đang quét thông tin sàn giao dịch...</i></div>";
     
-    database.ref('room_free_trades').once('value', snap => {
-        let items = [];
-        snap.forEach(child => { items.push({ id: child.key, ...child.val() }); });
-        if(items.length === 0) {
-            content.innerHTML = "<div style='text-align:center; padding: 20px; color:#666; background:#f8f9fa; border-radius:8px;'>Sàn đang trống trải! Tự do tạo lệnh đi bạn ơi!</div>";
-            return;
-        }
+    let html = '<div style="display:flex; flex-direction:column; gap:15px; padding-bottom:10px;">';
+    let myCards = window.getAllMyCards();
+    
+    window.globalFreeTrades.forEach(item => {
+        let hasCardReq = (item.reqCard === 'none') ? true : myCards.some(c => c.card === item.reqCard);
+        let hasGemsReq = gems >= item.reqGems;
+        let isMine = item.poster === playerName;
         
-        let html = '<div style="display:flex; flex-direction:column; gap:10px;">';
-        items.forEach(item => {
-            let myDupes = window.getMyDupes();
-            let hasCardReq = (item.reqCard === 'none') ? true : myDupes.some(c => c.card === item.reqCard);
-            let hasGemsReq = gems >= item.reqGems;
-            let isMine = item.poster === playerName;
-            let isGiveaway = (item.reqCard === 'none' && item.reqGems === 0);
-            
-            let canAccept = hasCardReq && hasGemsReq;
-            
-            let btnHtml = "";
-            if (isMine) {
-                btnHtml = `<button class="btn btn-secondary" style="width:100%; padding:8px; margin-top:10px; font-size: 13px;" onclick="cancelFreeTrade('${item.id}', '${item.offerTier}', '${item.offerCard}', ${item.offerGems})">Hủy Bỏ (Nhận lại tài sản)</button>`;
-            } else if (canAccept) {
-                let btnText = isGiveaway ? "🎁 Nhận Quà Ngay" : "🤝 Chốt Deal Ngay";
-                btnHtml = `<button class="btn btn-success" style="width:100%; padding:8px; margin-top:10px; font-size: 13px; animation: pulse 1s infinite;" onclick="acceptFreeTrade('${item.id}', '${item.poster}', '${item.offerTier}', '${item.offerCard}', ${item.offerGems}, '${item.reqTier}', '${item.reqCard}', ${item.reqGems})">${btnText}</button>`;
-            } else {
-                let reason = !hasCardReq ? "Thiếu Thẻ" : "Thiếu Gems";
-                btnHtml = `<button class="btn btn-secondary" style="width:100%; padding:8px; margin-top:10px; font-size: 13px;" disabled>Không Đủ ĐK (${reason})</button>`;
-            }
-            
-            let offerUI = item.offerCard !== 'none' 
-                ? `<b style="font-size:13px; color:var(--text);">${item.offerCard}</b><br><span style="font-size:10px; background:#202124; color:#fff; padding:2px 4px; border-radius:3px;">${item.offerTier}</span>` 
-                : `<b style="font-size:13px; color:#999;">- Không Đưa Thẻ -</b>`;
-            if(item.offerGems > 0) offerUI += `<div style="color:#00bcd4; font-weight:bold; margin-top:5px; font-size:15px;">+ ${item.offerGems} 💎</div>`;
+        let btnHtml = isMine ? `<button class="btn btn-secondary" style="width:100%; padding:10px; margin-top:10px; font-size:14px; font-weight:bold;" onclick="cancelFreeTrade('${item.id}', '${item.offerTier}', '${item.offerCard}', ${item.offerGems})">Hủy Bỏ / Trả Đồ</button>` : ((hasCardReq && hasGemsReq) ? `<button class="btn btn-success" style="width:100%; padding:10px; margin-top:10px; font-size:14px; font-weight:bold; animation:pulse 1s infinite;" onclick="acceptFreeTrade('${item.id}', '${item.poster}', '${item.offerTier}', '${item.offerCard}', ${item.offerGems}, '${item.reqTier}', '${item.reqCard}', ${item.reqGems})">🤝 Chốt Deal Ngay</button>` : `<button class="btn btn-secondary" style="width:100%; padding:10px; margin-top:10px; font-size:14px;" disabled>Thiếu Điều Kiện</button>`);
+        
+        let offerUI = item.offerCard !== 'none' ? `<b style="font-size:13px; color:var(--text);">${item.offerCard}</b><br><span style="font-size:11px; background:#222; color:#fff; padding:2px 6px; border-radius:4px;">${item.offerTier}</span>` : `<b style="color:#999;">- Không Thẻ -</b>`;
+        if(item.offerGems > 0) offerUI += `<div style="color:#00bcd4; font-weight:900; margin-top:5px; font-size:14px;">+ ${item.offerGems} 💎</div>`;
 
-            let reqUI = "";
-            if(isGiveaway) {
-                reqUI = `<div style="font-size:16px; margin-top:10px; animation: pulse 1.5s infinite;">🎁</div><b style="font-size:13px; color:var(--success);">MIỄN PHÍ</b>`;
-            } else {
-                reqUI = item.reqCard !== 'none' 
-                    ? `<b style="font-size:13px; color:var(--text);">${item.reqCard}</b><br><span style="font-size:10px; background:var(--primary); color:#fff; padding:2px 4px; border-radius:3px;">${item.reqTier}</span>` 
-                    : `<b style="font-size:13px; color:#999;">- Không Nhận Thẻ -</b>`;
-                if(item.reqGems > 0) reqUI += `<div style="color:#ff9800; font-weight:bold; margin-top:5px; font-size:15px;">+ ${item.reqGems} 💎</div>`;
-            }
+        let reqUI = item.reqCard !== 'none' ? `<b>${item.reqCard}</b><br><span style="font-size:11px; background:var(--primary); color:#fff; padding:2px 6px; border-radius:4px;">${item.reqTier}</span>` : `<b style="color:#999;">- Không Thẻ -</b>`;
+        if(item.reqGems > 0) reqUI += `<div style="color:#ff9800; font-weight:900; margin-top:5px; font-size:14px;">+ ${item.reqGems} 💎</div>`;
 
-            html += `
-                <div style="background:#fff; padding:12px; border-radius:10px; border:2px solid ${isGiveaway ? 'var(--success)' : '#ffeb3b'}; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                    <div style="font-size:12px; color:#555; text-align:left; margin-bottom:5px;">Thương gia: <b style="color:var(--danger);">${item.poster}</b></div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:#f8f9fa; padding:10px; border-radius:6px;">
-                        <div style="text-align:center; width:40%;">
-                            <div style="font-size:11px; color:#666; margin-bottom:3px;">Họ Cọc Sẵn</div>
-                            ${offerUI}
-                        </div>
-                        <div style="font-size:24px; width:20%; text-align:center;">🔄</div>
-                        <div style="text-align:center; width:40%;">
-                            <div style="font-size:11px; color:#666; margin-bottom:3px;">Họ Muốn Lấy</div>
-                            ${reqUI}
-                        </div>
-                    </div>
-                    ${btnHtml}
-                </div>
-            `;
-        });
-        html += '</div>';
-        content.innerHTML = html;
+        html += `<div style="background:#fff; padding:15px; border-radius:12px; border:2px solid #ffeb3b; box-shadow: 0 5px 15px rgba(0,0,0,0.1);"><div style="font-size:14px; margin-bottom:8px; text-align:left;">Thương gia: <b style="color:var(--danger);">${item.poster}</b></div><div style="display:flex; justify-content:space-between; align-items:center; background:#f8f9fa; padding:15px; border-radius:8px;"><div style="text-align:center; width:40%;">${offerUI}</div><div style="font-size:26px; width:20%; text-align:center;">🔄</div><div style="text-align:center; width:40%;">${reqUI}</div></div>${btnHtml}</div>`;
     });
-}
+    html += '</div>';
+    contentDiv.innerHTML = html;
+};
 
 window.cancelFreeTrade = function(id, offerTier, offerCard, offerGems) {
     database.ref('room_free_trades/' + id).remove();
     if(offerCard !== 'none') myGallery[offerTier].push(offerCard);
-    gems += parseInt(offerGems);
-    updateStats();
-    showToast("Đã hủy đơn, tiền và thẻ được trả về túi!", "success");
-    viewFreeTrade();
-}
+    gems += parseInt(offerGems); updateStats();
+    showToast("Đã hủy đơn, lấy lại tài sản!", "success");
+};
 
 window.acceptFreeTrade = function(id, posterName, offerTier, offerCard, offerGems, reqTier, reqCard, reqGems) {
     let itemRef = database.ref('room_free_trades/' + id);
     itemRef.once('value', snap => {
-        if(!snap.exists()) {
-            showToast("Hàng hot! Đã bị người khác chốt trước rồi!", "warning");
-            viewFreeTrade(); return;
-        }
+        if(!snap.exists()) return showToast("Hàng hot! Đã bị người khác chốt!", "warning");
         if(reqCard !== 'none') {
             let idx = myGallery[reqTier].indexOf(reqCard);
-            if(idx === -1) return showToast("Lỗi: Thiếu thẻ yêu cầu!", "danger");
+            if(idx === -1) return showToast("Thiếu thẻ yêu cầu!", "danger");
             myGallery[reqTier].splice(idx, 1);
         }
-        if(gems < reqGems) return showToast("Lỗi: Không đủ Gems!", "danger");
+        if(gems < reqGems) return showToast("Không đủ Gems!", "danger");
         gems -= parseInt(reqGems);
-        
         if(offerCard !== 'none') myGallery[offerTier].push(offerCard);
-        gems += parseInt(offerGems);
-        updateStats();
+        gems += parseInt(offerGems); updateStats();
         
         itemRef.remove();
-        database.ref('room_free_success').push({ 
-            poster: posterName, buyer: playerName,
-            cardReceived: reqCard, tierReceived: reqTier, gemsReceived: reqGems,
-            time: Date.now() 
-        });
+        database.ref('room_free_success').push({ poster: posterName, buyer: playerName, cardReceived: reqCard, tierReceived: reqTier, gemsReceived: reqGems, time: Date.now() });
         showToast("🤝 Chốt Deal Thành Công!", "success");
-        viewFreeTrade();
     });
-}
+};
 
-// Báo Ting Ting
-database.ref('room_free_success').on('child_added', (snapshot) => {
-    if(!isGameActive) return;
-    let data = snapshot.val();
-    if(Date.now() - data.time > 15000) return; 
-    
+database.ref('room_free_success').on('child_added', (snap) => {
+    if(!isGameActive) return; let data = snap.val(); if(Date.now() - data.time > 15000) return; 
     if(data.poster === playerName) {
-        let msgDetails = "";
-        if(data.cardReceived !== 'none') {
-            myGallery[data.tierReceived].push(data.cardReceived);
-            msgDetails += `<br><b style="font-size:18px; color:var(--text);">${data.cardReceived}</b> <span style="font-size:12px; background:var(--primary); color:#fff; padding:2px 5px; border-radius:3px;">${data.tierReceived}</span>`;
-        }
-        if(data.gemsReceived > 0) {
-            gems += data.gemsReceived;
-            msgDetails += `<br><span style="color:#00bcd4; font-weight:bold; font-size:18px;">+ ${data.gemsReceived} 💎</span>`;
-        }
-        updateStats();
-        
-        let html = `
-            <div style="text-align:center;">
-                <div style="font-size:60px;">🤝</div>
-                <h2 style="color:var(--success); margin: 10px 0;">ĐƠN GIAO DỊCH ĐÃ KHỚP!</h2>
-                <p>Thương gia <b style="color:var(--danger);">${data.buyer}</b> đã chốt đơn của bạn!</p>
-                <div style="background:#e8f0fe; padding:10px; border-radius:8px; display:inline-block; border:1px solid var(--primary);">
-                    <div style="font-size:12px; color:#555;">Kho đồ vừa nhận được:</div>
-                    ${msgDetails}
-                </div>
-            </div>
-        `;
-        openModal("🎉 TINH TINH! CHỐT ĐƠN!", html + `<button class="btn btn-warning" style="margin-top:20px;" onclick="closeModal()">Đút Túi</button>`);
+        if(data.cardReceived !== 'none') myGallery[data.tierReceived].push(data.cardReceived);
+        if(data.gemsReceived > 0) gems += data.gemsReceived;
+        updateStats(); showToast("TINH TINH! Đã có người chốt đơn của bạn!", "success");
     }
 });
 
-
 // ==========================================
-// 2. HỆ THỐNG GIAO DỊCH TRỰC TIẾP (LIVE TRADE) - CHỐNG SCAM
+// PHÒNG GIAO DỊCH TRỰC TIẾP (LIVE TRADE)
 // ==========================================
 window.currentLiveTradeId = null;
 
 window.openLiveTradeMenu = function() {
     database.ref('room_players').once('value', snap => {
-        let options = '';
-        snap.forEach(child => {
-            let p = child.val();
-            if(p.name && p.name !== playerName) {
-                options += `<option value="${p.name}">${p.name}</option>`;
-            }
-        });
+        let options = ''; snap.forEach(child => { let p = child.val(); if(p.name && p.name !== playerName) options += `<option value="${p.name}">${p.name}</option>`; });
         if(!options) options = `<option value="">Không có ai online...</option>`;
-
-        let html = `
-            <div style="background:#fff; padding:15px; border-radius:10px; text-align:left;">
-                <h4 style="margin:0 0 10px 0; color:var(--primary);">Chọn người chơi đang online:</h4>
-                <select id="invite-player-name" style="width:100%; padding:10px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc; font-weight:bold;">
-                    ${options}
-                </select>
-                <button class="btn btn-warning" onclick="sendTradeInvite()" style="width:100%;">Gửi Lời Mời Giao Dịch</button>
-            </div>
-        `;
+        let html = `<div style="background:#fff; padding:15px; border-radius:10px;"><h4 style="margin:0 0 10px 0; color:var(--primary);">Chọn người chơi đang online:</h4><select id="invite-player-name" style="width:100%; padding:10px; margin-bottom:15px; border-radius:5px; font-weight:bold;">${options}</select><button class="btn btn-warning" onclick="sendTradeInvite()" style="width:100%; padding:12px; font-size:16px;">Gửi Lời Mời Giao Dịch</button></div>`;
         openModal("💌 MỜI TRADE TRỰC TIẾP", html);
     });
-}
+};
 
 window.sendTradeInvite = function() {
     let target = document.getElementById('invite-player-name').value;
     if(!target) return showToast("Vui lòng chọn 1 người!", "danger");
-
-    let tradeRef = database.ref('room_live_trades').push();
-    tradeRef.set({
-        status: 'pending',
-        player1: playerName, player2: target,
-        p1Offer: { tier: 'none', card: 'none', gems: 0, ready: false },
-        p2Offer: { tier: 'none', card: 'none', gems: 0, ready: false },
-        time: Date.now()
-    });
-    showToast(`Đã gửi lời mời đến ${target}. Đang chờ phản hồi...`, "success");
-    closeModal();
-}
+    database.ref('room_live_trades').push().set({ status: 'pending', player1: playerName, player2: target, p1Offer: { tier: 'none', card: 'none', gems: 0, ready: false }, p2Offer: { tier: 'none', card: 'none', gems: 0, ready: false }, time: Date.now() });
+    showToast(`Đã gửi lời mời đến ${target}.`, "success"); closeModal();
+};
 
 database.ref('room_live_trades').on('value', snap => {
     if(!isGameActive) return;
-
     snap.forEach(child => {
-        let data = child.val();
-        let tradeId = child.key;
+        let data = child.val(); let tradeId = child.key;
         if(Date.now() - data.time > 120000) return;
-
         if(data.player2 === playerName && data.status === 'pending') {
-            let html = `
-                <div style="text-align:center; padding: 10px;">
-                    <div style="font-size:40px; margin-bottom:10px;">🤝</div>
-                    <h3 style="color:var(--danger); margin:0 0 10px 0;">[${data.player1}] muốn giao dịch kín!</h3>
-                    <p style="color:#555; font-size:14px;">Họ đang đứng chờ bạn trong phòng giao dịch.</p>
-                    <div style="display:flex; gap:10px; margin-top:20px;">
-                        <button class="btn btn-success" style="flex:1; margin:0; padding:10px;" onclick="acceptTradeInvite('${tradeId}')">✅ ĐỒNG Ý</button>
-                        <button class="btn btn-secondary" style="flex:1; margin:0; padding:10px;" onclick="declineTradeInvite('${tradeId}')">❌ TỪ CHỐI</button>
-                    </div>
-                </div>
-            `;
-            let overlay = document.getElementById('custom-modal');
-            if(!overlay.classList.contains('show')) {
-                openModal("THƯ MỜI GIAO DỊCH", html);
-            }
+            let html = `<div style="text-align:center;"><div style="font-size:40px;">🤝</div><h3 style="color:var(--danger);">[${data.player1}] muốn giao dịch!</h3><div style="display:flex; gap:10px; margin-top:20px;"><button class="btn btn-success" style="flex:1; padding:15px; font-size:16px;" onclick="acceptTradeInvite('${tradeId}')">✅ ĐỒNG Ý</button><button class="btn btn-secondary" style="flex:1; padding:15px; font-size:16px;" onclick="declineTradeInvite('${tradeId}')">❌ TỪ CHỐI</button></div></div>`;
+            if(!document.getElementById('custom-modal').classList.contains('show')) openModal("THƯ MỜI GIAO DỊCH", html);
         }
-
         if(data.status === 'active' && (data.player1 === playerName || data.player2 === playerName)) {
-            if(currentLiveTradeId !== tradeId) {
-                currentLiveTradeId = tradeId; 
-                renderLiveTradeUI(tradeId, data);
-            } else {
-                updateLiveTradeUI(tradeId, data);
-            }
+            if(currentLiveTradeId !== tradeId) { currentLiveTradeId = tradeId; renderLiveTradeUI(tradeId, data); } else { updateLiveTradeUI(tradeId, data); }
         }
-        
-        if(data.status === 'cancelled' && currentLiveTradeId === tradeId) {
-            currentLiveTradeId = null; closeModal();
-            showToast("Giao dịch đã bị hủy bỏ!", "warning");
-        }
-        if(data.status === 'completed' && currentLiveTradeId === tradeId) {
-            currentLiveTradeId = null; closeModal();
-            showToast("🎉 GIAO DỊCH THÀNH CÔNG!", "success");
-        }
+        if(data.status === 'cancelled' && currentLiveTradeId === tradeId) { currentLiveTradeId = null; closeModal(); showToast("Giao dịch bị hủy!", "warning"); }
+        if(data.status === 'completed' && currentLiveTradeId === tradeId) { currentLiveTradeId = null; closeModal(); showToast("GIAO DỊCH THÀNH CÔNG!", "success"); }
     });
 });
 
-window.acceptTradeInvite = function(tradeId) { database.ref('room_live_trades/' + tradeId).update({ status: 'active' }); }
-window.declineTradeInvite = function(tradeId) { database.ref('room_live_trades/' + tradeId).update({ status: 'cancelled' }); closeModal(); }
-window.cancelLiveTrade = function() { if(currentLiveTradeId) database.ref('room_live_trades/' + currentLiveTradeId).update({ status: 'cancelled' }); }
+window.acceptTradeInvite = function(tradeId) { database.ref('room_live_trades/' + tradeId).update({ status: 'active', time: Date.now() }); };
+window.declineTradeInvite = function(tradeId) { database.ref('room_live_trades/' + tradeId).update({ status: 'cancelled' }); closeModal(); };
+window.cancelLiveTrade = function() { if(currentLiveTradeId) database.ref('room_live_trades/' + currentLiveTradeId).update({ status: 'cancelled' }); };
 
 window.renderLiveTradeUI = function(tradeId, data) {
-    let isP1 = data.player1 === playerName;
-    let myOfferKey = isP1 ? 'p1Offer' : 'p2Offer';
-    let theirName = isP1 ? data.player2 : data.player1;
-
-    let myDupes = window.getMyDupes();
+    let isP1 = data.player1 === playerName; let myOfferKey = isP1 ? 'p1Offer' : 'p2Offer'; let theirName = isP1 ? data.player2 : data.player1;
     let offerOptions = `<option value='none'>🚫 Không đưa Thẻ</option>`;
-    myDupes.forEach(c => { offerOptions += `<option value='{"tier":"${c.tier}", "card":"${c.card}"}'>[${c.tier}] ${c.card}</option>` });
+    window.getAllMyCards().forEach(c => offerOptions += `<option value='{"tier":"${c.tier}", "card":"${c.card}"}'>[${c.tier}] ${c.card}</option>`);
 
     let html = `
+        <div style="text-align:center; margin-bottom:15px;"><div class="countdown-badge" id="live-trade-timer">⏳ Đang tính...</div></div>
         <div style="display:flex; justify-content:space-between; gap:10px; text-align:left;">
             <div style="flex:1; background:#e8f0fe; padding:10px; border-radius:8px; border:2px solid var(--primary);">
                 <h4 style="margin:0 0 10px 0; color:var(--primary); text-align:center;">BẠN ĐƯA RA</h4>
-                <select id="live-my-card" style="width:100%; padding:8px; margin-bottom:10px; font-weight:bold;" onchange="syncLiveTrade('${tradeId}', '${myOfferKey}')">${offerOptions}</select>
-                <input type="number" id="live-my-gems" placeholder="Số Gems..." value="0" min="0" style="width:100%; padding:8px; margin-bottom:10px; font-weight:bold;" onchange="syncLiveTrade('${tradeId}', '${myOfferKey}')" onkeyup="syncLiveTrade('${tradeId}', '${myOfferKey}')">
-                
-                <button id="live-btn-ready" class="btn btn-warning" style="width:100%; margin:0; padding:10px;" onclick="toggleLiveReady('${tradeId}', '${myOfferKey}')">🔒 ĐỒNG Ý / KHÓA</button>
-                <div id="live-my-status" style="text-align:center; font-size:12px; margin-top:8px; font-weight:bold; color:#666;">Đang chọn đồ...</div>
+                <select id="live-my-card" style="width:100%; padding:10px; margin-bottom:10px; border-radius:5px; font-weight:bold;" onchange="syncLiveTrade('${tradeId}', '${myOfferKey}')">${offerOptions}</select>
+                <input type="number" id="live-my-gems" value="0" min="0" style="width:100%; padding:10px; margin-bottom:10px; border-radius:5px; font-weight:bold; box-sizing: border-box;" onchange="syncLiveTrade('${tradeId}', '${myOfferKey}')" onkeyup="syncLiveTrade('${tradeId}', '${myOfferKey}')">
+                <button id="live-btn-ready" class="btn btn-warning" style="width:100%; padding:12px; font-size:14px;" onclick="toggleLiveReady('${tradeId}', '${myOfferKey}')">🔒 KHÓA / ĐỒNG Ý</button>
+                <div id="live-my-status" style="text-align:center; font-size:12px; margin-top:8px; color:#666;">Đang chọn đồ...</div>
             </div>
-
             <div style="flex:1; background:#fce8e6; padding:10px; border-radius:8px; border:2px solid var(--danger);">
                 <h4 style="margin:0 0 10px 0; color:var(--danger); text-align:center;">[${theirName}] ĐƯA RA</h4>
-                <div id="live-their-card" style="background:#fff; padding:8px; border:1px solid #ccc; border-radius:4px; margin-bottom:10px; font-weight:bold; text-align:center; color:var(--text); min-height:18px;">- Không Thẻ -</div>
-                <div id="live-their-gems" style="background:#fff; padding:8px; border:1px solid #ccc; border-radius:4px; margin-bottom:10px; font-weight:bold; color:#00bcd4; text-align:center;">0 💎</div>
-                
-                <div id="live-their-status" style="text-align:center; padding:10px; background:#ddd; border-radius:4px; font-weight:bold; color:#555;">Đang chọn đồ...</div>
+                <div id="live-their-card" style="background:#fff; padding:10px; border:1px solid #ccc; border-radius:4px; margin-bottom:10px; text-align:center; font-weight:bold; font-size:14px;">- Không Thẻ -</div>
+                <div id="live-their-gems" style="background:#fff; padding:10px; border:1px solid #ccc; border-radius:4px; margin-bottom:10px; color:#00bcd4; text-align:center; font-weight:900; font-size:16px;">0 💎</div>
+                <div id="live-their-status" style="text-align:center; padding:10px; background:#ddd; border-radius:4px; color:#555; font-weight:bold;">Đang chọn đồ...</div>
             </div>
         </div>
-        <button class="btn btn-secondary" style="margin-top:15px; width:100%; padding:10px;" onclick="cancelLiveTrade()">Hủy Giao Dịch & Thoát Ra</button>
+        <button class="btn btn-secondary" style="margin-top:15px; width:100%; padding:12px; font-size:16px;" onclick="cancelLiveTrade()">Hủy Bỏ Trực Tiếp</button>
     `;
     openModal("⚖️ PHÒNG GIAO DỊCH TRỰC TIẾP", html);
     updateLiveTradeUI(tradeId, data);
-}
+};
 
 window.syncLiveTrade = function(tradeId, myOfferKey) {
-    let cardVal = document.getElementById('live-my-card').value;
-    let gemsVal = parseInt(document.getElementById('live-my-gems').value) || 0;
-    
-    if(gemsVal < 0) gemsVal = 0;
-    if(gemsVal > gems) { gemsVal = gems; document.getElementById('live-my-gems').value = gems; }
-
-    let tier = 'none', card = 'none';
-    if(cardVal !== 'none') { let o = JSON.parse(cardVal); tier = o.tier; card = o.card; }
-
+    let cardVal = document.getElementById('live-my-card').value; let gemsVal = parseInt(document.getElementById('live-my-gems').value) || 0;
+    if(gemsVal < 0) gemsVal = 0; if(gemsVal > gems) { gemsVal = gems; document.getElementById('live-my-gems').value = gems; }
+    let tier = 'none', card = 'none'; if(cardVal !== 'none') { let o = JSON.parse(cardVal); tier = o.tier; card = o.card; }
     database.ref('room_live_trades/' + tradeId + '/' + myOfferKey).update({ tier: tier, card: card, gems: gemsVal, ready: false });
-}
+};
 
 window.toggleLiveReady = function(tradeId, myOfferKey) {
-    database.ref('room_live_trades/' + tradeId + '/' + myOfferKey + '/ready').once('value', snap => {
-        let isReady = snap.val();
-        database.ref('room_live_trades/' + tradeId + '/' + myOfferKey).update({ ready: !isReady });
-    });
-}
+    database.ref('room_live_trades/' + tradeId + '/' + myOfferKey + '/ready').once('value', snap => database.ref('room_live_trades/' + tradeId + '/' + myOfferKey).update({ ready: !snap.val() }));
+};
 
 window.updateLiveTradeUI = function(tradeId, data) {
     if(!document.getElementById('live-my-card')) return;
-    
-    let isP1 = data.player1 === playerName;
-    let myOffer = isP1 ? data.p1Offer : data.p2Offer;
-    let theirOffer = isP1 ? data.p2Offer : data.p1Offer;
+    if(window.liveTradeTimerInt) clearInterval(window.liveTradeTimerInt);
+    window.liveTradeTimerInt = setInterval(() => {
+        let el = document.getElementById('live-trade-timer'); if(!el) return clearInterval(window.liveTradeTimerInt);
+        let left = 120 - Math.floor((Date.now() - data.time) / 1000);
+        if(left <= 0) { clearInterval(window.liveTradeTimerInt); if(currentLiveTradeId === tradeId) cancelLiveTrade(); }
+        el.innerHTML = `⏳ ${Math.floor(left/60)}p ${left%60}s`;
+    }, 1000);
 
-    let theirCardHTML = theirOffer.card !== 'none' ? `[${theirOffer.tier}] ${theirOffer.card}` : `- Không Thẻ -`;
-    document.getElementById('live-their-card').innerHTML = theirCardHTML;
+    let isP1 = data.player1 === playerName; let myOffer = isP1 ? data.p1Offer : data.p2Offer; let theirOffer = isP1 ? data.p2Offer : data.p1Offer;
+    document.getElementById('live-their-card').innerHTML = theirOffer.card !== 'none' ? `[${theirOffer.tier}] ${theirOffer.card}` : `- Không Thẻ -`;
     document.getElementById('live-their-gems').innerHTML = `${theirOffer.gems} 💎`;
     
-    let theirStatus = document.getElementById('live-their-status');
-    if(theirOffer.ready) {
-        theirStatus.innerHTML = "🔒 ĐÃ ĐỒNG Ý";
-        theirStatus.style.background = "var(--success)"; theirStatus.style.color = "#fff";
-    } else {
-        theirStatus.innerHTML = "Đang chọn đồ...";
-        theirStatus.style.background = "#ddd"; theirStatus.style.color = "#555";
-    }
+    let tStat = document.getElementById('live-their-status');
+    if(theirOffer.ready) { tStat.innerHTML = "🔒 ĐÃ ĐỒNG Ý"; tStat.style.background = "var(--success)"; tStat.style.color = "#fff"; } else { tStat.innerHTML = "Đang chọn đồ..."; tStat.style.background = "#ddd"; tStat.style.color = "#555"; }
 
-    let myStatus = document.getElementById('live-my-status');
-    let btnReady = document.getElementById('live-btn-ready');
-    
+    let mStat = document.getElementById('live-my-status'); let btnReady = document.getElementById('live-btn-ready');
     if(myOffer.ready) {
-        myStatus.innerHTML = "🔒 BẠN ĐÃ KHÓA (Chờ đối phương)"; myStatus.style.color = "var(--success)";
-        btnReady.innerHTML = "🔓 MỞ KHÓA (ĐỂ SỬA ĐỒ)"; btnReady.className = "btn btn-secondary";
+        mStat.innerHTML = "🔒 BẠN ĐÃ KHÓA"; mStat.style.color = "var(--success)"; btnReady.innerHTML = "🔓 MỞ KHÓA (SỬA ĐỒ)"; btnReady.className = "btn btn-secondary";
         document.getElementById('live-my-card').disabled = true; document.getElementById('live-my-gems').disabled = true;
     } else {
-        myStatus.innerHTML = "Vui lòng kiểm tra kỹ trước khi khóa..."; myStatus.style.color = "#666";
-        btnReady.innerHTML = "🔒 ĐỒNG Ý / KHÓA"; btnReady.className = "btn btn-warning";
+        mStat.innerHTML = "Vui lòng kiểm tra trước khi khóa..."; mStat.style.color = "#666"; btnReady.innerHTML = "🔒 ĐỒNG Ý / KHÓA"; btnReady.className = "btn btn-warning";
         document.getElementById('live-my-card').disabled = false; document.getElementById('live-my-gems').disabled = false;
     }
 
     if(data.p1Offer.ready && data.p2Offer.ready && isP1 && data.status === 'active') {
         database.ref('room_live_trades/' + tradeId).update({ status: 'processing' }).then(() => {
-            database.ref('room_live_success').push({
-                tradeId: tradeId,
-                player1: data.player1, p1Offer: data.p1Offer,
-                player2: data.player2, p2Offer: data.p2Offer,
-                time: Date.now()
-            });
+            database.ref('room_live_success').push({ tradeId: tradeId, player1: data.player1, p1Offer: data.p1Offer, player2: data.player2, p2Offer: data.p2Offer, time: Date.now() });
             database.ref('room_live_trades/' + tradeId).update({ status: 'completed' });
         });
     }
-}
-
-database.ref('room_live_success').on('child_added', snap => {
-    if(!isGameActive) return;
-    let data = snap.val();
-    if(Date.now() - data.time > 15000) return;
-
-    let amIPlayer1 = data.player1 === playerName;
-    let amIPlayer2 = data.player2 === playerName;
-    if(!amIPlayer1 && !amIPlayer2) return; 
-
-    let myOffer = amIPlayer1 ? data.p1Offer : data.p2Offer;
-    let theirOffer = amIPlayer1 ? data.p2Offer : data.p1Offer;
-
-    if(myOffer.card !== 'none') {
-        let idx = myGallery[myOffer.tier].indexOf(myOffer.card);
-        if(idx !== -1) myGallery[myOffer.tier].splice(idx, 1);
-    }
-    gems -= myOffer.gems;
-
-    if(theirOffer.card !== 'none') myGallery[theirOffer.tier].push(theirOffer.card);
-    gems += theirOffer.gems;
-
-    updateStats();
-    
-    if(amIPlayer1) {
-        database.ref('chat_messages').push({ 
-            name: "HỆ THỐNG", 
-            text: `🤝 GIAO DỊCH THÀNH CÔNG: [${data.player1}] và [${data.player2}] vừa hoàn tất trao đổi trong phòng kín!`, 
-            timestamp: Date.now() 
-        });
-    }
-});
-// ==========================================
-// HỆ THỐNG THÔNG BÁO BAY GIỮA MÀN HÌNH (GLOBAL BROADCAST)
-// ==========================================
-window.showGlobalBroadcast = function(msg) {
-    let banner = document.createElement('div');
-    banner.className = 'global-broadcast-banner';
-    banner.innerHTML = `📢 ${msg}`;
-    document.body.appendChild(banner);
-    
-    // Rơi xuống
-    setTimeout(() => banner.classList.add('show'), 100);
-    // Thu lại sau 5s
-    setTimeout(() => {
-        banner.classList.remove('show');
-        setTimeout(() => banner.remove(), 600);
-    }, 5000);
 };
 
-// Tự động bắt tín hiệu: Cứ có sự kiện lớn (Gacha, Trade, Đấu giá) là cho bay lên màn hình!
-database.ref('chat_messages').limitToLast(1).on('child_added', (snap) => {
-    if(!isGameActive) return;
-    let msg = snap.val();
-    if(Date.now() - msg.timestamp > 3000) return; // Chỉ lấy tin vừa mới tinh
+database.ref('room_live_success').on('child_added', snap => {
+    if(!isGameActive) return; let data = snap.val(); if(Date.now() - data.time > 15000) return;
+    let amIPlayer1 = data.player1 === playerName; let amIPlayer2 = data.player2 === playerName;
+    if(!amIPlayer1 && !amIPlayer2) return; 
+    let myOffer = amIPlayer1 ? data.p1Offer : data.p2Offer; let theirOffer = amIPlayer1 ? data.p2Offer : data.p1Offer;
+
+    if(myOffer.card !== 'none') { let idx = myGallery[myOffer.tier].indexOf(myOffer.card); if(idx !== -1) myGallery[myOffer.tier].splice(idx, 1); }
+    gems -= myOffer.gems;
+    if(theirOffer.card !== 'none') myGallery[theirOffer.tier].push(theirOffer.card);
+    gems += theirOffer.gems;
+    updateStats();
     
-    // Lọc những người gửi là Hệ thống hoặc Sàn Giao Dịch
-    if(["HỆ THỐNG", "SÀN GIAO DỊCH", "TRẠM TRADE", "NHÀ ĐẤU GIÁ"].includes(msg.name)) {
-        showGlobalBroadcast(msg.text);
-    }
+    if(amIPlayer1) database.ref('chat_messages').push({ name: "HỆ THỐNG", text: `🤝 [${data.player1}] và [${data.player2}] vừa trade phòng kín thành công!`, timestamp: Date.now() });
 });
 
 // ==========================================
-// HỆ THỐNG ĐẤU GIÁ (AUCTION HOUSE)
+// NHÀ ĐẤU GIÁ LIÊN SERVER (AUCTION HOUSE) - ONLINE 24/24 NGẦM
 // ==========================================
+window.globalAuctions = [];
+database.ref('room_auctions').on('value', snap => {
+    window.globalAuctions = [];
+    snap.forEach(child => {
+        // FIX LỖI TÀNG HÌNH: Đã bọc ngoặc nhọn để vòng lặp không bị chết ngang sau 1 đơn!
+        window.globalAuctions.push({ id: child.key, ...child.val() });
+    });
+    let c = document.getElementById('auction-content');
+    if(c && c.dataset.mode === "list") renderAuctions();
+});
+
 window.openAuctionHouse = function() {
     let html = `
         <div style="display:flex; gap:10px; margin-bottom: 15px;">
-            <button class="btn" style="flex:1; background: var(--danger); color: white; margin: 0;" onclick="viewAuctions()">🔨 Sàn Đấu Giá</button>
+            <button class="btn" style="flex:1; background: var(--danger); color: white; margin: 0;" onclick="showAuctionList()">🔨 Sàn Đấu Giá</button>
             <button class="btn btn-warning" style="flex:1; margin: 0;" onclick="openCreateAuction()">✍️ Đưa Đồ Lên Sàn</button>
         </div>
-        <div id="auction-content" style="max-height: 450px; overflow-y:auto; padding-right: 5px;"></div>
-        <button class="btn btn-secondary" style="margin-top:15px;" onclick="closeModal()">Rời Sàn</button>
+        <!-- Khung cuộn độc lập chống kẹt -->
+        <div id="auction-content" data-mode="list" style="max-height: 45vh; overflow-y: auto; padding: 5px; background: transparent; border-radius: 8px;"></div>
+        <button class="btn btn-secondary" style="margin-top:15px; width:100%; padding:12px;" onclick="closeModal()">Rời Sàn</button>
     `;
-    openModal("🔨 NHÀ ĐẤU GIÁ LIÊN SERVER", html);
-    viewAuctions();
+    openModal("🔨 NHÀ ĐẤU GIÁ LIÊN SERVER", html); 
+    showAuctionList();
+};
+
+window.showAuctionList = function() {
+    let c = document.getElementById('auction-content');
+    if(c) { 
+        c.dataset.mode = "list"; 
+        c.style.background = "transparent";
+        c.style.border = "none";
+    }
+    renderAuctions();
 };
 
 window.openCreateAuction = function() {
-    let content = document.getElementById('auction-content');
-    let myDupes = window.getMyDupes();
+    let content = document.getElementById('auction-content'); 
+    if(!content) return;
     
-    if(myDupes.length === 0) {
-        content.innerHTML = "<div style='padding:20px; color:var(--danger); font-weight:bold;'>Bạn không có phôi thẻ trùng nào để đem đi đấu giá!</div>"; return;
+    content.dataset.mode = "form";
+    content.style.background = "#fff";
+    content.style.border = "2px dashed var(--danger)";
+    
+    let myCards = window.getAllMyCards();
+    if(myCards.length === 0) {
+        content.innerHTML = "<div style='padding:40px 20px; text-align:center; color:var(--danger); font-weight:bold;'>Kho đồ của bạn đang trống! Không có gì để đem đi đấu giá!</div>";
+        return;
     }
     
-    let options = "";
-    myDupes.forEach(c => { options += `<option value='{"tier":"${c.tier}", "card":"${c.card}"}'>[${c.tier}] ${c.card}</option>` });
-    
+    let options = ""; myCards.forEach(c => options += `<option value='{"tier":"${c.tier}", "card":"${c.card}"}'>[${c.tier}] ${c.card}</option>`);
     content.innerHTML = `
-        <div style="background:#fff; padding:15px; border-radius:10px; text-align:left; border: 2px dashed var(--danger);">
+        <div style="padding:15px; text-align:left;">
             <h4 style="margin:0 0 5px 0; color:var(--primary);">📤 Chọn Thẻ Đấu Giá:</h4>
-            <select id="auc-card" style="width:100%; padding:10px; margin-bottom:15px; border-radius:5px;">${options}</select>
-            
+            <select id="auc-card" style="width:100%; padding:12px; margin-bottom:15px; border-radius:5px; background:#e8f0fe; font-weight:bold;">${options}</select>
             <h4 style="margin:0 0 5px 0; color:#00bcd4;">💎 Giá Khởi Điểm (Gems):</h4>
-            <input type="number" id="auc-start-price" value="500" min="10" style="width:100%; padding:10px; margin-bottom:15px; border-radius:5px;">
-            
+            <input type="number" id="auc-start-price" value="500" min="10" style="width:100%; padding:12px; margin-bottom:15px; border-radius:5px; background:#e8f0fe; font-weight:bold; box-sizing: border-box;">
             <h4 style="margin:0 0 5px 0; color:var(--warning);">⏳ Thời Gian Đấu Giá:</h4>
-            <select id="auc-duration" style="width:100%; padding:10px; margin-bottom:20px; border-radius:5px;">
-                <option value="1">1 Phút (Nhanh gọn lẹ)</option>
+            <select id="auc-duration" style="width:100%; padding:12px; margin-bottom:20px; border-radius:5px; background:#fff3e0; font-weight:bold;">
+                <option value="1">1 Phút (Nhanh gọn)</option>
                 <option value="3" selected>3 Phút (Tiêu chuẩn)</option>
                 <option value="5">5 Phút (Hàng hiếm)</option>
             </select>
-            
-            <button class="btn btn-danger" onclick="postAuction()">Lên Sàn Đấu Giá Ngay</button>
+            <button class="btn btn-danger" style="padding:15px; font-size:16px;" onclick="postAuction()">Lên Sàn Đấu Giá Ngay</button>
         </div>
     `;
 };
 
 window.postAuction = function() {
-    let cardVal = document.getElementById('auc-card').value;
-    let startPrice = parseInt(document.getElementById('auc-start-price').value) || 0;
+    let cardEl = document.getElementById('auc-card');
+    if(!cardEl) return showToast("Vui lòng chọn thẻ!", "warning");
+    let cardVal = cardEl.value; 
+    let startPrice = parseInt(document.getElementById('auc-start-price').value) || 0; 
     let durationMins = parseInt(document.getElementById('auc-duration').value) || 3;
     
     if(startPrice <= 0) return showToast("Giá khởi điểm phải lớn hơn 0!", "warning");
     
-    let o = JSON.parse(cardVal);
+    let o = JSON.parse(cardVal); 
     let idx = myGallery[o.tier].indexOf(o.card);
-    if(idx === -1) return showToast("Lỗi: Không tìm thấy thẻ!", "danger");
+    if(idx === -1) return showToast("Lỗi: Không tìm thấy thẻ trong túi!", "danger");
     
-    // Trừ thẻ cọc
     myGallery[o.tier].splice(idx, 1); updateStats();
     
-    let endTime = Date.now() + (durationMins * 60 * 1000);
-    database.ref('room_auctions').push({
-        seller: playerName, tier: o.tier, card: o.card,
-        startPrice: startPrice, currentBid: startPrice, highestBidder: "none",
-        endTime: endTime, status: 'active', timeCreated: Date.now()
+    database.ref('room_auctions').push({ 
+        seller: playerName, tier: o.tier, card: o.card, 
+        startPrice: startPrice, currentBid: startPrice, highestBidder: "none", 
+        endTime: Date.now() + (durationMins * 60 * 1000), status: 'active', timeCreated: Date.now() 
+    }).then(() => {
+        database.ref('chat_messages').push({ name: "NHÀ ĐẤU GIÁ", text: `🔨 [${playerName}] vừa đưa thẻ ${o.card} lên sàn đấu giá với giá ${startPrice}💎!`, timestamp: Date.now() });
+        showToast("Đã lên sàn đấu giá thành công!", "success"); 
+        showAuctionList(); 
+    }).catch(err => {
+        myGallery[o.tier].push(o.card); updateStats();
+        showToast("Lỗi Firebase: " + err.message, "danger");
     });
-    
-    database.ref('chat_messages').push({ name: "NHÀ ĐẤU GIÁ", text: `🔨 [${playerName}] vừa đưa thẻ ${o.card} lên sàn đấu giá với khởi điểm ${startPrice}💎!`, timestamp: Date.now() });
-    showToast("Đã lên sàn đấu giá!", "success");
-    viewAuctions();
 };
 
 window.adminCreateSystemAuction = function() {
-    let isUSR = Math.random() > 0.5;
-    let tier = isUSR ? 'USR' : 'LSR';
-    let pool = cardDatabase[tier];
-    let card = pool[Math.floor(Math.random() * pool.length)].name;
-    
-    let startPrice = isUSR ? 2000 : 5000;
-    let endTime = Date.now() + (3 * 60 * 1000); // 3 Phút
-    
-    database.ref('room_auctions').push({
-        seller: "HỆ THỐNG", tier: tier, card: card,
-        startPrice: startPrice, currentBid: startPrice, highestBidder: "none",
-        endTime: endTime, status: 'active', timeCreated: Date.now()
-    });
-    
-    database.ref('chat_messages').push({ name: "NHÀ ĐẤU GIÁ", text: `🚨 SIÊU PHẨM XUẤT HIỆN: HỆ THỐNG vừa thả thẻ ${tier} [${card}] lên Sàn Đấu Giá! Mau vào cướp!`, timestamp: Date.now() });
-    showToast("Đã kích hoạt Đấu Giá Hệ Thống!", "success");
-};
-
-window.viewAuctions = function() {
-    let content = document.getElementById('auction-content');
-    if(!content) return;
-    
-    database.ref('room_auctions').on('value', snap => {
-        if(!document.getElementById('auction-content')) return; // Chống lỗi nếu modal đã đóng
-        let items = [];
-        snap.forEach(child => items.push({ id: child.key, ...child.val() }));
-        
-        let activeItems = items.filter(i => i.status === 'active');
-        if(activeItems.length === 0) {
-            content.innerHTML = "<div style='text-align:center; padding: 20px; color:#666;'>Sàn đang trống không...</div>";
-            return;
-        }
-        
-        let html = '';
-        activeItems.forEach(auc => {
-            let timeLeft = Math.max(0, Math.floor((auc.endTime - Date.now()) / 1000));
-            let minBid = auc.highestBidder === "none" ? auc.startPrice : auc.currentBid + 100; // Bước giá 100 Gems
-            
-            let isSys = auc.seller === "HỆ THỐNG";
-            let sellerHtml = isSys ? `<b style="color:red; font-size:16px;">👑 HỆ THỐNG (ADMIN)</b>` : `<b style="color:var(--primary);">${auc.seller}</b>`;
-            
-            let bidderHtml = auc.highestBidder === "none" ? `<span style="color:#999;">Chưa có ai ra giá</span>` : `<b style="color:var(--danger);">${auc.highestBidder}</b> đang giữ giá: <b style="color:#00bcd4; font-size:16px;">${auc.currentBid}💎</b>`;
-            
-            let btnHtml = "";
-            if(auc.seller === playerName) {
-                btnHtml = `<button class="btn btn-secondary" style="width:100%; padding:8px; margin-top:10px;" disabled>Lệnh của bạn (Đang chờ)</button>`;
-            } else if (auc.highestBidder === playerName) {
-                btnHtml = `<button class="btn btn-success" style="width:100%; padding:8px; margin-top:10px;" disabled>Bạn đang giữ Top 1!</button>`;
-            } else {
-                btnHtml = `<div style="display:flex; gap:5px; margin-top:10px;">
-                    <input type="number" id="bid-val-${auc.id}" value="${minBid}" min="${minBid}" style="flex:1; margin:0; padding:8px; font-weight:bold;">
-                    <button class="btn btn-warning" style="width:100px; margin:0;" onclick="placeBid('${auc.id}', ${minBid}, '${auc.highestBidder}', ${auc.currentBid})">Ra Giá</button>
-                </div>`;
-            }
-            
-            let timeStr = timeLeft > 0 ? `<b style="color:${timeLeft<30 ? 'red' : 'var(--success)'};">${Math.floor(timeLeft/60)}p ${timeLeft%60}s</b>` : `<b style="color:red;">Đang chốt sổ...</b>`;
-
-            html += `
-                <div class="auction-card ${isSys ? 'system-auction' : ''}">
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed #ccc; padding-bottom:8px; margin-bottom:8px;">
-                        <span style="font-size:12px;">Người Bán: ${sellerHtml}</span>
-                        <span style="font-size:12px; background:#e8f0fe; padding:2px 8px; border-radius:10px;">⏳ ${timeStr}</span>
-                    </div>
-                    
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <div class="tier-${auc.tier}" style="width:50px; height:70px; border-radius:5px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:14px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
-                            ${auc.tier}
-                        </div>
-                        <div style="flex:1;">
-                            <h3 style="margin:0 0 5px 0; color:var(--text); font-size:16px;">${auc.card}</h3>
-                            <div style="font-size:13px;">${bidderHtml}</div>
-                        </div>
-                    </div>
-                    ${timeLeft > 0 ? btnHtml : ''}
-                </div>
-            `;
-        });
-        content.innerHTML = html;
+    let isUSR = Math.random() > 0.5; let tier = isUSR ? 'USR' : 'LSR';
+    let card = cardDatabase[tier][Math.floor(Math.random() * cardDatabase[tier].length)].name;
+    database.ref('room_auctions').push({ seller: "HỆ THỐNG", tier: tier, card: card, startPrice: (isUSR ? 2000 : 5000), currentBid: (isUSR ? 2000 : 5000), highestBidder: "none", endTime: Date.now() + (180000), status: 'active', timeCreated: Date.now() }).then(() => {
+        database.ref('chat_messages').push({ name: "NHÀ ĐẤU GIÁ", text: `🚨 HỆ THỐNG vừa thả thẻ VIP ${tier} [${card}] lên Sàn! Vào cướp mau!`, timestamp: Date.now() }); 
+        showToast("Đã kích hoạt Đấu Giá Hệ Thống!", "success");
+    }).catch(err => {
+        showToast("Lỗi Hệ Thống: " + err.message, "danger");
     });
 };
 
-window.placeBid = function(aucId, minBid, oldBidder, oldBid) {
+window.renderAuctions = function() {
+    let contentDiv = document.getElementById('auction-content');
+    if(!contentDiv || contentDiv.dataset.mode !== "list") return; 
+    
+    let activeItems = window.globalAuctions.filter(i => i.status === 'active');
+    if(activeItems.length === 0) {
+        contentDiv.innerHTML = "<div style='text-align:center; padding: 40px 20px; color:#666; background:#f8f9fa; border-radius:8px; border:1px solid #ddd;'><b>Sàn đang trống không...</b><br>Đưa đồ lên cho xôm tụ đi!</div>";
+        return;
+    }
+    
+    let html = '<div style="display:flex; flex-direction:column; gap:15px; padding-bottom:10px;">';
+    activeItems.forEach(auc => {
+        let minBid = auc.highestBidder === "none" ? auc.startPrice : auc.currentBid + 100;
+        let sellerHtml = auc.seller === "HỆ THỐNG" ? `<b style="color:red; font-size:16px;">👑 HỆ THỐNG</b>` : `<b style="color:var(--primary);">${auc.seller}</b>`;
+        let bidderHtml = auc.highestBidder === "none" ? `<span style="color:#999;">Chưa có ai ra giá</span>` : `<b style="color:var(--danger);">${auc.highestBidder}</b> đang giữ giá: <b style="color:#00bcd4; font-size:16px;">${auc.currentBid}💎</b>`;
+        
+        let btnHtml = auc.seller === playerName ? `<button class="btn btn-secondary" style="width:100%; padding:10px; margin-top:12px; font-size:14px; font-weight:bold;" disabled>Lệnh của bạn</button>` : (auc.highestBidder === playerName ? `<button class="btn btn-success" style="width:100%; padding:10px; margin-top:12px; font-size:14px; font-weight:bold;" disabled>Bạn đang giữ Top 1!</button>` : `<div style="display:flex; gap:8px; margin-top:12px;"><input type="number" id="bid-val-${auc.id}" value="${minBid}" min="${minBid}" style="flex:1; padding:10px; font-weight:bold; border: 2px solid #ccc; border-radius: 6px; text-align:center; box-sizing:border-box;"><button class="btn btn-warning" style="width:100px; margin: 0; font-size:14px; font-weight:bold;" onclick="placeBid('${auc.id}', ${minBid})">Ra Giá</button></div>`);
+        
+        html += `<div class="auction-card ${auc.seller === 'HỆ THỐNG' ? 'system-auction' : ''}" style="margin-bottom: 0px; display:block; padding: 15px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); background:#fff;"><div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed #ccc; padding-bottom:10px; margin-bottom:10px;"><span style="font-size: 14px;">Người Bán: ${sellerHtml}</span><div class="countdown-badge auc-timer-badge" data-endtime="${auc.endTime}">⏳ Đang tính...</div></div><div style="display:flex; align-items:center; gap:15px;"><div class="tier-${auc.tier}" style="width:65px; height:90px; border-radius:8px; display:flex; justify-content:center; align-items:center; color:white; font-weight:900; font-size: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">${auc.tier}</div><div style="flex:1;"><h3 style="margin:0 0 6px 0; font-size:18px; color: var(--text);">${auc.card}</h3><div style="font-size:14px;">${bidderHtml}</div></div></div>${btnHtml}</div>`;
+    });
+    html += '</div>';
+    
+    contentDiv.innerHTML = html; 
+    updateAuctionTimers();
+    
+    if(window.globalAucTimer) clearInterval(window.globalAucTimer);
+    window.globalAucTimer = setInterval(updateAuctionTimers, 1000);
+};
+
+window.updateAuctionTimers = function() {
+    document.querySelectorAll('.auc-timer-badge').forEach(el => {
+        let timeLeft = Math.floor((parseInt(el.getAttribute('data-endtime')) - Date.now()) / 1000);
+        if(timeLeft > 0) { el.innerHTML = `⏳ ${Math.floor(timeLeft/60)}p ${timeLeft%60}s`; el.style.color = timeLeft < 30 ? "red" : "var(--danger)"; } else { el.innerHTML = `⏳ Hết giờ (Đang chốt)`; el.style.color = "#999"; el.style.background = "#f1f3f4"; el.style.borderColor = "#ccc"; }
+    });
+};
+
+window.placeBid = function(aucId, minBid) {
     let myBid = parseInt(document.getElementById(`bid-val-${aucId}`).value) || 0;
-    if(myBid < minBid) return showToast(`Giá thầu phải từ ${minBid}💎 trở lên!`, "danger");
-    if(gems < myBid) return showToast("Không đủ Gems để đấu giá!", "danger");
+    if(myBid < minBid) return showToast(`Giá thầu phải từ ${minBid}💎!`, "danger");
+    if(gems < myBid) return showToast("Không đủ Gems!", "danger");
     
-    // Khóa quyền ghi đè để an toàn
     let ref = database.ref('room_auctions/' + aucId);
     ref.once('value', snap => {
         let auc = snap.val();
-        if(!auc || auc.status !== 'active') return showToast("Phiên đấu giá đã kết thúc hoặc không tồn tại!", "danger");
-        if(myBid <= auc.currentBid) return showToast("Đã có người ra giá cao hơn bạn rồi!", "warning");
-        
-        // 1. Trừ tiền mình
+        if(!auc || auc.status !== 'active') return showToast("Đấu giá đã kết thúc!", "danger");
+        if(myBid <= auc.currentBid) return showToast("Đã có người ra giá cao hơn!", "warning");
         gems -= myBid; updateStats();
-        
-        // 2. Nếu có người cược trước đó, hoàn tiền cho họ thông qua hệ thống Hoàn Tiền (Refund)
-        if(auc.highestBidder !== "none") {
-            database.ref('room_refunds').push({ player: auc.highestBidder, gems: auc.currentBid, reason: 'outbid', time: Date.now() });
-        }
-        
-        // 3. Cập nhật giá mới
+        if(auc.highestBidder !== "none") database.ref('room_refunds').push({ player: auc.highestBidder, gems: auc.currentBid, reason: 'outbid', time: Date.now() });
         ref.update({ currentBid: myBid, highestBidder: playerName });
-        showToast("Ra giá thành công! Bạn đang giữ Top 1!", "success");
+        showToast("Bạn đang giữ Top 1!", "success");
     });
 };
 
-// ==========================================
-// VÒNG LẶP CHỐT SỔ ĐẤU GIÁ & HOÀN TIỀN
-// ==========================================
-// Hệ thống hoàn tiền cho người bị hớt tay trên
 database.ref('room_refunds').on('child_added', snap => {
-    if(!isGameActive) return;
-    let data = snap.val();
-    if(Date.now() - data.time > 15000) return;
-    
-    if(data.player === playerName) {
-        gems += data.gems; updateStats();
-        showToast(`Ai đó đã trả giá cao hơn! Bạn được hoàn lại ${data.gems}💎 tiền cọc!`, "warning");
-        snap.ref.remove();
-    }
+    if(!isGameActive) return; let data = snap.val(); if(Date.now() - data.time > 15000) return;
+    if(data.player === playerName) { gems += data.gems; updateStats(); showToast(`Có người hớt tay trên! Hoàn lại ${data.gems}💎 tiền cọc!`, "warning"); snap.ref.remove(); }
 });
 
-// Chốt sổ đấu giá (Chạy mỗi giây)
 setInterval(() => {
     if(!isGameActive) return;
     database.ref('room_auctions').once('value', snap => {
         snap.forEach(child => {
             let auc = child.val();
-            // Nếu hết giờ và chưa kết thúc
-            if(auc.status === 'active' && Date.now() > auc.endTime) {
-                
-                // Chỉ người bán (hoặc Admin đối với Đấu giá hệ thống) mới có quyền xử lý Chốt Sổ để tránh lỗi lặp
-                if(auc.seller === playerName || (auc.seller === 'HỆ THỐNG' && isVIP)) {
-                    child.ref.update({ status: 'ended' }).then(() => {
-                        
-                        if(auc.highestBidder !== "none") {
-                            // CÓ NGƯỜI MUA
-                            // Trả thẻ cho người mua thông qua hòm thư
-                            database.ref('room_auction_wins').push({
-                                winner: auc.highestBidder, tier: auc.tier, card: auc.card,
-                                seller: auc.seller, price: auc.currentBid, time: Date.now()
-                            });
-                            
-                            // Nếu người bán là người chơi, cộng tiền vào túi họ
-                            if(auc.seller !== 'HỆ THỐNG' && auc.seller === playerName) {
-                                gems += auc.currentBid; updateStats();
-                                database.ref('chat_messages').push({ name: "NHÀ ĐẤU GIÁ", text: `🔨 BÚA GÕ! [${auc.highestBidder}] đã trúng đấu giá thẻ ${auc.card} từ [${auc.seller}] với giá ${auc.currentBid}💎!`, timestamp: Date.now() });
-                            } else if (auc.seller === 'HỆ THỐNG') {
-                                database.ref('chat_messages').push({ name: "NHÀ ĐẤU GIÁ", text: `👑 BÚA GÕ! [${auc.highestBidder}] vừa cướp thành công thẻ ${auc.card} của HỆ THỐNG với giá ${auc.currentBid}💎!`, timestamp: Date.now() });
-                            }
-                            
-                        } else {
-                            // Ế HÀNG - TRẢ ĐỒ
-                            if(auc.seller !== 'HỆ THỐNG' && auc.seller === playerName) {
-                                myGallery[auc.tier].push(auc.card); updateStats();
-                                database.ref('chat_messages').push({ name: "NHÀ ĐẤU GIÁ", text: `🥀 Đấu giá thẻ ${auc.card} của [${auc.seller}] đã kết thúc do ế khách!`, timestamp: Date.now() });
-                            }
-                        }
-                        
-                    });
-                }
+            if(auc.status === 'active' && Date.now() > auc.endTime && (auc.seller === playerName || (auc.seller === 'HỆ THỐNG' && isVIP))) {
+                child.ref.update({ status: 'ended' }).then(() => {
+                    if(auc.highestBidder !== "none") {
+                        database.ref('room_auction_wins').push({ winner: auc.highestBidder, tier: auc.tier, card: auc.card, seller: auc.seller, price: auc.currentBid, time: Date.now() });
+                        if(auc.seller !== 'HỆ THỐNG') { gems += auc.currentBid; updateStats(); database.ref('chat_messages').push({ name: "NHÀ ĐẤU GIÁ", text: `🔨 BÚA GÕ! [${auc.highestBidder}] trúng đấu giá thẻ ${auc.card} từ [${auc.seller}] giá ${auc.currentBid}💎!`, timestamp: Date.now() }); }
+                        else { database.ref('chat_messages').push({ name: "NHÀ ĐẤU GIÁ", text: `👑 BÚA GÕ! [${auc.highestBidder}] cướp thành công thẻ ${auc.card} của HỆ THỐNG giá ${auc.currentBid}💎!`, timestamp: Date.now() }); }
+                    } else {
+                        if(auc.seller !== 'HỆ THỐNG') { myGallery[auc.tier].push(auc.card); updateStats(); database.ref('chat_messages').push({ name: "NHÀ ĐẤU GIÁ", text: `🥀 Đấu giá thẻ ${auc.card} của [${auc.seller}] ế khách, đã hủy!`, timestamp: Date.now() }); }
+                    }
+                });
             }
         });
     });
-}, 2000); // Check mỗi 2s
+}, 2000);
 
-// Lắng nghe hộp thư trúng đấu giá
 database.ref('room_auction_wins').on('child_added', snap => {
-    if(!isGameActive) return;
-    let win = snap.val();
-    if(Date.now() - win.time > 15000) return;
-    
+    if(!isGameActive) return; let win = snap.val(); if(Date.now() - win.time > 15000) return;
     if(win.winner === playerName) {
         myGallery[win.tier].push(win.card); updateStats();
-        let html = `
-            <div style="text-align:center;">
-                <div style="font-size:60px; animation: bounce 1s infinite;">🔨</div>
-                <h2 style="color:var(--danger); margin: 10px 0;">CHÚC MỪNG TRÚNG ĐẤU GIÁ!</h2>
-                <p>Bạn vừa chiến thắng phiên đấu giá của <b style="color:var(--primary);">${win.seller}</b>!</p>
-                <div class="tier-${win.tier}" style="display:inline-block; padding:15px; border-radius:10px; color:white; font-weight:bold; font-size:18px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
-                    [${win.tier}] ${win.card}
-                </div>
-                <p style="color:#00bcd4; font-weight:bold; margin-top:10px;">Đã thanh toán: ${win.price} 💎</p>
-            </div>
-        `;
+        let html = `<div style="text-align:center;"><div style="font-size:60px; animation: bounce 1s infinite;">🔨</div><h2 style="color:var(--danger);">CHÚC MỪNG TRÚNG ĐẤU GIÁ!</h2><p>Chiến thắng phiên đấu giá của <b style="color:var(--primary);">${win.seller}</b>!</p><div class="tier-${win.tier}" style="display:inline-block; padding:15px; border-radius:10px; color:white; font-weight:bold; font-size:18px;">[${win.tier}] ${win.card}</div><p style="color:#00bcd4; font-weight:bold;">Đã thanh toán: ${win.price} 💎</p></div>`;
         openModal("🎉 THẮNG ĐẤU GIÁ", html + `<button class="btn btn-warning" style="margin-top:20px;" onclick="closeModal()">Đút Túi</button>`);
     }
 });
