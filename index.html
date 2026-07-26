@@ -319,6 +319,7 @@
 
         <button class="btn btn-danger" id="skill-btn" onclick="drawSkill()" style="font-weight: 900; padding: 10px; display: none;">⚡ DÙNG KỸ NĂNG MAP (<span id="skill-cnt">0</span>)</button>
         <button class="btn" style="background: linear-gradient(90deg, #ff00cc, #9c27b0); color: white; font-size: 15px; padding: 10px; border: 1px solid #ff00cc;" onclick="openGachaCenter()">🎰 TRUNG TÂM GACHA</button>
+        <button class="btn" style="background: linear-gradient(90deg, #00b4db, #0083b0); color: white; font-size: 15px; padding: 10px; border: 1px solid #00b4db; margin-top: 10px;" onclick="openTradeCenter()">♻️ TRẠM ĐỔI THẺ (TRADE)</button>
 
         <!-- BXH LIVE THU NHỎ -->
         <div class="sidebar-lb">
@@ -1310,6 +1311,10 @@ window.openGachaCenter = function() {
                 <div><h3 style="margin:0; font-size:16px; color:#00e5ff; text-shadow: 0 0 8px #00e5ff;">🌌 PACK VÔ CỰC (10 Thẻ)</h3><div style="font-size:11px; color:#ccc;">Tỉ lệ LSR lên tới 60%.</div></div>
                 <button class="btn" style="background:#00e5ff; color:#000; width:90px; margin:0;" onclick="rollGacha('infinity')">15000 💎</button>
             </div>
+            <div style="background: linear-gradient(90deg, #8A2387, #E94057, #F27121); border: 3px solid #ffeb3b; box-shadow: 0 0 15px #F27121; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 8px;">
+                <div><h3 style="margin:0; font-size:16px; color:#ffeb3b; text-shadow: 0 0 8px #ffeb3b;">🎯 PACK ĐỊNH MỆNH (10 Thẻ Mới)</h3><div style="font-size:11px; color:#fff;">Ra 100% thẻ CHƯA SỞ HỮU (Ưu tiên quét từ R lên LSR).</div></div>
+                <button class="btn" style="background:#ffeb3b; color:#000; width:90px; margin:0; font-weight: 900;" onclick="rollMissingPack(20000)">20000 💎</button>
+            </div>
 
         </div>
         <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:20px;">Rời Khỏi</button>
@@ -1584,6 +1589,141 @@ database.ref('chat_messages').limitToLast(15).on('child_added', (snapshot) => {
     else div.innerHTML = `<b style="color:var(--primary); margin-bottom:2px;">${msg.name}:</b> <span style="color:#333;">${msg.text}</span>`;
     chatDiv.appendChild(div); chatDiv.scrollTop = chatDiv.scrollHeight;
 });
+// ==========================================
+// HÀM XỬ LÝ PACK ĐỊNH MỆNH (CHỐNG TRÙNG THẺ, ƯU TIÊN THẺ THẤP)
+// ==========================================
+window.rollMissingPack = function(cost) {
+    if(gems < cost) return showToast(`Không đủ ${cost}💎 để mua Pack này!`, "danger");
+    
+    // Khai báo thứ tự ưu tiên vét máng từ thấp lên cao
+    let tierPriority = ['R', 'SR', 'UR', 'SSR', 'USR', 'LSR'];
+    let missingCards = [];
+    
+    // Quét toàn bộ dữ liệu thẻ theo thứ tự ưu tiên
+    for (let tier of tierPriority) {
+        let cardsInTier = cardDatabase[tier];
+        // Lọc ra các thẻ mà thư viện của người chơi chưa có
+        let unowned = cardsInTier.filter(c => !myGallery[tier].includes(c.name));
+        
+        // Ném các thẻ chưa có vào mảng chờ
+        unowned.forEach(c => missingCards.push({ tier: tier, data: c }));
+    }
+    
+    // Nếu mảng rỗng (nghĩa là đã full thẻ toàn game)
+    if(missingCards.length === 0) {
+        return showToast("🏆 Đỉnh cao! Bạn đã full 100% bộ sưu tập, không thể mở thêm!", "success");
+    }
+    
+    closeModal(); 
+    
+    setTimeout(() => {
+        gems -= cost; 
+        updateStats();
+        
+        // Cắt tối đa 10 thẻ đầu tiên trong mảng (Tự động ưu tiên thẻ bậc thấp vì đã xếp R trước)
+        let results = missingCards.slice(0, 10);
+        
+        // Nhét thẳng vào túi đồ của người chơi
+        results.forEach(c => {
+            myGallery[c.tier].push(c.data.name);
+        });
+        
+        updateStats(); 
+        
+        // Xử lý thông báo nếu số thẻ còn thiếu ít hơn 10
+        let msg = results.length < 10 ? `Chỉ còn ${results.length} thẻ là full bộ! Mở thôi!` : "Mua Pack Định Mệnh Thành Công!";
+        displayGachaResult(results, msg);
+        
+        database.ref('chat_messages').push({ name: "HỆ THỐNG", text: `🎯 TIN CHUẨN: [${playerName}] vừa đập Pack Định Mệnh, hốt trọn ${results.length} thẻ mới toanh!`, timestamp: Date.now() });
+    }, 300);
+};
+// ==========================================
+// HỆ THỐNG TRADE THẺ (GHÉP PHÔI TRÙNG BẬC)
+// ==========================================
+window.openTradeCenter = function() {
+    let html = `
+        <div style="text-align:left; color: var(--text);">
+            <p style="font-size:13px; color:#555; background: #e8f0fe; padding: 10px; border-radius: 8px; border-left: 4px solid var(--primary);">
+                💡 <b>Luật Trade:</b> Hệ thống chỉ dùng những <b>thẻ bị trùng (phôi bản sao)</b> để đúc ra thẻ ở bậc cao hơn. Thẻ gốc luôn được giữ lại 1 bản an toàn!
+            </p>
+            
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top: 15px;">
+                ${renderTradeOption('R', 'SR', 5)}
+                ${renderTradeOption('SR', 'UR', 4)}
+                ${renderTradeOption('UR', 'SSR', 4)}
+                ${renderTradeOption('SSR', 'USR', 3)}
+                ${renderTradeOption('USR', 'LSR', 3)}
+            </div>
+        </div>
+        <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:20px;">Rời Trạm</button>
+    `;
+    openModal("♻️ TRẠM CHUYỂN HÓA THẺ", html);
+};
+
+function renderTradeOption(fromTier, toTier, cost) {
+    // Tính tổng số phôi trùng hiện có của bậc này
+    let counts = {};
+    let dupeCount = 0;
+    myGallery[fromTier].forEach(c => counts[c] = (counts[c] || 0) + 1);
+    for(let name in counts) {
+        if(counts[name] > 1) dupeCount += (counts[name] - 1);
+    }
+    
+    let canTrade = dupeCount >= cost;
+    let btnHtml = canTrade 
+        ? `<button class="btn btn-warning" style="width:auto; margin:0; padding:8px 15px; font-weight:bold;" onclick="executeTrade('${fromTier}', '${toTier}', ${cost})">Trade Ngay</button>`
+        : `<button class="btn" style="width:auto; margin:0; padding:8px 15px; background:#e0e0e0; color:#888; cursor:not-allowed;" disabled>Thiếu Phôi</button>`;
+
+    return `
+        <div style="background: #fff; border: 2px dashed ${canTrade ? 'var(--warning)' : '#ccc'}; border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <div>
+                <div style="font-weight:bold; font-size:15px; color:#333;">Đổi <span style="color:var(--danger);">${cost} phôi ${fromTier}</span> ➡️ <span style="color:var(--primary);">1 Thẻ ${toTier}</span></div>
+                <div style="font-size:12px; color:#666; margin-top:2px;">Phôi trùng đang có: <b style="color:${canTrade ? 'var(--success)' : 'var(--danger)'}; font-size:14px;">${dupeCount}/${cost}</b></div>
+            </div>
+            ${btnHtml}
+        </div>
+    `;
+}
+
+window.executeTrade = function(fromTier, toTier, cost) {
+    let counts = {};
+    let duplicateNames = [];
+    
+    // Lọc tìm chính xác tên các thẻ bị trùng
+    myGallery[fromTier].forEach(c => counts[c] = (counts[c] || 0) + 1);
+    for(let name in counts) {
+        while(counts[name] > 1) { 
+            duplicateNames.push(name);
+            counts[name]--;
+        }
+    }
+    
+    if(duplicateNames.length < cost) return showToast(`Lỗi: Không đủ phôi trùng ${fromTier}!`, "danger");
+    
+    closeModal();
+    
+    setTimeout(() => {
+        // Đốt phôi
+        let cardsToRemove = duplicateNames.slice(0, cost);
+        cardsToRemove.forEach(cardToRm => {
+            let idx = myGallery[fromTier].indexOf(cardToRm);
+            if(idx !== -1) myGallery[fromTier].splice(idx, 1);
+        });
+        
+        // Random ra thẻ ở tier xịn hơn
+        let pool = cardDatabase[toTier];
+        let newCard = pool[Math.floor(Math.random() * pool.length)];
+        myGallery[toTier].push(newCard.name);
+        
+        updateStats();
+        
+        // Hiển thị ra màn hình kiểu mở Gacha
+        let results = [{ tier: toTier, data: newCard }];
+        displayGachaResult(results, `✨ ÉP THẺ THÀNH CÔNG! ✨`);
+        
+        database.ref('chat_messages').push({ name: "HỆ THỐNG", text: `♻️ TRADE: [${playerName}] vừa hiến tế ${cost} phôi ${fromTier} để đúc ra siêu phẩm ${toTier} lấp lánh!`, timestamp: Date.now() });
+    }, 400);
+};
 </script>
 </body>
 </html>
