@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hành Trình Ký Ức 27/7 - Ultimate Gacha V33</title>
+    <title>Hành Trình Ký Ức 27/7 - Ultimate FC Gacha</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -89,16 +89,19 @@
         @keyframes popReveal { 0% { transform: scale(0.5) rotate(-20deg); } 50% { transform: scale(1.3) rotate(10deg); } 100% { transform: scale(1) rotate(0deg); } }
         @keyframes pulseChest { 0% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.1); filter: brightness(1.3); } 100% { transform: scale(1); filter: brightness(1); } }
         
-        /* CÂU HỎI TRẮC NGHIỆM ĐA DẠNG */
+        /* CÂU HỎI & ĐÁP ÁN */
+        .q-card { border-top: 6px solid var(--primary); padding: 15px; text-align: center; overflow-y: auto;} 
+        .q-text { font-size: 16px; color: #202124; font-weight: 600; margin-bottom: 15px; text-align: left;}
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px;}
-        .option { padding: 15px; border: 2px solid #dadce0; border-radius: 8px; cursor: pointer; background: #fff; font-size: 15px; font-weight: bold; text-align: center; transition: 0.2s;}
-        .option:hover:not(.locked) { background: #f8f9fa; border-color: var(--primary); box-shadow: 0 4px 8px rgba(0,0,0,0.1); transform: scale(1.02);}
+        .option { padding: 12px; border: 2px solid #dadce0; border-radius: 8px; cursor: pointer; background: #fff; font-size: 14px; font-weight: bold; text-align: left; transition: 0.2s;}
+        .option:hover:not(.locked) { background: #f8f9fa; border-color: var(--primary); box-shadow: 0 4px 8px rgba(0,0,0,0.1);}
+        .option.selected-correct { background: var(--success) !important; border-color: var(--success) !important; color: white !important; pointer-events: none; }
+        .option.selected-wrong { background: var(--danger) !important; border-color: var(--danger) !important; color: white !important; pointer-events: none; opacity: 0.5;}
         .option.locked { pointer-events: none; }
-        .rate-badge { background: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 8px; font-size: 13px; text-align: center; color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 15px; font-weight: bold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); letter-spacing: 0.5px;}
         
-        /* GACHA PACK CHUẨN FC MOBILE CÓ ẢNH */
-        .fc-stack-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; height: 350px;}
-        .fc-card-slot { width: 180px; aspect-ratio: 2.2/3.5; position: relative; cursor: pointer; perspective: 1000px; }
+        /* GACHA PACK CHUẨN FC MOBILE - XẾP CHỒNG LẬT TỪNG THẺ */
+        .fc-stack-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; height: 320px;}
+        .fc-card-slot { width: 170px; aspect-ratio: 2.2/3.5; position: relative; cursor: pointer; perspective: 1000px; }
         .fc-card-inner { 
             width: 100%; height: 100%; position: absolute; 
             transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
@@ -117,31 +120,33 @@
         }
         .fc-card-back { 
             transform: rotateY(180deg); display: flex; flex-direction: column; justify-content: space-between; 
-            padding: 10px; color: white;
+            padding: 12px 10px; color: white;
         }
         
-        .card-tier-title { font-size: 24px; margin-bottom: 2px; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); text-align: center;}
-        
-        /* Chỗ hiển thị Ảnh */
-        .card-image-box { 
-            flex: 1; background: rgba(255,255,255,0.1); border-radius: 4px; margin-bottom: 5px; 
-            display: flex; justify-content: center; align-items: center; overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        .card-image-box img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
-
-        .card-name-box { background: rgba(0, 0, 0, 0.8); padding: 6px; border-radius: 4px; width: 100%; box-sizing: border-box; text-align: center; font-weight: bold; font-size: 11px; border: 1px solid rgba(255,255,255,0.3); color: #fff;}
-        .card-desc-box { background: rgba(0, 0, 0, 0.8); padding: 6px; border-radius: 4px; text-align: center; font-size: 9px; line-height: 1.3; overflow: hidden; margin-top: 5px; border: 1px solid rgba(255,255,255,0.3); color: #f1f1f1;}
+        .card-tier-title { font-size: 26px; margin-bottom: 2px; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); text-align: center;}
+        .card-name-box { background: rgba(0, 0, 0, 0.8); padding: 8px 4px; border-radius: 4px; width: 100%; box-sizing: border-box; text-align: center; font-weight: bold; font-size: 13px; margin-top: 5px; border: 1px solid rgba(255,255,255,0.3); color: #fff; text-shadow: 1px 1px 2px #000;}
+        .card-desc-box { background: rgba(0, 0, 0, 0.8); padding: 8px 4px; border-radius: 4px; text-align: center; font-size: 11px; line-height: 1.3; overflow: hidden; margin-top: auto; border: 1px solid rgba(255,255,255,0.3); color: #f1f1f1;}
         
         /* HIỆU ỨNG TIER & VIỀN GLOW METALLIC LẤP LÁNH */
         .tier-R { background: linear-gradient(to bottom, #4b6cb7, #182848); border: 2px solid #bdc3c7; }
         .tier-SR { background: linear-gradient(to bottom, #8E2DE2, #4A00E0); border: 2px solid #e056fd;}
         .tier-UR { background: linear-gradient(to bottom, #eb3349, #f45c43); border: 2px solid #ff9f43; box-shadow: 0 0 10px #ff9f43;}
-        .tier-SSR { background: linear-gradient(to bottom, #3e1b00, #000); border: 2px solid #ffd32a; animation: ssrGlow 1.5s infinite alternate; }
+        .tier-SSR { 
+            background: linear-gradient(to bottom, #3e1b00, #000); border: 2px solid #ffd32a; 
+            animation: ssrGlow 1.5s infinite alternate;
+        }
         @keyframes ssrGlow { 0% { box-shadow: 0 0 10px #ffd32a, inset 0 0 10px #ffd32a; border-color: #ffd32a; } 100% { box-shadow: 0 0 25px #ff5722, inset 0 0 15px #ff5722; border-color: #ff5722; } }
-        .tier-USR { background: linear-gradient(to bottom, #001f3f, #000); border: 2px solid #00e5ff; animation: usrGlow 1.5s infinite alternate; }
+
+        .tier-USR { 
+            background: linear-gradient(to bottom, #001f3f, #000); border: 2px solid #00e5ff; 
+            animation: usrGlow 1.5s infinite alternate;
+        }
         @keyframes usrGlow { 0% { box-shadow: 0 0 10px #00e5ff, inset 0 0 10px #00e5ff; border-color: #00e5ff; } 100% { box-shadow: 0 0 30px #ffffff, inset 0 0 20px #00e5ff; border-color: #ffffff; } }
-        .tier-LSR { background: linear-gradient(to bottom, #2c0000, #000); border: 3px solid #ff0044; animation: lsrGlow 1.5s infinite alternate; }
+
+        .tier-LSR { 
+            background: linear-gradient(to bottom, #2c0000, #000); border: 3px solid #ff0044; 
+            animation: lsrGlow 1.5s infinite alternate;
+        }
         @keyframes lsrGlow { 0% { box-shadow: 0 0 15px #ff0044, inset 0 0 15px #ff0044; border-color: #ff0044; } 50% { box-shadow: 0 0 35px #ff00cc, inset 0 0 25px #ff00cc; border-color: #ff00cc; } 100% { box-shadow: 0 0 35px #ffeb3b, inset 0 0 25px #ff0044; border-color: #ffeb3b; } }
 
         .all-cards-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px;}
@@ -156,21 +161,22 @@
         .gallery-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start;}
         .gallery-item { border-radius: 8px; padding: 6px; width: 31%; box-sizing: border-box; text-align: center; transition: 0.3s; cursor: pointer; }
         .gallery-item:hover { transform: scale(1.05); }
+        
+        .owned-card.tier-R { background: linear-gradient(135deg, #4b6cb7, #182848); color: white; border: 2px solid #bdc3c7;}
+        .owned-card.tier-SR { background: linear-gradient(135deg, #8E2DE2, #4A00E0); color: white; border: 2px solid #e056fd;}
+        .owned-card.tier-UR { background: linear-gradient(135deg, #eb3349, #f45c43); color: white; border: 2px solid #ff9f43;}
+        .owned-card.tier-SSR { background: linear-gradient(135deg, #3e1b00, #000); color: white; border: 2px solid #ffd32a; animation: ssrGlow 2s infinite alternate;}
+        .owned-card.tier-USR { background: linear-gradient(135deg, #001f3f, #000); color: white; border: 2px solid #00e5ff; animation: usrGlow 2s infinite alternate;}
+        .owned-card.tier-LSR { background: linear-gradient(135deg, #2c0000, #000); color: white; border: 2px solid #ff0044; animation: lsrGlow 2s infinite alternate;}
+        
         .locked-card { background: #e0e0e0; border: 1px dashed #999; opacity: 0.5; filter: grayscale(100%); box-shadow: none !important; animation: none !important;}
-
-        /* SHOP UI CHUẨN ẢNH CỦA IDORI */
-        .shop-item { background: #fff; border: 2px dashed #ea4335; border-radius: 10px; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 12px;}
-        .shop-item.solid { border-style: solid; }
-        .shop-item h3 { margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px; }
-        .shop-item .desc { font-size: 13px; color: #666; margin-top: 4px; }
-        .shop-btn { font-size: 16px; font-weight: bold; padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 90px; transition: 0.2s;}
-        .shop-btn:hover { filter: brightness(1.1); transform: scale(1.05); }
 
         /* TÊN ADMIN IDORI */
         .admin-tag { color: var(--danger); font-weight: bold; margin-right: 5px; }
         .letter { display: inline-block; animation: moveGradient 3s linear infinite, waveMove 1.5s ease-in-out infinite; background: linear-gradient(90deg, #ff00cc, #00bcd4, #ea4335); background-size: 200% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900;}
         @keyframes waveMove { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
         @keyframes moveGradient { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
+        
         .chat-text-gradient { background: linear-gradient(90deg, #ea4335, #fbbc04, #ea4335); background-size: 200% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: moveGradient 3s linear infinite; font-weight: 900; }
         
         /* ĐIỀU KHIỂN MOBILE FIX Z-INDEX */
@@ -186,7 +192,28 @@
         .modal-box { background: var(--card-bg); padding: 30px; border-radius: 12px; width: 95%; max-width: 850px; max-height: 90vh; overflow-y: auto; text-align: center; border: 1px solid #ddd; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .toast-msg { position: fixed; bottom: 30px; left: 30px; padding: 15px 25px; border-radius: 12px; font-weight: bold; font-size: 16px; z-index: 999999; transform: translateX(-150%); transition: 0.4s; background: var(--warning); color: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
         .toast-msg.show { transform: translateX(0); }
+        
+        /* Hiệu ứng kỹ năng, nội tại */
+        @keyframes earthquake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
+        .cursed-vision { filter: blur(6px) hue-rotate(180deg) contrast(150%); }
+        .shaking-vision { animation: earthquake 0.2s infinite; }
+        .shrunk-vision { transform: scale(0.35); }
         #chat-messages div { margin-bottom: 8px; font-size: 13px; text-align: left; color: #333;}
+        /* ==========================================
+           FIX GIAO DIỆN MOBILE TỪ IDORI (PHÓNG TO MAP)
+           ========================================== */
+        @media (max-width: 850px) {
+            body { overflow: auto !important; }
+            .container { flex-direction: column !important; height: auto !important; overflow-y: visible !important; padding: 10px !important; }
+            .sidebar { flex: none !important; width: 100% !important; height: auto !important; max-height: none !important; margin-bottom: 10px !important; }
+            .main-content { flex: none !important; width: 100% !important; height: auto !important; }
+            
+            /* Tăng chiều cao Map trên điện thoại lên 400px (hoặc 500px tùy ý) */
+            .map-viewport { min-height: 450px !important; flex: none !important; }
+            
+            /* Thu gọn bảng thánh chỉ Admin cho khỏi che màn hình */
+            #idori-god-mode { transform: scale(0.85); transform-origin: top right; }
+        }
     </style>
 </head>
 <body>
@@ -220,7 +247,7 @@
 </div>
 
 <!-- ================= TRẠM CHỈ HUY (ADMIN) ================= -->
-<div id="admin-section" class="card" style="display: none; max-width: 900px; margin: 30px auto;">
+<div id="admin-section" class="card" style="display: none; max-width: 1000px; margin: 30px auto;">
     <h1 style="color: var(--warning);">TRẠM CHỈ HUY</h1>
     <div id="admin-login-div">
         <input type="password" id="adminPass" placeholder="Nhập mật khẩu Admin...">
@@ -246,6 +273,7 @@
                     <th style="background-color: var(--primary);">Chiến Binh</th>
                     <th style="background-color: var(--primary);">Gems 💎</th>
                     <th style="background-color: var(--primary);">Điểm 🎯</th>
+                    <th style="background-color: var(--danger);">Thẻ Xịn 🃏</th>
                     <th style="background-color: var(--primary);">Tổng Tài Sản</th>
                 </tr>
             </thead>
@@ -334,11 +362,11 @@
 </div>
 
 <!-- ================= MÀN HÌNH TỔNG KẾT ================= -->
-<div id="leaderboard-section" class="card" style="display: none; max-width: 1000px; margin: 50px auto;">
+<div id="leaderboard-section" class="card" style="display: none; max-width: 1100px; margin: 50px auto;">
     <h1 style="color: var(--danger); font-size: 36px;">🏆 BẢNG VÀNG DANH DỰ 🏆</h1>
-    <h3 style="color: #666;">Xếp hạng dựa trên Tổng Tài Sản (Điểm + Giá trị quy đổi từ Thẻ Gacha)</h3>
+    <h3 style="color: #666;">Xếp hạng dựa trên Nhân Phẩm (Ưu tiên Thẻ Xịn > Tổng Tài Sản)</h3>
     <table class="lb-table">
-        <thead><tr><th>Top</th><th>Chiến Binh</th><th>Gems 💎</th><th>Điểm 🎯</th><th style="background: var(--warning); color: #000; font-size: 18px;">Tổng Tài Sản</th></tr></thead>
+        <thead><tr><th>Top</th><th>Chiến Binh</th><th>Gems 💎</th><th>Điểm 🎯</th><th style="background: var(--danger); color: #fff;">Thẻ Xịn 🃏</th><th style="background: var(--warning); color: #000; font-size: 18px;">Tổng Tài Sản</th></tr></thead>
         <tbody id="final-lb-body"></tbody>
     </table>
     <button class="btn btn-secondary" style="margin-top: 30px; padding: 15px;" onclick="location.reload()">Trở Về Màn Hình Chính</button>
@@ -346,7 +374,7 @@
 
 <script>
 // ==============================================================
-// 0. BẢO MẬT SHA-256
+// 0. KHAI BÁO BIẾN CƠ BẢN & BẢO MẬT
 // ==============================================================
 async function verifyAdminPass(input) {
     const encoder = new TextEncoder(); const data = encoder.encode(input);
@@ -420,7 +448,7 @@ function prepareQuestions() {
     qBankMap = shuffleArray(qBankMap);
 }
 
-// 10 NỘI TẠI THẦN BÍ ĐÃ CHỈNH SỬA
+// 10 NỘI TẠI THẦN BÍ
 const passivesInfo = [
     {id: 0, icon: "💰", name: "Thương Nhân", desc: "Nhận thêm 20% Gems khi cạy rương thành công."},
     {id: 1, icon: "💣", name: "Chuyên Gia Mìn", desc: "Trả lời sai khi mở rương KHÔNG bị trừ điểm."},
@@ -435,23 +463,30 @@ const passivesInfo = [
 ];
 
 // ==========================================
-// 2. DATA 110 THẺ GACHA (CÓ HỖ TRỢ CHÈN ẢNH 'img')
+// 2. DATA 110 THẺ GACHA
 // ==========================================
 const cardDatabase = {
     LSR: [ 
-        {name: "Chủ tịch Hồ Chí Minh", desc: "Vị cha già dân tộc, lãnh tụ vĩ đại giải phóng Việt Nam.", img: "https://upload.wikimedia.org/wikipedia/commons/1/1c/Ho_Chi_Minh_1946.jpg"}, // Ví dụ chèn ảnh
-        {name: "Đại tướng Võ Nguyên Giáp", desc: "Người anh cả của QĐNDVN, tư lệnh chiến dịch Điện Biên Phủ."},
-        {name: "Chị Võ Thị Sáu", desc: "Nữ anh hùng trẻ tuổi kiên trung bất khuất tại Côn Đảo."},
-        {name: "Anh Lý Tự Trọng", desc: "Thanh niên cộng sản với câu nói bất hủ về con đường cách mạng."},
-        {name: "Bác sĩ Đặng Thùy Trâm", desc: "Nữ bác sĩ anh hùng, tác giả cuốn nhật ký rực lửa chiến trường."}
+        {name: "Chủ tịch Hồ Chí Minh", desc: "Vị cha già dân tộc, lãnh tụ vĩ đại giải phóng Việt Nam.", img: "https://upload.wikimedia.org/wikipedia/commons/1/1c/Ho_Chi_Minh_1946.jpg"},
+        {name: "Đại tướng Võ Nguyên Giáp", desc: "Người anh cả của QĐNDVN, tư lệnh chiến dịch Điện Biên Phủ.", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9DCTG86U9zkM1gqmy9CM4y3VYP5k80vliiTHKcUQzOlTi0-3RnwzqGq4&s=10"},
+        {name: "Chị Võ Thị Sáu", desc: "Nữ anh hùng trẻ tuổi kiên trung bất khuất tại Côn Đảo.", img: "https://images.hcmcpv.org.vn/res/news/2021/07/25-07-2021-khong-ai-duoc-phep-xuc-pham-nu-anh-hung-liet-si-vo-thi-sau-20AC1F64-details.jpg?vs=25072021080925"},
+        {name: "Anh Lý Tự Trọng", desc: "Thanh niên cộng sản với câu nói bất hủ về con đường cách mạng.", img: "https://upload.wikimedia.org/wikipedia/commons/4/43/%E1%BA%A2nh_ch%E1%BB%A5p_L%C3%BD_T%E1%BB%B1_Tr%E1%BB%8Dng_%281914-1931%29.jpg"},
+        {name: "Cố Tổng Bí Thư Nguyễn Phú Trọng", desc: "Nhà lãnh đạo kiên trung, trọn đời vì nước vì dân, người khởi xướng chiến dịch phòng chống tham nhũng 'đốt lò'.", img: "https://xdcs.cdnchinhphu.vn/446259493575335936/2024/7/18/nguyenphutrong-1721277643388-1721277643833662259613.jpg"},
+        {name: "Tổ Quốc", desc: "Thiêng liêng hai tiếng gọi, nơi hội tụ triệu trái tim con cháu Lạc Hồng và máu xương bao thế hệ.", img: "https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg"},
+        {name: "Giải Phóng", desc: "Khúc khải hoàn ca thống nhất non sông, ngày non sông thu về một mối vẹn toàn.", img: "https://file3.qdnd.vn/data/images/0/2022/04/26/thuyanh/30-4.jpg?dpi=150&quality=100&w=870"},
+        {name: "Độc Lập", desc: "'Không có gì quý hơn độc lập, tự do' - Chân lý và khát vọng muôn đời của dân tộc Việt Nam.", img: "https://media-cdn-v2.laodong.vn/storage/newsportal/2023/9/1/1236241/3-VHTT-1032609-02.jpg?w=660"},
+        {name: "Thương Binh", desc: "Những người đã hiến dâng một phần máu xương nơi chiến trường để đổi lấy hòa bình hôm nay.", img: "https://bna.1cdn.vn/2016/07/25/uploaded-dataimages-201607-original-_images1624411_b_c_h__th_m_c_c_th__ng_binh_t_i_tr_i__i_u_d__ng_th__ng_binh_n_ng.png"},
+        {name:  
+        {name: "Cố Thủ tướng Võ Văn Kiệt", desc: "Cố Thủ tướng Võ Văn Kiệt là một trong những nhà lãnh đạo xuất sắc nhất của Đảng và Nhà nước Việt Nam, người được mệnh danh là 'tổng công trình sư' của thời kỳ Đổi Mới", img: "https://baoquankhu4.com.vn/upload/18269/20220923/graba8118images2416700_BVL_a__22_.jpg"},
+        {name: "Anh hùng Nguyễn Văn Bảy", desc: "Phi công huyền thoại lái MiG-17 bắn rơi 7 máy bay Mỹ, biểu tượng kiên trung của Không quân Nhân dân Việt Nam.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/%C4%90%E1%BA%A1i_T%C3%A1_Nguy%E1%BB%85n_V%C4%83n_B%E1%BA%A3y_%28A%29.jpg/500px-%C4%90%E1%BA%A1i_T%C3%A1_Nguy%E1%BB%85n_V%C4%83n_B%E1%BA%A3y_%28A%29.jpg"}
     ],
     USR: [ 
-        {name: "Anh Nguyễn Văn Trỗi", desc: "Người thanh niên Sài Gòn với lời hô đả đảo đế quốc Mỹ trước pháp trường."},
-        {name: "Liệt sĩ Nguyễn Viết Xuân", desc: "Chính trị viên với khẩu lệnh 'Nhằm thẳng quân thù mà bắn!'."},
-        {name: "Anh hùng Phan Đình Giót", desc: "Lấy thân mình lấp lỗ châu mai trong chiến dịch Điện Biên Phủ."},
-        {name: "Anh hùng Bế Văn Đàn", desc: "Lấy thân làm giá súng để đồng đội tiêu diệt địch."},
-        {name: "Anh hùng Tô Vĩnh Diện", desc: "Dùng thân mình chèn pháo, bảo vệ vũ khí của quân ta."},
-        {name: "Đại Thắng Mùa Xuân 1975", desc: "Chiến dịch Hồ Chí Minh lịch sử, thống nhất đất nước."}
+        {name: "Anh Nguyễn Văn Trỗi", desc: "Người thanh niên Sài Gòn với lời hô đả đảo đế quốc Mỹ trước pháp trường.", img: "https://imgprofile.vnanet.vn/media/graphic/profile/2025/07/22/f1307d47-8c57-4864-b396-d9d8ae767fb4-1681315248.jpg"},
+        {name: "Liệt sĩ Nguyễn Viết Xuân", desc: "Chính trị viên với khẩu lệnh 'Nhằm thẳng quân thù mà bắn!'.", img: "https://file3.qdnd.vn/data/old_img//maihuong/2009/10/10/091009son8.jpg"},
+        {name: "Anh hùng Phan Đình Giót", desc: "Lấy thân mình lấp lỗ châu mai trong chiến dịch Điện Biên Phủ.", img: "https://file3.qdnd.vn/data/images/0/2024/03/31/upload_2166/31032024_th_60%20pdgiot.jpg?dpi=150&quality=100&w=870"},
+        {name: "Anh hùng Bế Văn Đàn", desc: "Lấy thân làm giá súng để đồng đội tiêu diệt địch.", img: "https://upload.wikimedia.org/wikipedia/commons/2/29/B%E1%BA%BF_V%C4%83n_%C4%90%C3%A0n.jpg"},
+        {name: "Anh hùng Tô Vĩnh Diện", desc: "Dùng thân mình chèn pháo, bảo vệ vũ khí của quân ta.", img: "https://imgnvsk.vnanet.vn/MediaUpload/Content/2024/04/10/anh-1-r10-13-39-11.jpg"},
+        {name: "Đại Thắng Mùa Xuân 1975", desc: "Chiến dịch Hồ Chí Minh lịch sử, thống nhất đất nước.", img: "https://cantholib.org.vn/uploads/news/gts/xuatban2005/dai-thang-mua-xuan-1975_300_429.jpg"}
     ],
     SSR: [ 
         {name: "81 Ngày đêm Thành Cổ", desc: "Bản hùng ca giữ vững Thành cổ Quảng Trị mùa hè 1972."},
@@ -489,6 +524,7 @@ const cardDatabase = {
         {name: "Mạc Thị Bưởi", desc: "Nữ du kích hoạt động bí mật sau lưng địch."},
         {name: "Lê Văn Tám", desc: "Ngọn đuốc sống thiêu rụi kho xăng địch."},
         {name: "Nguyễn Bá Ngọc", desc: "Thiếu niên lấy thân mình che đạn cứu các em nhỏ."},
+        {name: "Tố Hữu", desc: "Cánh chim đầu đàn của thơ ca cách mạng Việt Nam, tác giả của những vần thơ trữ tình chính trị bất hủ."},
         {name: "Trần Phú", desc: "Tổng Bí thư đầu tiên của Đảng, soạn thảo Luận cương."}
     ],
     SR: [ 
@@ -584,6 +620,7 @@ let currentLeaderboard = [];
 
 const chestGemRewards = { Wood: 10, Iron: 20, Bronze: 50, Silver: 100, Gold: 250, Diamond: 600, Platinum: 1000, Ruby: 1500, Legendary: 3000, Mythic: 5000 };
 
+// TỈ LỆ RỚT GACHA CHUẨN XÁC TỪ BẢNG CỦA IDORI
 const chestGachaRates = {
     Wood:      { R: 98.00, SR: 1.80, UR: 0.15, SSR: 0.04, USR: 0.01, LSR: 0.00 },
     Iron:      { R: 95.00, SR: 4.20, UR: 0.50, SSR: 0.25, USR: 0.04, LSR: 0.01 },
@@ -651,6 +688,7 @@ async function joinLobby() {
         else { document.getElementById('setup-section').style.display = 'none'; document.getElementById('waiting-section').style.display = 'block'; }
     });
 }
+
 function adminStartGame() { database.ref('room_state').set('playing'); showToast("🚀 Đã phát lệnh Hành quân!", "success"); }
 function adminEndGame() { if(confirm("🛑 CHỐT SỔ TỔNG TÀI SẢN?")) database.ref('room_state').set('ended'); }
 database.ref('room_state').on('value', (snapshot) => {
@@ -715,7 +753,6 @@ function updateStats() {
     else if(skillCount > 0) { sBtn.innerText = "⚡ DÙNG KỸ NĂNG MAP (" + skillCount + ")"; sBtn.style.display = "block"; } 
     else { sBtn.style.display = "none"; }
 
-    // Đẩy dữ liệu số lượng từng loại thẻ lên Firebase để xếp hạng
     if(myPlayerRef) { 
         myPlayerRef.update({ 
             gems: gems, 
@@ -799,7 +836,7 @@ function spawnMap() {
         { type: 'Legendary', class: 'chest-legendary', name: 'Rương Huyền Thoại' }, { type: 'Mythic', class: 'chest-mythic', name: 'Rương Thần Thoại' }
     ];
     types.forEach(baseT => {
-        for(let i=0; i<8; i++) { // Spawn each chest type 8 times
+        for(let i=0; i<8; i++) {
             let cx = Math.random() * (mapData.width - 50); let cy = Math.random() * (mapData.height - 50);
             let chest = document.createElement('div');
             chest.className = `chest chest-hidden`; chest.innerHTML = '🌿'; 
@@ -846,7 +883,8 @@ function stopMoving() { clearInterval(moveInterval); }
     ['mouseup', 'mouseleave', 'touchend'].forEach(evt => btn.addEventListener(evt, stopMoving));
 });
 
-// KIỂM TRA VA CHẠM (HIỆN CÂU HỎI TRẮC NGHIỆM ĐA DẠNG KÈM HIỂN THỊ TỈ LỆ)
+// KIỂM TRA VA CHẠM (HIỆN CÂU HỎI TRẮC NGHIỆM ĐA DẠNG)
+// KIỂM TRA VA CHẠM (TRẢ LẠI GIAO DIỆN TRẮNG CŨ + HIỂN THỊ TỈ LỆ)
 function checkCollisionsAndProximity() {
     const pBox = document.getElementById('player').getBoundingClientRect();
     let proxDist = (myPassive === 9 || myPassive === 3) ? 250 : 150; // Nội tại Thợ Săn / Tầm Nhìn
@@ -864,22 +902,25 @@ function checkCollisionsAndProximity() {
         if (pBox.left < cBox.right && pBox.right > cBox.left && pBox.top < cBox.bottom && pBox.bottom > cBox.top) {
             pX -= 30; document.getElementById('player').style.left = pX + 'px'; updateCamera();
             let q = qBankMap[Math.floor(Math.random() * qBankMap.length)];
-            let optionsId = `opts_${Math.floor(Math.random()*1000000)}`;
             let rates = chestGachaRates[chest.dataset.type];
             
-            let html = `<div style="background: linear-gradient(135deg, #182848, #4b6cb7); color: white; padding: 20px; border-radius: 12px; border: 3px solid #00bcd4; box-shadow: inset 0 0 20px rgba(0,188,212,0.5);">
-                            <div class="rate-badge">
-                                <span style="color: #ffeb3b; margin-right: 5px;">📊 TỈ LỆ RỚT:</span> 
-                                <span style="color:#bdc3c7">R: ${rates.R}%</span> &nbsp;|&nbsp; 
-                                <span style="color:#e056fd">SR: ${rates.SR}%</span> &nbsp;|&nbsp; 
-                                <span style="color:#ff9f43">UR: ${rates.UR}%</span> &nbsp;|&nbsp; 
-                                <span style="color:#ffd32a">SSR: ${rates.SSR}%</span> &nbsp;|&nbsp; 
-                                <span style="color:#00e5ff">USR: ${rates.USR}%</span> &nbsp;|&nbsp; 
-                                <span style="color:#ff0044">LSR: ${rates.LSR}%</span>
-                            </div>
-                            <div style="font-size: 18px; margin-bottom: 20px; text-align:left; font-weight:bold;">${q.q}</div>
-                            <div id="${optionsId}" class="options-grid" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
-                        </div>`;
+            // Thanh tỉ lệ rớt thẻ cực ngầu
+            let rateHtml = `<div style="background: rgba(0,0,0,0.85); padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; text-align: center; color: #fff; font-weight: bold; border: 1px solid #444; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);">
+                <span style="color:#bdc3c7;">R: ${rates.R}%</span> &nbsp;|&nbsp; 
+                <span style="color:#e056fd;">SR: ${rates.SR}%</span> &nbsp;|&nbsp; 
+                <span style="color:#ff9f43;">UR: ${rates.UR}%</span> &nbsp;|&nbsp; 
+                <span style="color:#ffd32a;">SSR: ${rates.SSR}%</span> &nbsp;|&nbsp; 
+                <span style="color:#00e5ff;">USR: ${rates.USR}%</span> &nbsp;|&nbsp; 
+                <span style="color:#ff0044;">LSR: ${rates.LSR}%</span>
+            </div>`;
+
+            let optionsId = `opts_${Math.floor(Math.random()*1000000)}`;
+            // Trả lại giao diện trắng chữ đen
+            let html = `
+                ${rateHtml}
+                <div style="font-size: 18px; margin-bottom: 20px; text-align:left; color:var(--text); font-weight:bold;">${q.q}</div>
+                <div id="${optionsId}" class="options-grid" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
+            `;
             
             openModal(`🔐 GIẢI MÃ ${chest.dataset.name.toUpperCase()}`, html); 
             
@@ -888,7 +929,7 @@ function checkCollisionsAndProximity() {
                 if(parentDiv) {
                     if (q.type === 'MC' || q.type === 'TF') {
                         q.opts.forEach((opt, i) => {
-                            let btn = document.createElement('div'); btn.className = 'option'; btn.style.flex = "1 1 45%"; btn.style.color = "#333"; btn.innerHTML = opt;
+                            let btn = document.createElement('div'); btn.className = 'option'; btn.innerHTML = opt;
                             btn.onclick = function() { 
                                 parentDiv.querySelectorAll('.option').forEach(b => b.style.pointerEvents = 'none');
                                 if (i === q.ans) {
@@ -926,7 +967,7 @@ function checkCollisionsAndProximity() {
             }, 50);
         }
     });
-}
+}   
 
 function openModal(title, content) {
     document.getElementById('modal-title').innerText = title; document.getElementById('modal-message').innerHTML = content;
@@ -987,20 +1028,26 @@ window.renderNextStackCard = function() {
     let counter = document.getElementById('stack-counter');
     if(counter) counter.innerText = `Thẻ ${currentStackIndex + 1} / ${currentStackResults.length}`;
     
+    let imgTag = (c.data.img) 
+        ? `<img src="${c.data.img}" style="width: 100%; height: 100%; object-fit: contain;">` 
+        : `<span style="font-size: 40px; opacity: 0.5;">👤</span>`;
+
     container.innerHTML = `
-        <div class="fc-card-slot" onclick="flipStackCard(this, '${c.tier}')">
+        <div class="fc-card-slot" onclick="flipStackCard(this, '${c.tier}')" style="width: 190px; aspect-ratio: 2.1/3.6;">
             <div class="fc-card-inner" id="active-stack-card">
                 <div class="fc-card-front">
                     <span style="font-size:45px;">📦</span>
                     <div style="font-size:13px; margin-top:10px; animation: pulse 1s infinite;">Bấm để lật thẻ</div>
                 </div>
-                <div class="fc-card-back tier-${c.tier}">
-                    <div class="card-tier-title">${c.tier}</div>
-                    <div class="card-image-box">
-                        ${c.data.img ? `<img src="${c.data.img}" alt="${c.data.name}">` : `<span style="font-size: 30px; opacity: 0.5;">👤</span>`}
+                <div class="fc-card-back tier-${c.tier}" style="padding: 10px; display: flex; flex-direction: column;">
+                    <div class="card-tier-title" style="font-size: 22px;">${c.tier}</div>
+                    
+                    <div style="flex: 1; margin: 6px 0; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
+                        ${imgTag}
                     </div>
-                    <div class="card-name-box">${c.data.name}</div>
-                    <div class="card-desc-box">${c.data.desc}</div>
+                    
+                    <div class="card-name-box" style="font-size:12px;">${c.data.name}</div>
+                    <div class="card-desc-box" style="font-size:10px;">${c.data.desc}</div>
                 </div>
             </div>
         </div>
@@ -1046,14 +1093,16 @@ window.showAllCardsSummary = function() {
     if(grid) {
         grid.style.display = 'flex';
         grid.innerHTML = currentStackResults.map(c => `
-            <div class="fc-card-slot" style="width: 100px;">
+            <div class="fc-card-slot" style="width: 110px; aspect-ratio: 2.1/3.6;">
                 <div class="fc-card-inner flipped" style="transition:none; cursor:default;">
-                    <div class="fc-card-back tier-${c.tier}" style="padding: 5px;">
-                        <div class="card-tier-title" style="font-size:18px;">${c.tier}</div>
-                        <div class="card-image-box" style="height: 40px; margin: 2px 0;">
-                            ${c.data.img ? `<img src="${c.data.img}" alt="${c.data.name}">` : `<span style="font-size: 15px; opacity: 0.5;">👤</span>`}
+                    <div class="fc-card-back tier-${c.tier}" style="padding: 6px; display: flex; flex-direction: column;">
+                        <div class="card-tier-title" style="font-size:16px; margin-bottom: 4px;">${c.tier}</div>
+                        
+                        <div style="flex: 1; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); border-radius: 4px; overflow: hidden; margin-bottom: 4px; border: 1px solid rgba(255,255,255,0.2);">
+                            ${c.data.img ? `<img src="${c.data.img}" style="width: 100%; height: 100%; object-fit: contain;">` : `<span style="font-size: 20px; opacity: 0.5;">👤</span>`}
                         </div>
-                        <div class="card-name-box" style="font-size:10px; padding:4px;">${c.data.name}</div>
+                        
+                        <div class="card-name-box" style="font-size:9px; padding:3px; margin:0;">${c.data.name}</div>
                     </div>
                 </div>
             </div>
@@ -1084,22 +1133,61 @@ window.checkChestAnswer = function(selectedVal, correctVal, chestType, optionsId
             myGallery[pulledTier].push(card.name); results.push({ tier: pulledTier, data: card });
         }
         updateStats();
-        if(targetChest) { targetChest.remove(); chests = chests.filter(c => c !== targetChest); }
+        if(targetChest) { targetChest.remove(); chests = chests.filter(c => c !== targetChest); respawnChest(); }
         displayGachaResult(results, `Chính xác! Mở Pack Chồng Thẻ nào!`, earnedGems);
     } else {
-        closeModal(); // ĐÁ VĂNG LUÔN, FIX LỖI KẸT GIAO DIỆN
+        closeModal(); 
         if(myPassive === 1) { // Chuyên Gia Mìn
             showToast("Sai rồi! Nhưng Nội tại CHUYÊN GIA MÌN đã cứu bạn khỏi bị trừ điểm!", "success");
         } else {
             showToast("Sai rồi! Bị phạt -20 Điểm. Rương biến mất!", "danger");
             score = Math.max(0, score - 20); updateStats();
         }
-        if(targetChest) { targetChest.remove(); chests = chests.filter(c => c !== targetChest); }
+        if(targetChest) { targetChest.remove(); chests = chests.filter(c => c !== targetChest); respawnChest(); }
     }
 };
 
+function respawnChest() {
+    const types = [
+        { type: 'Wood', class: 'chest-wood', name: 'Rương Gỗ' }, { type: 'Iron', class: 'chest-iron', name: 'Rương Sắt' },
+        { type: 'Bronze', class: 'chest-bronze', name: 'Rương Đồng' }, { type: 'Silver', class: 'chest-silver', name: 'Rương Bạc' },
+        { type: 'Gold', class: 'chest-gold', name: 'Rương Vàng' }, { type: 'Diamond', class: 'chest-diamond', name: 'Rương Kim Cương' },
+        { type: 'Platinum', class: 'chest-platinum', name: 'Rương Bạch Kim' }, { type: 'Ruby', class: 'chest-ruby', name: 'Rương Ruby' },
+        { type: 'Legendary', class: 'chest-legendary', name: 'Rương Huyền Thoại' }, { type: 'Mythic', class: 'chest-mythic', name: 'Rương Thần Thoại' }
+    ];
+    const map = document.getElementById('game-map');
+    
+    let rand = Math.random();
+    let selectedType;
+    if(rand < 0.3) selectedType = types[0]; 
+    else if(rand < 0.5) selectedType = types[1]; 
+    else if(rand < 0.65) selectedType = types[2]; 
+    else if(rand < 0.75) selectedType = types[3]; 
+    else if(rand < 0.85) selectedType = types[4]; 
+    else if(rand < 0.92) selectedType = types[5]; 
+    else if(rand < 0.96) selectedType = types[6]; 
+    else if(rand < 0.985) selectedType = types[7]; 
+    else if(rand < 0.995) selectedType = types[8]; 
+    else selectedType = types[9]; 
+
+    let cx = Math.random() * (mapData.width - 50); 
+    let cy = Math.random() * (mapData.height - 50);
+    
+    let chest = document.createElement('div');
+    chest.className = `chest chest-hidden`; 
+    chest.innerHTML = '🌿'; 
+    chest.id = `chest_${Math.floor(Math.random()*1000000)}`; 
+    chest.style.left = `${cx}px`; chest.style.top = `${cy}px`;
+    chest.dataset.type = selectedType.type; 
+    chest.dataset.name = selectedType.name; 
+    chest.dataset.trueClass = selectedType.class; 
+    
+    map.appendChild(chest); 
+    chests.push(chest);
+}
+
 // ==========================================
-// KỸ NĂNG MAP MỚI (TỐI ƯU CẬP NHẬT GIAO DIỆN KHI RÚT)
+// KỸ NĂNG MAP MỚI
 // ==========================================
 window.drawSkill = function() {
     if(isInputPaused || skillCount <= 0) return;
@@ -1141,10 +1229,7 @@ window.drawSkill = function() {
     `;
     openModal("🎉 RÚT THẺ THÀNH CÔNG", htmlContent);
     
-    setTimeout(() => {
-        let btn = document.getElementById('btn-activate-skill');
-        if(btn) btn.onclick = rndSkill.action;
-    }, 50);
+    setTimeout(() => { let btn = document.getElementById('btn-activate-skill'); if(btn) btn.onclick = rndSkill.action; }, 50);
 };
 
 // Lắng nghe các event từ kỹ năng toàn map
@@ -1173,9 +1258,6 @@ database.ref('room_events').on('value', (snapshot) => {
 });
 
 // ==========================================
-// 5. TRUNG TÂM GACHA (DÙNG GEMS) CHUẨN ẢNH YÊU CẦU
-// ==========================================
-// ==========================================
 // 5. TRUNG TÂM GACHA (DÙNG GEMS) CHUẨN ẢNH YÊU CẦU & NHIỀU PACK
 // ==========================================
 window.openGachaCenter = function() {
@@ -1184,70 +1266,46 @@ window.openGachaCenter = function() {
             
             <h4 style="margin: 0; color: var(--danger); border-bottom: 2px solid #ccc; padding-bottom: 5px;">⚡ KHU VỰC THẺ KỸ NĂNG MAP</h4>
 
-            <div class="shop-item" style="border-color: #ea4335;">
-                <div>
-                    <h3 style="color:#ea4335;">⚡ MUA LẺ KỸ NĂNG</h3>
-                    <div class="desc">Nhận chắc chắn +1 Thẻ Kỹ năng phá map.</div>
-                </div>
-                <button class="shop-btn" style="background:#ea4335; color:#fff;" onclick="buySkill()">500 <span style="font-size:12px;">💎</span></button>
+            <div style="background: #fff; border: 2px dashed #ea4335; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <div><h3 style="color:#ea4335; margin:0; font-size:16px;">⚡ MUA LẺ KỸ NĂNG</h3><div style="font-size:11px; color:#555;">Nhận chắc chắn +1 Thẻ.</div></div>
+                <button class="btn" style="background:#ea4335; color:#fff; width:90px; margin:0;" onclick="buySkill()">500 💎</button>
             </div>
 
-            <div class="shop-item solid" style="background: linear-gradient(90deg, #8e44ad, #9b59b6); color: white; border: none;">
-                <div>
-                    <h3 style="color:#fff;">📦 PACK KỸ NĂNG BÍ ẨN</h3>
-                    <div class="desc" style="color:#e0e0e0;">Nhận ngẫu nhiên từ 2 đến 5 Thẻ Kỹ Năng.</div>
-                </div>
-                <button class="shop-btn" style="background:#fff; color:#8e44ad;" onclick="rollSkillPack(2, 5, 1500)">1500 <span style="font-size:12px;">💎</span></button>
+            <div style="background: linear-gradient(90deg, #8e44ad, #9b59b6); border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 8px;">
+                <div><h3 style="margin:0; font-size:16px; color:#fff;">📦 PACK KỸ NĂNG BÍ ẨN</h3><div style="font-size:11px;">Nhận ngẫu nhiên 2 đến 5 Thẻ.</div></div>
+                <button class="btn" style="background:#fff; color:#8e44ad; width:90px; margin:0;" onclick="rollSkillPack(2, 5, 1500)">1500 💎</button>
             </div>
 
-            <div class="shop-item solid" style="background: linear-gradient(90deg, #d35400, #ff8c00); color: white; border: none; box-shadow: 0 0 10px #ff8c00;">
-                <div>
-                    <h3 style="color:#fff;">🔥 PACK KỸ NĂNG TỐI THƯỢNG</h3>
-                    <div class="desc" style="color:#e0e0e0;">Nhận ngẫu nhiên từ 6 đến 12 Thẻ Kỹ Năng.</div>
-                </div>
-                <button class="shop-btn" style="background:#fff; color:#d35400;" onclick="rollSkillPack(6, 12, 3500)">3500 <span style="font-size:12px;">💎</span></button>
+            <div style="background: linear-gradient(90deg, #d35400, #ff8c00); border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; color: white; box-shadow: 0 0 10px #ff8c00; margin-bottom: 8px;">
+                <div><h3 style="margin:0; font-size:16px; color:#fff;">🔥 PACK KỸ NĂNG TỐI THƯỢNG</h3><div style="font-size:11px;">Nhận ngẫu nhiên 6 đến 12 Thẻ.</div></div>
+                <button class="btn" style="background:#fff; color:#d35400; width:90px; margin:0;" onclick="rollSkillPack(6, 12, 3500)">3500 💎</button>
             </div>
 
             <h4 style="margin: 10px 0 0 0; color: var(--primary); border-bottom: 2px solid #ccc; padding-bottom: 5px;">📦 KHU VỰC GACHA THẺ SƯU TẬP</h4>
 
-            <div class="shop-item solid" style="background: linear-gradient(90deg, #2c3e50, #3498db); color: white; border: none;">
-                <div>
-                    <h3 style="color:#fff;">📦 PACK TẬP SỰ (5 Thẻ)</h3>
-                    <div class="desc" style="color:#e0e0e0;">Tỉ lệ cao ra R và SR.</div>
-                </div>
-                <button class="shop-btn" style="background:#fff; color:#2c3e50;" onclick="rollGacha('basic')">500 <span style="font-size:12px;">💎</span></button>
+            <div style="background: linear-gradient(90deg, #2c3e50, #3498db); border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 8px;">
+                <div><h3 style="margin:0; font-size:16px; color:#fff;">📦 PACK TẬP SỰ (5 Thẻ)</h3><div style="font-size:11px;">Tỉ lệ cao ra R và SR.</div></div>
+                <button class="btn" style="background:#fff; color:#2c3e50; width:90px; margin:0;" onclick="rollGacha('basic')">500 💎</button>
             </div>
             
-            <div class="shop-item solid" style="background: linear-gradient(90deg, #e65c00, #F9D423); color: white; border: none;">
-                <div>
-                    <h3 style="color:#fff;">🔥 PACK ANH HÙNG (5 Thẻ)</h3>
-                    <div class="desc" style="color:#e0e0e0;">Chuyên rớt thẻ UR (Anh Hùng).</div>
-                </div>
-                <button class="shop-btn" style="background:#fff; color:#e65c00;" onclick="rollGacha('pro')">1500 <span style="font-size:12px;">💎</span></button>
+            <div style="background: linear-gradient(90deg, #e65c00, #F9D423); border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 8px;">
+                <div><h3 style="margin:0; font-size:16px; color:#fff;">🔥 PACK ANH HÙNG (5 Thẻ)</h3><div style="font-size:11px;">Chuyên rớt thẻ UR (Anh Hùng).</div></div>
+                <button class="btn" style="background:#fff; color:#e65c00; width:90px; margin:0;" onclick="rollGacha('pro')">1500 💎</button>
             </div>
 
-            <div class="shop-item solid" style="background: linear-gradient(90deg, #1D976C, #93F9B9); color: white; border: none;">
-                <div>
-                    <h3 style="color:#fff;">🌟 PACK SIÊU SAO (5 Thẻ)</h3>
-                    <div class="desc" style="color:#e0e0e0;">Săn lùng SSR và USR.</div>
-                </div>
-                <button class="shop-btn" style="background:#fff; color:#1D976C;" onclick="rollGacha('elite')">3000 <span style="font-size:12px;">💎</span></button>
+            <div style="background: linear-gradient(90deg, #1D976C, #93F9B9); border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 8px;">
+                <div><h3 style="margin:0; font-size:16px; color:#fff;">🌟 PACK SIÊU SAO (5 Thẻ)</h3><div style="font-size:11px;">Săn lùng SSR và USR.</div></div>
+                <button class="btn" style="background:#fff; color:#1D976C; width:90px; margin:0;" onclick="rollGacha('elite')">3000 💎</button>
             </div>
 
-            <div class="shop-item solid" style="background: linear-gradient(90deg, #111, #333); border: 2px solid #ff0044; box-shadow: 0 0 10px #ff0044;">
-                <div>
-                    <h3 style="color:#ff0044; text-shadow: 0 0 5px #ff0044;">👑 PACK HUYỀN THOẠI (5 Thẻ)</h3>
-                    <div class="desc" style="color:#ccc;">Bảo hiểm rớt LSR.</div>
-                </div>
-                <button class="shop-btn" style="background:#ff0044; color:#fff;" onclick="rollGacha('legend')">8000 <span style="font-size:12px;">💎</span></button>
+            <div style="background: linear-gradient(90deg, #111, #333); border: 2px solid #ff0044; box-shadow: 0 0 10px #ff0044; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 8px;">
+                <div><h3 style="margin:0; font-size:16px; color:#ff0044; text-shadow: 0 0 5px #ff0044;">👑 PACK HUYỀN THOẠI</h3><div style="font-size:11px; color:#ccc;">Bảo hiểm rớt LSR. (5 Thẻ)</div></div>
+                <button class="btn" style="background:#ff0044; color:#fff; border: 1px solid #fff; width:90px; margin:0;" onclick="rollGacha('legend')">8000 💎</button>
             </div>
 
-            <div class="shop-item solid" style="background: linear-gradient(90deg, #0f2027, #203a43, #2c5364); border: 3px solid #00e5ff; box-shadow: 0 0 15px #00e5ff;">
-                <div>
-                    <h3 style="color:#00e5ff; text-shadow: 0 0 8px #00e5ff;">🌌 PACK VÔ CỰC (10 Thẻ)</h3>
-                    <div class="desc" style="color:#ccc;">Lật mỏi tay. Tỉ lệ LSR lên tới 60%.</div>
-                </div>
-                <button class="shop-btn" style="background:#00e5ff; color:#000;" onclick="rollGacha('infinity')">15000 <span style="font-size:12px;">💎</span></button>
+            <div style="background: linear-gradient(90deg, #0f2027, #203a43, #2c5364); border: 3px solid #00e5ff; box-shadow: 0 0 15px #00e5ff; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 8px;">
+                <div><h3 style="margin:0; font-size:16px; color:#00e5ff; text-shadow: 0 0 8px #00e5ff;">🌌 PACK VÔ CỰC (10 Thẻ)</h3><div style="font-size:11px; color:#ccc;">Tỉ lệ LSR lên tới 60%.</div></div>
+                <button class="btn" style="background:#00e5ff; color:#000; width:90px; margin:0;" onclick="rollGacha('infinity')">15000 💎</button>
             </div>
 
         </div>
@@ -1317,50 +1375,63 @@ window.rollGacha = function(type) {
         updateStats(); displayGachaResult(results, "Mua Pack Thành Công! Bấm lật thẻ nhé!");
     }, 300);
 };
+
 // ==========================================
 // 6. THƯ VIỆN BỘ SƯU TẬP & THÀNH TỰU DẠNG DỌC CHUẨN
 // ==========================================
+// ==========================================
+// 6. THƯ VIỆN BỘ SƯU TẬP & THÀNH TỰU (TỰ ĐỘNG ĐỒNG BỘ SỐ THẺ)
+// ==========================================
+
+// Hàm tự động đếm tổng số thẻ trong Database và tạo mốc thưởng
+window.getDynamicMilestones = function() {
+    let maxCards = 0;
+    for (let tier in cardDatabase) maxCards += cardDatabase[tier].length;
+    
+    return [
+        { req: 10, gems: 1000, skills: 2, desc: "Sưu tầm 10 thẻ khác nhau" },
+        { req: 25, gems: 3000, skills: 3, desc: "Sưu tầm 25 thẻ khác nhau" },
+        { req: 50, gems: 8000, skills: 5, desc: "Sưu tầm 50 thẻ khác nhau" },
+        { req: 80, gems: 15000, skills: 10, desc: "Sưu tầm 80 thẻ khác nhau" },
+        { req: maxCards, gems: 50000, skills: 20, desc: `Sưu tầm TOÀN BỘ ${maxCards} thẻ` }
+    ];
+};
+
 window.claimMilestone = function(idx) {
-    let m = collectionMilestones[idx];
+    let milestones = window.getDynamicMilestones();
+    let m = milestones[idx];
     let allCards = [];
     for(let t in myGallery) allCards = allCards.concat(myGallery[t]);
     let uniqueCount = new Set(allCards).size;
     
     if(uniqueCount >= m.req && !claimedMilestones.includes(idx)) {
-        claimedMilestones.push(idx);
-        gems += m.gems;
-        skillCount += m.skills;
-        updateStats();
+        claimedMilestones.push(idx); gems += m.gems; skillCount += m.skills; updateStats();
         showToast(`🎉 Nhận thành công: +${m.gems} Gems & +${m.skills} Thẻ Kỹ Năng!`, "success");
         database.ref('chat_messages').push({ name: "HỆ THỐNG", text: `🏆 ĐỈNH CAO: [${playerName}] vừa đạt mốc sưu tập ${m.req} thẻ!`, timestamp: Date.now() });
-        openGallery(); 
+        openGallery();
     }
 };
 
-// ==========================================
-// 6. THƯ VIỆN BỘ SƯU TẬP & THÀNH TỰU DẠNG DỌC CHUẨN
-// ==========================================
 window.openGallery = function() {
     let allCards = [];
     for(let tier in myGallery) allCards = allCards.concat(myGallery[tier]);
     let uniqueCount = new Set(allCards).size;
 
+    let milestones = window.getDynamicMilestones();
+    let totalMaxCards = milestones[milestones.length - 1].req; // Lấy tổng số thẻ tự động đếm được
+
     let milestoneHtml = `<div style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 2px dashed #00bcd4; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-        <h3 style="margin-top: 0; color: var(--primary); text-align: center; font-size: 18px;">🏆 TIẾN ĐỘ SƯU TẬP: <span style="color: var(--danger); font-size: 22px;">${uniqueCount}/110</span> THẺ</h3>
+        <h3 style="margin-top: 0; color: var(--primary); text-align: center; font-size: 18px;">🏆 TIẾN ĐỘ SƯU TẬP: <span style="color: var(--danger); font-size: 22px;">${uniqueCount}/${totalMaxCards}</span> THẺ</h3>
         <div style="display: flex; flex-direction: column; gap: 10px;">`;
         
-    collectionMilestones.forEach((m, idx) => {
+    milestones.forEach((m, idx) => {
         let isClaimed = claimedMilestones.includes(idx);
         let canClaim = uniqueCount >= m.req && !isClaimed;
         
         let btnHtml = "";
-        if (isClaimed) {
-            btnHtml = `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #ccc; color: #666; cursor: not-allowed;" disabled>Đã Nhận</button>`;
-        } else if (canClaim) {
-            btnHtml = `<button class="btn btn-warning" style="width: 100px; padding: 6px; margin: 0; animation: pulse 1s infinite;" onclick="claimMilestone(${idx})">Nhận Quà</button>`;
-        } else {
-            btnHtml = `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #e0e0e0; color: #999; cursor: not-allowed;" disabled>Chưa Đạt</button>`;
-        }
+        if (isClaimed) { btnHtml = `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #ccc; color: #666; cursor: not-allowed;" disabled>Đã Nhận</button>`; } 
+        else if (canClaim) { btnHtml = `<button class="btn btn-warning" style="width: 100px; padding: 6px; margin: 0; animation: pulse 1s infinite;" onclick="claimMilestone(${idx})">Nhận Quà</button>`; } 
+        else { btnHtml = `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #e0e0e0; color: #999; cursor: not-allowed;" disabled>Chưa Đạt</button>`; }
 
         milestoneHtml += `
             <div style="display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
@@ -1408,101 +1479,6 @@ window.openGallery = function() {
 };
 
 window.viewCardDetail = function(name, tier, desc, img) {
-    let html = `
-        <div style="width: 250px; height: 350px; margin: 0 auto; border-radius: 12px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
-            <div class="tier-${tier}" style="position: absolute; inset: 0; border-radius: 8px; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 15px 10px; box-sizing: border-box; color: white;">
-                <div style="font-size:30px; margin-bottom:0;">${tier === 'LSR' ? '👑' : (tier === 'USR' ? '💎' : '🌟')}</div>
-                <div class="card-tier-title" style="font-size: 24px;">${tier}</div>
-                <div class="card-image-box" style="height: 120px;">
-                    ${img ? `<img src="${img}" alt="${name}">` : `<span style="font-size: 40px; opacity: 0.5;">👤</span>`}
-                </div>
-                <div class="card-name-box" style="font-size: 14px; margin: 5px 0;">${name}</div>
-                <div class="card-desc-box" style="font-size: 11px; display: block; overflow: visible; padding: 8px;">${desc}</div>
-            </div>
-        </div>
-        <button class="btn btn-warning" style="margin-top: 25px;" onclick="openGallery()">Quay Lại</button>
-    `;
-    openModal(`CHI TIẾT THẺ`, html);
-}
-
-// ==========================================
-// 7. BẢNG XẾP HẠNG & KẾT THÚC GAME (RANK THEO ĐỘ HIẾM THẺ)
-// ==========================================
-database.ref('room_players').on('value', (snapshot) => {
-    let players = [];
-    snapshot.forEach(child => { players.push(child.val()); });
-    if(document.getElementById('lobby-count')) document.getElementById('lobby-count').innerText = players.length;
-    
-    // THUẬT TOÁN XẾP HẠNG GACHA: Ưu tiên đọ thẻ xịn trước
-    players.sort((a,b) => {
-        let aLSR = a.cntLSR || 0, bLSR = b.cntLSR || 0;
-        if(aLSR !== bLSR) return bLSR - aLSR;
-        
-        let aUSR = a.cntUSR || 0, bUSR = b.cntUSR || 0;
-        if(aUSR !== bUSR) return bUSR - aUSR;
-        
-        let aSSR = a.cntSSR || 0, bSSR = b.cntSSR || 0;
-        if(aSSR !== bSSR) return bSSR - aSSR;
-        
-        let aUR = a.cntUR || 0, bUR = b.cntUR || 0;
-        if(aUR !== bUR) return bUR - aUR;
-        
-        let aSR = a.cntSR || 0, bSR = b.cntSR || 0;
-        if(aSR !== bSR) return bSR - aSR;
-        
-        let aR = a.cntR || 0, bR = b.cntR || 0;
-        if(aR !== bR) return bR - aR;
-        
-        // Nếu y xì đúc nhau thẻ, phân thắng bại bằng Tổng Tài Sản (Score + Gems)
-        return (b.totalVal || 0) - (a.totalVal || 0);
-    });
-    
-    let html = players.map((p, i) => {
-        let icon = i === 0 ? '🥇' : (i === 1 ? '🥈' : (i === 2 ? '🥉' : '')); 
-        let dName = p.name;
-        if(p.name.toLowerCase() === 'idori') {
-            let animatedName = "Idori".split('').map((char, index) => `<span class="letter" style="animation-delay: ${index * 0.15}s">${char}</span>`).join('');
-            dName = `<span class="admin-tag">[Admin]</span> <span class="idori-container">${animatedName}</span>`;
-        }
-        
-        // Hiển thị thêm thành tích thẻ xịn nhất của họ trên BXH cho thiên hạ sợ
-        let bestCardDisplay = "";
-        if((p.cntLSR || 0) > 0) bestCardDisplay = `<br><span style="color:#ff0044; font-size:11px; text-shadow: 0 0 2px #ff0044;">(Sở hữu ${p.cntLSR} thẻ LSR)</span>`;
-        else if((p.cntUSR || 0) > 0) bestCardDisplay = `<br><span style="color:#00e5ff; font-size:11px; text-shadow: 0 0 2px #00e5ff;">(Sở hữu ${p.cntUSR} thẻ USR)</span>`;
-        else if((p.cntSSR || 0) > 0) bestCardDisplay = `<br><span style="color:#ffd32a; font-size:11px;">(Sở hữu ${p.cntSSR} thẻ SSR)</span>`;
-
-        return `<tr class="${i===0?'top-1':''}"><td>${icon} ${i+1}</td><td style="font-weight:bold; color:#333;">${dName} ${bestCardDisplay}</td><td style="color:#00bcd4; font-weight: bold;">${p.gems || 0}</td><td style="color:var(--success); font-weight: bold;">${p.score || 0}</td><td style="font-weight:bold; color:var(--danger); font-size: 18px;">${p.totalVal || 0}</td></tr>`;
-    }).join('');
-    
-    let sidebarLbHtml = players.slice(0, 5).map((p, i) => {
-        return `<div class="sidebar-lb-item"><span><b>${i+1}.</b> ${p.name}</span><span style="color:var(--danger); font-weight:bold;">${p.totalVal || 0}</span></div>`;
-    }).join('');
-    if(document.getElementById('sidebar-lb-list')) document.getElementById('sidebar-lb-list').innerHTML = sidebarLbHtml || '<i>Chưa có ai...</i>';
-
-    if(document.getElementById('admin-lb-body')) document.getElementById('admin-lb-body').innerHTML = html;
-    if(document.getElementById('final-lb-body')) document.getElementById('final-lb-body').innerHTML = html;
-});
-// ==========================================
-// 8. KÊNH CHAT BỘ ĐÀM
-// ==========================================
-window.sendChatMessage = function() {
-    let input = document.getElementById('chat-input'); let msg = input.value.trim(); if (!msg) return;
-    database.ref('chat_messages').push({ name: playerName || "Khách", text: msg, timestamp: Date.now() }); input.value = "";
-};
-
-database.ref('chat_messages').limitToLast(15).on('child_added', (snapshot) => {
-    let msg = snapshot.val(); let chatDiv = document.getElementById('chat-messages');
-    let div = document.createElement('div');
-    if (msg.name === "HỆ THỐNG") div.innerHTML = `<b style="color:var(--warning);">⚙️ HỆ THỐNG:</b> <span style="color:var(--danger); font-weight:bold;">${msg.text}</span>`;
-    else if (msg.name.toLowerCase() === 'idori') {
-        let animatedName = "Idori".split('').map((char, index) => `<span class="letter" style="animation-delay: ${index * 0.15}s">${char}</span>`).join('');
-        div.innerHTML = `<b style="margin-bottom:5px;"><span class="admin-tag">[Admin]</span> <span class="idori-container">${animatedName}</span>:</b> <span class="chat-text-gradient">${msg.text}</span>`;
-    }
-    else div.innerHTML = `<b style="color:var(--primary); margin-bottom:2px;">${msg.name}:</b> <span style="color:#333;">${msg.text}</span>`;
-    chatDiv.appendChild(div); chatDiv.scrollTop = chatDiv.scrollHeight;
-});
-// 1. CẬP NHẬT HÀM XEM CHI TIẾT THẺ (FULL ẢNH KHÔNG BỊ CẮT)
-window.viewCardDetail = function(name, tier, desc, img) {
     let imgTag = (img && img !== 'undefined' && img !== '') 
         ? `<img src="${img}" alt="${name}" style="width: 100%; height: 100%; object-fit: contain;">` 
         : `<span style="font-size: 50px; opacity: 0.5;">👤</span>`;
@@ -1529,75 +1505,82 @@ window.viewCardDetail = function(name, tier, desc, img) {
     openModal(`CHI TIẾT THẺ`, html);
 }
 
-// 2. CẬP NHẬT HÀM LẬT THẺ GACHA (CÓ HIỆN ẢNH)
-window.renderNextStackCard = function() {
-    let container = document.getElementById('fc-stack-slot-container');
-    if(!container) return;
+// ==========================================
+// 7. BẢNG XẾP HẠNG & KẾT THÚC GAME
+// ==========================================
+database.ref('room_players').on('value', (snapshot) => {
+    let players = [];
+    snapshot.forEach(child => { players.push(child.val()); });
+    if(document.getElementById('lobby-count')) document.getElementById('lobby-count').innerText = players.length;
     
-    if(currentStackIndex >= currentStackResults.length) {
-        showAllCardsSummary();
-        return;
-    }
+    players.sort((a,b) => {
+        let aLSR = a.cntLSR || 0, bLSR = b.cntLSR || 0;
+        if(aLSR !== bLSR) return bLSR - aLSR;
+        let aUSR = a.cntUSR || 0, bUSR = b.cntUSR || 0;
+        if(aUSR !== bUSR) return bUSR - aUSR;
+        let aSSR = a.cntSSR || 0, bSSR = b.cntSSR || 0;
+        if(aSSR !== bSSR) return bSSR - aSSR;
+        return (b.totalVal || 0) - (a.totalVal || 0);
+    });
     
-    let c = currentStackResults[currentStackIndex];
-    let counter = document.getElementById('stack-counter');
-    if(counter) counter.innerText = `Thẻ ${currentStackIndex + 1} / ${currentStackResults.length}`;
-    
-    let imgTag = (c.data.img) 
-        ? `<img src="${c.data.img}" style="width: 100%; height: 100%; object-fit: contain;">` 
-        : `<span style="font-size: 40px; opacity: 0.5;">👤</span>`;
+    let html = players.map((p, i) => {
+        let icon = i === 0 ? '🥇' : (i === 1 ? '🥈' : (i === 2 ? '🥉' : '')); 
+        let dName = p.name;
+        if(p.name.toLowerCase() === 'idori') {
+            let animatedName = "Idori".split('').map((char, index) => `<span class="letter" style="animation-delay: ${index * 0.15}s">${char}</span>`).join('');
+            dName = `<span class="admin-tag">[Admin]</span> <span class="idori-container">${animatedName}</span>`;
+        }
+        
+        let cardsDisplay = `<span style="color:#ff0044; font-weight:bold; font-size:12px;">LSR: ${p.cntLSR || 0}</span> | <span style="color:#00e5ff; font-weight:bold; font-size:12px;">USR: ${p.cntUSR || 0}</span> | <span style="color:#ffd32a; font-weight:bold; font-size:12px;">SSR: ${p.cntSSR || 0}</span>`;
 
-    container.innerHTML = `
-        <div class="fc-card-slot" onclick="flipStackCard(this, '${c.tier}')" style="width: 190px; aspect-ratio: 2.1/3.6;">
-            <div class="fc-card-inner" id="active-stack-card">
-                <div class="fc-card-front">
-                    <span style="font-size:45px;">📦</span>
-                    <div style="font-size:13px; margin-top:10px; animation: pulse 1s infinite;">Bấm để lật thẻ</div>
-                </div>
-                <div class="fc-card-back tier-${c.tier}" style="padding: 10px; display: flex; flex-direction: column;">
-                    <div class="card-tier-title" style="font-size: 22px;">${c.tier}</div>
-                    
-                    <div style="flex: 1; margin: 6px 0; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                        ${imgTag}
-                    </div>
-                    
-                    <div class="card-name-box" style="font-size:12px;">${c.data.name}</div>
-                    <div class="card-desc-box" style="font-size:10px;">${c.data.desc}</div>
-                </div>
-            </div>
-        </div>
-    `;
+        return `<tr class="${i===0?'top-1':''}">
+            <td>${icon} ${i+1}</td>
+            <td style="font-weight:bold; color:#333;">${dName}</td>
+            <td style="color:#00bcd4; font-weight: bold;">${p.gems || 0}</td>
+            <td style="color:var(--success); font-weight: bold;">${p.score || 0}</td>
+            <td style="background: rgba(0,0,0,0.05);">${cardsDisplay}</td>
+            <td style="font-weight:bold; color:var(--danger); font-size: 18px;">${p.totalVal || 0}</td>
+        </tr>`;
+    }).join('');
+    
+    let sidebarLbHtml = players.slice(0, 5).map((p, i) => {
+        return `<div class="sidebar-lb-item"><span><b>${i+1}.</b> ${p.name}</span><span style="color:var(--danger); font-weight:bold;">${p.totalVal || 0}</span></div>`;
+    }).join('');
+    if(document.getElementById('sidebar-lb-list')) document.getElementById('sidebar-lb-list').innerHTML = sidebarLbHtml || '<i>Chưa có ai...</i>';
+
+    if(document.getElementById('admin-lb-body')) document.getElementById('admin-lb-body').innerHTML = html;
+    if(document.getElementById('final-lb-body')) document.getElementById('final-lb-body').innerHTML = html;
+});
+
+function showFinalLeaderboard() {
+    isInputPaused = true; isGameActive = false; clearInterval(timerInterval);
+    document.getElementById('quiz-section').style.display = 'none';
+    document.getElementById('admin-section').style.display = 'none';
+    document.getElementById('setup-section').style.display = 'none';
+    document.getElementById('waiting-section').style.display = 'none';
+    document.getElementById('custom-modal').classList.remove('show');
+    document.getElementById('leaderboard-section').style.display = 'block';
+}
+
+// ==========================================
+// 8. KÊNH CHAT BỘ ĐÀM
+// ==========================================
+window.sendChatMessage = function() {
+    let input = document.getElementById('chat-input'); let msg = input.value.trim(); if (!msg) return;
+    database.ref('chat_messages').push({ name: playerName || "Khách", text: msg, timestamp: Date.now() }); input.value = "";
 };
 
-// 3. CẬP NHẬT BẢNG TỔNG KẾT PACK (CÓ HIỆN ẢNH THU NHỎ)
-window.showAllCardsSummary = function() {
-    let container = document.getElementById('fc-stack-slot-container'); if(container) container.style.display = 'none';
-    let skipBtn = document.getElementById('skip-pack-btn'); if(skipBtn) skipBtn.style.display = 'none';
-    let counter = document.getElementById('stack-counter'); if(counter) counter.innerText = "TỔNG KẾT PACK";
-    
-    let grid = document.getElementById('all-cards-grid');
-    if(grid) {
-        grid.style.display = 'flex';
-        grid.innerHTML = currentStackResults.map(c => `
-            <div class="fc-card-slot" style="width: 110px; aspect-ratio: 2.1/3.6;">
-                <div class="fc-card-inner flipped" style="transition:none; cursor:default;">
-                    <div class="fc-card-back tier-${c.tier}" style="padding: 6px; display: flex; flex-direction: column;">
-                        <div class="card-tier-title" style="font-size:16px; margin-bottom: 4px;">${c.tier}</div>
-                        
-                        <div style="flex: 1; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); border-radius: 4px; overflow: hidden; margin-bottom: 4px; border: 1px solid rgba(255,255,255,0.2);">
-                            ${c.data.img ? `<img src="${c.data.img}" style="width: 100%; height: 100%; object-fit: contain;">` : `<span style="font-size: 20px; opacity: 0.5;">👤</span>`}
-                        </div>
-                        
-                        <div class="card-name-box" style="font-size:9px; padding:3px; margin:0;">${c.data.name}</div>
-                    </div>
-                </div>
-            </div>
-        `).join('');
+database.ref('chat_messages').limitToLast(15).on('child_added', (snapshot) => {
+    let msg = snapshot.val(); let chatDiv = document.getElementById('chat-messages');
+    let div = document.createElement('div');
+    if (msg.name === "HỆ THỐNG") div.innerHTML = `<b style="color:var(--warning);">⚙️ HỆ THỐNG:</b> <span style="color:var(--danger); font-weight:bold;">${msg.text}</span>`;
+    else if (msg.name.toLowerCase() === 'idori') {
+        let animatedName = "Idori".split('').map((char, index) => `<span class="letter" style="animation-delay: ${index * 0.15}s">${char}</span>`).join('');
+        div.innerHTML = `<b style="margin-bottom:5px;"><span class="admin-tag">[Admin]</span> <span class="idori-container">${animatedName}</span>:</b> <span class="chat-text-gradient">${msg.text}</span>`;
     }
-    
-    let collectBtn = document.getElementById('collect-pack-btn');
-    if(collectBtn) collectBtn.style.display = 'block';
-};
+    else div.innerHTML = `<b style="color:var(--primary); margin-bottom:2px;">${msg.name}:</b> <span style="color:#333;">${msg.text}</span>`;
+    chatDiv.appendChild(div); chatDiv.scrollTop = chatDiv.scrollHeight;
+});
 </script>
 </body>
 </html>
