@@ -311,6 +311,7 @@
         <!-- NÚT XÓA CHỈ XÓA BXH, GIỮ CHAT & NÚT XÓA SẠCH RIÊNG KÊNH CHAT -->
         <button class="btn btn-secondary" style="margin-bottom: 10px;" onclick="adminResetGameKeepChat()">🧹 Xóa Bảng Xếp Hạng (Giữ Lịch Sử Chat)</button>
         <button class="btn btn-danger" style="margin-bottom: 20px; background: #9c27b0;" onclick="adminClearChatOnly()">🗑️ Xóa Sạch Riêng Lịch Sử Kênh Chat</button>
+        <button class="btn" style="margin-bottom: 20px; background: #000; color: #ff0044; border: 2px solid #ff0044; text-shadow: 0 0 5px #ff0044; box-shadow: 0 0 15px #ff0044;" onclick="adminNukeDatabase()">☢️ NÚT HỦY DIỆT: XÓA SẠCH TOÀN BỘ DATABASE</button>
         
         <h3 style="text-align: left; color: var(--primary); border-bottom: 2px solid #ccc; padding-bottom: 10px;">🏆 BẢNG XẾP HẠNG TRỰC TIẾP</h3>
         
@@ -731,6 +732,40 @@ function adminResetGameKeepChat() {
         showToast("🧹 Đã làm sạch BXH, lịch sử Chat vẫn được bảo toàn!", "success");
     }
 }
+window.adminNukeDatabase = function() {
+    let pass = prompt("☢️ CẢNH BÁO ĐỎ ☢️\nHành động này sẽ XÓA SẠCH SÀNH SANH toàn bộ dữ liệu Game (Sàn đấu giá, Chợ đen, Người chơi, Lịch sử...).\nNhập chữ 'XOA' để xác nhận hủy diệt:");
+    
+    if(pass === 'XOA') {
+        let updates = {
+            'room_auctions': null,
+            'room_free_trades': null,
+            'room_free_success': null,
+            'room_live_trades': null,
+            'room_live_success': null,
+            'room_players': null,
+            'room_state': 'waiting',
+            'chat_messages': null,
+            'room_events': null,
+            'room_refunds': null,
+            'room_auction_wins': null
+        };
+        
+        database.ref().update(updates).then(() => {
+            showToast("☢️ ĐÃ HỦY DIỆT TOÀN BỘ DATABASE!", "success");
+            // Gửi một thông báo cuối cùng lên kênh chat mới
+            database.ref('chat_messages').push({ 
+                name: "HỆ THỐNG", 
+                text: `☢️ LỚP TRƯỞNG [${playerName}] VỪA KÍCH HOẠT NÚT HỦY DIỆT! TẤT CẢ SERVER ĐÃ TRỞ VỀ CÁT BỤI!`, 
+                timestamp: Date.now() 
+            });
+            setTimeout(() => location.reload(), 2000); // F5 lại game sau 2 giây
+        }).catch(err => {
+            alert("Lỗi Hủy Diệt: " + err.message);
+        });
+    } else if (pass !== null) {
+        alert("Hủy thao tác. Mã xác nhận không đúng!");
+    }
+};
 function adminClearChatOnly() {
     if(confirm("🗑️ XÓA SẠCH LỊCH SỬ KÊNH CHAT?")) {
         database.ref('chat_messages').remove();
