@@ -2500,7 +2500,7 @@ database.ref('room_auction_wins').on('child_added', snap => {
     }
 });
 // ==========================================
-// LÒ RÈN TỐI THƯỢNG (DÙNG 3 THẺ BẤT KỲ CÙNG BẬC LÀM PHÔI)
+// LÒ RÈN TỐI THƯỢNG (CHỈ DÙNG PHÔI DƯ, GIỮ LẠI 1 BẢN GỐC)
 // ==========================================
 const upgradeRates = {
     'R':   { 'SR': 75, 'UR': 25, 'SSR': 5,  'USR': 1,   'LSR': 0.1 },
@@ -2515,26 +2515,33 @@ window.openUpgradeCenter = function() {
     let options = "";
     let hasFodder = false;
     
-    // Tìm các BẬC (Tier) có tổng số thẻ >= 3 (không cần trùng tên)
+    // Tìm các BẬC (Tier) có tổng số phôi dư >= 3 (bảo toàn 1 bản gốc)
     for(let t of tierOrder) {
-        if(t === 'LSR') continue; // LSR là max tier, không thể làm phôi nữa
-        let count = myGallery[t].length;
-        if(count >= 3) {
+        if(t === 'LSR') continue; 
+        let counts = {};
+        myGallery[t].forEach(c => counts[c] = (counts[c] || 0) + 1);
+        
+        let dupeCount = 0;
+        for(let name in counts) {
+            if(counts[name] > 1) dupeCount += (counts[name] - 1);
+        }
+        
+        if(dupeCount >= 3) {
             hasFodder = true;
-            options += `<option value='${t}'>Hy sinh 3 thẻ Bậc [${t}] (Đang có tổng: ${count} thẻ)</option>`;
+            options += `<option value='${t}'>Hy sinh 3 thẻ Bậc [${t}] (Đang có ${dupeCount} phôi dư)</option>`;
         }
     }
     
     if(!hasFodder) {
-        let html = `<div style="padding: 20px; color: var(--danger); font-weight: bold; text-align:center;">Túi đồ rách nát quá!<br>Bạn không có Bậc Thẻ nào chứa đủ 3 thẻ để ép cả!</div><button class="btn btn-secondary" onclick="closeModal()">Đóng Cửa Lò</button>`;
+        let html = `<div style="padding: 20px; color: var(--danger); font-weight: bold; text-align:center;">Kho đồ không đủ phôi!<br>Hệ thống bắt buộc giữ lại 1 bản gốc cho mỗi thẻ. Bạn không có Bậc Thẻ nào chứa đủ 3 phôi dư để ép cả!</div><button class="btn btn-secondary" onclick="closeModal()">Đóng Cửa Lò</button>`;
         return openModal("🔨 LÒ RÈN TỐI THƯỢNG", html);
     }
 
     let html = `
         <div style="background: #fff; padding: 15px; border-radius: 10px; text-align: left; border: 2px dashed #ff5722;">
-            <p style="font-size: 13px; color: #555; background: #fff3e0; padding: 10px; border-radius: 8px;">💡 <b>Luật Lò Rèn MỚI:</b> Chọn 1 Bậc Thẻ, hệ thống sẽ <b>TỰ ĐỘNG BỐC ĐẠI 3 THẺ NGẪU NHIÊN</b> trong Bậc đó đem đi tế! (Thất bại sẽ <b>MẤT TRẮNG</b> cả 3 thẻ).</p>
+            <p style="font-size: 13px; color: #555; background: #fff3e0; padding: 10px; border-radius: 8px;">💡 <b>Luật Lò Rèn BẢO TỒN:</b> Hệ thống sẽ <b>TỰ ĐỘNG BỐC ĐẠI 3 PHÔI DƯ</b> ngẫu nhiên trong Bậc đó đem đi tế, cam kết giữ lại 1 bản gốc cho bạn! (Thất bại sẽ <b>MẤT TRẮNG</b> cả 3 phôi).</p>
             
-            <h4 style="margin: 0 0 5px 0; color: var(--primary);">🔥 Chọn Bậc Phôi (Mất 3 Thẻ ngẫu nhiên):</h4>
+            <h4 style="margin: 0 0 5px 0; color: var(--primary);">🔥 Chọn Bậc Phôi (Mất 3 Phôi dư):</h4>
             <select id="upgrade-fodder" style="width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 5px; font-weight: bold; background: #e8f0fe;" onchange="updateUpgradeUI()">${options}</select>
             
             <h4 style="margin: 0 0 5px 0; color: var(--danger);">🎯 Chọn Bậc Mục Tiêu:</h4>
@@ -2591,8 +2598,17 @@ window.executeUpgrade = function() {
     
     let rate = upgradeRates[fodderTier][targetTier] || 0;
     
-    if(myGallery[fodderTier].length < 3) {
-        showToast(`Lỗi: Không còn đủ 3 thẻ bậc [${fodderTier}]!`, "danger");
+    // Gom tất cả phôi dư ra một mảng riêng để bốc
+    let counts = {};
+    myGallery[fodderTier].forEach(c => counts[c] = (counts[c] || 0) + 1);
+    let availableFodder = [];
+    for(let name in counts) {
+        let dupes = counts[name] - 1;
+        for(let i=0; i<dupes; i++) availableFodder.push(name);
+    }
+    
+    if(availableFodder.length < 3) {
+        showToast(`Lỗi: Không còn đủ 3 phôi dư bậc [${fodderTier}]!`, "danger");
         return openUpgradeCenter();
     }
 
@@ -2604,12 +2620,17 @@ window.executeUpgrade = function() {
     document.body.appendChild(flash);
     
     setTimeout(() => {
-        // Lấy ngẫu nhiên 3 thẻ làm phôi và xóa ngay lập tức
+        // Bốc 3 phôi ngẫu nhiên từ mảng phôi dư
         let sacrificedCards = [];
         for(let i = 0; i < 3; i++) {
-            let rndIdx = Math.floor(Math.random() * myGallery[fodderTier].length);
-            sacrificedCards.push(myGallery[fodderTier][rndIdx]);
-            myGallery[fodderTier].splice(rndIdx, 1);
+            let rndIdx = Math.floor(Math.random() * availableFodder.length);
+            let chosenCard = availableFodder[rndIdx];
+            sacrificedCards.push(chosenCard);
+            availableFodder.splice(rndIdx, 1);
+            
+            // Xóa phôi khỏi túi chính thức
+            let gIdx = myGallery[fodderTier].indexOf(chosenCard);
+            if(gIdx !== -1) myGallery[fodderTier].splice(gIdx, 1);
         }
         updateStats();
         
@@ -2629,13 +2650,12 @@ window.executeUpgrade = function() {
                     database.ref('chat_messages').push({ name: "LÒ RÈN", text: `🔥 ĐIÊN RỒ! [${playerName}] vừa liều mạng đập thẻ lên ${targetTier} thành công với tỉ lệ ${rate}%!`, timestamp: Date.now() });
                 }
             } else {
-                // Tạch! Hiện đích danh 3 thẻ bị tế cho xót xa
                 let sacrText = sacrificedCards.map(c => `<span style="color:#ffeb3b;">${c}</span>`).join('<br>');
-                let html = `<div style="text-align:center;"><div style="font-size:80px;">💥</div><h2 style="color:var(--danger); margin-top:10px; font-size: 30px;">TẠCH RỒI!!!</h2><p style="font-size:16px;">Tiếng nát vỡ vang lên... 3 thẻ bậc <b>[${fodderTier}]</b> của bạn gồm:<br><br>${sacrText}<br><br>đã bốc hơi thành tro bụi.</p><button class="btn btn-warning" style="margin-top:20px; padding:15px;" onclick="openUpgradeCenter()">Cay quá Đập Tiếp</button></div>`;
+                let html = `<div style="text-align:center;"><div style="font-size:80px;">💥</div><h2 style="color:var(--danger); margin-top:10px; font-size: 30px;">TẠCH RỒI!!!</h2><p style="font-size:16px;">Tiếng nát vỡ vang lên... 3 phôi dư bậc <b>[${fodderTier}]</b> của bạn gồm:<br><br>${sacrText}<br><br>đã bốc hơi thành tro bụi.</p><button class="btn btn-warning" style="margin-top:20px; padding:15px;" onclick="openUpgradeCenter()">Cay quá Đập Tiếp</button></div>`;
                 openModal("⚰️ TAI NẠN LÒ RÈN", html);
                 
                 if(targetTier === 'LSR' || targetTier === 'USR') {
-                    database.ref('chat_messages').push({ name: "LÒ RÈN", text: `💀 HẢ HÊ: [${playerName}] đập thẻ lên ${targetTier} xịt lòi lìa, mất trắng 3 thẻ! Xin vĩnh biệt cụ!`, timestamp: Date.now() });
+                    database.ref('chat_messages').push({ name: "LÒ RÈN", text: `💀 HẢ HÊ: [${playerName}] đập thẻ lên ${targetTier} xịt lòi lìa, mất trắng 3 phôi! Xin vĩnh biệt cụ!`, timestamp: Date.now() });
                 }
             }
         }, 200);
