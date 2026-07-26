@@ -9,6 +9,33 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
+        /* ==========================================
+           TỐI ƯU MOBILE - CHỐNG TRÀN VIỀN GIAO DIỆN CHỢ / ĐẤU GIÁ
+           ========================================== */
+        @media (max-width: 850px) {
+            /* Thu gọn Modal (Bảng Pop-up) để không tràn mép màn hình */
+            .modal-box { padding: 15px !important; width: 95% !important; max-width: 95vw !important; margin: 5px auto !important; }
+            
+            /* Sửa bảng xếp hạng tràn viền (Thu nhỏ chữ, ép bọc chữ) */
+            .lb-table th, .lb-table td { font-size: 11px !important; padding: 6px 4px !important; word-break: break-word; }
+            
+            /* Sửa Sàn Giao Dịch: Ép 3 cột ngang thành hàng dọc */
+            .scrollable-list > div > div:nth-child(2) { flex-direction: column !important; text-align: center; padding: 10px !important; }
+            .scrollable-list > div > div:nth-child(2) > div { width: 100% !important; margin-bottom: 5px; }
+            
+            /* Xoay xoay cái icon cho hợp với hàng dọc */
+            .scrollable-list > div > div:nth-child(2) > div:nth-child(2) { transform: rotate(90deg); margin: 5px 0; }
+
+            /* Sửa Nhà Đấu Giá: Dàn lại thông tin cho vừa màn hình */
+            .auction-card { padding: 12px !important; }
+            .auction-card > div:nth-child(2) { flex-direction: column !important; text-align: center; gap: 8px !important;}
+            .auction-card [class*="tier-"] { width: 100% !important; height: 60px !important; padding: 5px !important; }
+            
+            /* Các input số và nút bấm đấu giá giãn full chiều ngang */
+            .scrollable-list input[type="number"] { width: 100% !important; box-sizing: border-box; }
+            .scrollable-list > div > div:last-child { display: flex; flex-direction: column; gap: 5px; }
+            .scrollable-list button { width: 100% !important; margin-top: 5px !important; }
+        }
         /* Khung cuộn dành riêng cho Sàn đấu giá / Giao dịch */
         .scrollable-list {
             max-height: 50vh; /* Giới hạn chiều cao tối đa bằng 50% màn hình */
@@ -277,7 +304,7 @@
 
 <!-- ================= MENU ĐĂNG NHẬP ================= -->
 <div id="setup-section" class="card" style="max-width: 600px; margin: 50px auto;">
-    <h1 style="color: var(--danger);">HÀNH TRÌNH 27/7<br><span style="color: var(--warning); font-size: 20px;">ULTIMATE GACHA</span></h1>
+    <h1 style="color: var(--danger);">HÀNH TRÌNH 27/7<br><span style="color: var(--warning); font-size: 20px;">ULTIMATE GAME V1.0.0</span></h1>
     <input type="text" id="playerName" placeholder="Nhập Tên của bạn...">
     <button class="btn btn-danger" onclick="joinLobby()">🚀 VÀO CHIẾN TRƯỜNG</button>
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="width: auto; margin-top: 15px; font-size: 13px;">👨‍💻 Trạm Chỉ Huy (Admin)</button>
@@ -382,6 +409,7 @@
         <button class="btn" style="background: linear-gradient(90deg, #11998e, #38ef7d); color: white; font-size: 15px; padding: 10px; border: 1px solid #11998e; margin-top: 10px;" onclick="openFreeTrade()">🌍 SÀN GIAO DỊCH TỰ DO</button>
         <button class="btn" style="background: linear-gradient(90deg, #8E2DE2, #4A00E0); color: white; font-size: 15px; padding: 10px; border: 1px solid #8E2DE2; margin-top: 10px;" onclick="openLiveTradeMenu()">🤝 GIAO DỊCH LIVE (MỜI BẠN)</button>
         <button class="btn" style="background: linear-gradient(90deg, #d35400, #c0392b); color: white; font-size: 15px; padding: 10px; border: 1px solid #c0392b; margin-top: 10px;" onclick="openAuctionHouse()">🔨 NHÀ ĐẤU GIÁ (AUCTION)</button>
+        <button class="btn" style="background: linear-gradient(90deg, #ff9800, #ff5722); color: white; font-size: 15px; padding: 10px; border: 1px solid #ff5722; margin-top: 10px; box-shadow: 0 0 10px #ff9800;" onclick="openUpgradeCenter()">🔨 LÒ RÈN THẺ (ÉP THẺ)</button>
     </div>
 
     <!-- KHU VỰC TRUNG TÂM MAP & CHAT -->
@@ -487,7 +515,57 @@ const qBank = [
     {q: "Quân kỳ Quyết thắng của QĐND Việt Nam được Bác Hồ trao tặng lần đầu năm nào?", opts: ["1952", "1944", "1954", "1945"], ans: 0},
     {q: "Lá cờ cắm trên nóc hầm De Castries trong chiến dịch Điện Biên Phủ có dòng chữ gì?", opts: ["Quyết chiến Quyết thắng", "Giải phóng", "Tất Thắng", "Độc lập Tự do"], ans: 0},
     {q: "Nhà tù Hỏa Lò, nơi giam giữ nhiều chiến sĩ cách mạng, nằm ở đâu?", opts: ["Hà Nội", "Hải Phòng", "Sài Gòn", "Côn Đảo"], ans: 0},
-    {q: "Người nữ anh hùng nào có câu nói 'Còn cái lai quần cũng đánh'?", opts: ["Chị Út Tịch", "Chị Sứ", "Võ Thị Sáu", "Nguyễn Thị Minh Khai"], ans: 0}
+    {q: "Người nữ anh hùng nào có câu nói 'Còn cái lai quần cũng đánh'?", opts: ["Chị Út Tịch", "Chị Sứ", "Võ Thị Sáu", "Nguyễn Thị Minh Khai"], ans: 0},
+    {q: "Chiến dịch 'Điện Biên Phủ trên không' diễn ra vào năm nào?", opts: ["1972", "1968", "1975", "1954"], ans: 0},
+    {q: "Chiếc xe tăng húc đổ cổng chính Dinh Độc Lập trưa ngày 30/4/1975 mang số hiệu bao nhiêu?", opts: ["Xe tăng 390", "Xe tăng 843", "Xe tăng 330", "Xe tăng 483"], ans: 0},
+    {q: "Ai là người trực tiếp cắm cờ trên nóc hầm tướng De Castries (Đờ Cát)?", opts: ["Tạ Quốc Luật", "Bùi Quang Thận", "Vũ Đăng Toàn", "Hoàng Đăng Vinh"], ans: 0},
+    {q: "Mặt trận Dân tộc Giải phóng miền Nam Việt Nam được thành lập vào năm nào?", opts: ["1960", "1954", "1965", "1968"], ans: 0},
+    {q: "Sự kiện Vịnh Bắc Bộ (mở đầu cuộc chiến tranh phá hoại miền Bắc của Mỹ) diễn ra vào năm nào?", opts: ["1964", "1960", "1965", "1968"], ans: 0},
+    {q: "Hiệp định Paris về chấm dứt chiến tranh, lập lại hòa bình ở Việt Nam được ký vào năm nào?", opts: ["1973", "1968", "1972", "1975"], ans: 0},
+    {q: "Chiến dịch Điện Biên Phủ (1954) được chia làm mấy đợt tiến công?", opts: ["3 đợt", "2 đợt", "4 đợt", "5 đợt"], ans: 0},
+    {q: "Anh hùng nào được mệnh danh là 'Ngọn đuốc sống' khi tẩm xăng vào người đốt kho đạn giặc?", opts: ["Lê Văn Tám", "Bế Văn Đàn", "La Văn Cầu", "Ngô Mây"], ans: 0},
+    {q: "Nữ anh hùng Võ Thị Sáu hy sinh tại đâu?", opts: ["Côn Đảo", "Phú Quốc", "Hỏa Lò", "Sài Gòn"], ans: 0},
+    {q: "Ai là tác giả của bài thơ lịch sử 'Hoan hô chiến sĩ Điện Biên'?", opts: ["Tố Hữu", "Chính Hữu", "Lê Anh Xuân", "Phạm Tiến Duật"], ans: 0},
+    {q: "Tổng Bí thư đầu tiên của Đảng Cộng sản Việt Nam là ai?", opts: ["Trần Phú", "Hà Huy Tập", "Lê Hồng Phong", "Nguyễn Văn Cừ"], ans: 0},
+    {q: "Người thanh niên cộng sản Lý Tự Trọng hy sinh khi mới bao nhiêu tuổi?", opts: ["17 tuổi", "16 tuổi", "18 tuổi", "20 tuổi"], ans: 0},
+    {q: "Sự kiện 'Tiếng bom Sa Diện' (1924) gắn liền với nhà cách mạng nào?", opts: ["Phạm Hồng Thái", "Nguyễn Thái Học", "Tôn Đức Thắng", "Hoàng Văn Thụ"], ans: 0},
+    {q: "Cuộc Khởi nghĩa Nam Kỳ bùng nổ vào năm nào?", opts: ["1940", "1930", "1941", "1945"], ans: 0},
+    {q: "Tên thật của Chủ tịch Hồ Chí Minh khi Người ra đi tìm đường cứu nước (năm 1911) là gì?", opts: ["Nguyễn Tất Thành", "Nguyễn Sinh Cung", "Nguyễn Ái Quốc", "Văn Ba"], ans: 0},
+    {q: "Tổ chức Thanh niên Cách mạng Đồng chí Hội do ai sáng lập?", opts: ["Nguyễn Ái Quốc", "Trần Phú", "Lê Hồng Phong", "Châu Văn Liêm"], ans: 0},
+    {q: "Đội Việt Nam Tuyên truyền Giải phóng quân lúc mới thành lập có bao nhiêu chiến sĩ?", opts: ["34 chiến sĩ", "30 chiến sĩ", "36 chiến sĩ", "40 chiến sĩ"], ans: 0},
+    {q: "Bác Hồ về nước trực tiếp lãnh đạo cách mạng Việt Nam vào năm nào?", opts: ["1941", "1930", "1945", "1954"], ans: 0},
+    {q: "Đội quân tóc dài là lực lượng nổi tiếng trong phong trào nào?", opts: ["Phong trào Đồng Khởi", "Khởi nghĩa Nam Kỳ", "Chiến dịch Điện Biên Phủ", "Tổng tiến công Mậu Thân"], ans: 0},
+    {q: "Khu vực nào được mệnh danh là 'Thủ đô gió ngàn' trong kháng chiến chống Pháp?", opts: ["Thái Nguyên", "Tuyên Quang", "Cao Bằng", "Bắc Kạn"], ans: 0},
+    {q: "Chiến dịch Mậu Thân nổ ra vào dịp Tết Nguyên Đán năm nào?", opts: ["1968", "1972", "1965", "1975"], ans: 0},
+    {q: "Cuộc khởi nghĩa Yên Thế do ai lãnh đạo?", opts: ["Hoàng Hoa Thám", "Phan Đình Phùng", "Cao Thắng", "Đinh Công Tráng"], ans: 0},
+    {q: "Nữ anh hùng Nguyễn Thị Minh Khai hy sinh tại đâu?", opts: ["Hóc Môn", "Côn Đảo", "Sài Gòn", "Phú Quốc"], ans: 0},
+    {q: "Lá cờ đỏ sao vàng xuất hiện lần đầu tiên trong sự kiện lịch sử nào?", opts: ["Khởi nghĩa Nam Kỳ", "Cách mạng Tháng Tám", "Quốc khánh 2/9", "Khởi nghĩa Bắc Sơn"], ans: 0},
+    {q: "Bí danh hoạt động quen thuộc của Chủ tịch Tôn Đức Thắng là gì?", opts: ["Bác Tôn", "Anh Ba", "Chín Hòa", "Hai Long"], ans: 0},
+    {q: "Lực lượng vận tải trên Tuyến đường mòn Hồ Chí Minh trên biển sử dụng phương tiện chủ yếu nào?", opts: ["Tàu không số", "Tàu ngầm", "Tàu sắt cỡ lớn", "Thuyền buồm"], ans: 0},
+    {q: "Căn cứ Trung ương Cục miền Nam thời kỳ kháng chiến chống Mỹ đóng chủ yếu ở tỉnh nào?", opts: ["Tây Ninh", "Bình Phước", "Bình Dương", "Đồng Nai"], ans: 0},
+    {q: "Vị tướng nào của Việt Nam được mệnh danh là 'Lưỡng quốc Tướng quân'?", opts: ["Nguyễn Sơn", "Võ Nguyên Giáp", "Hoàng Văn Thái", "Lê Trọng Tấn"], ans: 0},
+    {q: "Lực lượng phòng không Không quân Việt Nam dùng vũ khí gì làm chủ lực để bắn rơi siêu pháo đài bay B-52?", opts: ["Tên lửa SAM-2", "Pháo cao xạ 37mm", "Máy bay MiG-21", "Máy bay MiG-17"], ans: 0},
+    {q: "Người anh hùng thiếu niên hy sinh khi làm nhiệm vụ giao liên, bảo vệ cán bộ tên là gì?", opts: ["Kim Đồng", "Vừ A Dính", "Kpa Klơng", "Lê Văn Tám"], ans: 0},
+    {q: "Phong trào 'Ba sẵn sàng' được phát động rộng rãi trong lực lượng nào ở miền Bắc?", opts: ["Thanh niên", "Phụ nữ", "Nông dân", "Công nhân"], ans: 0},
+    {q: "Phong trào 'Ba đảm đang' là phong trào thi đua của lực lượng nào?", opts: ["Phụ nữ", "Thanh niên", "Lực lượng vũ trang", "Học sinh sinh viên"], ans: 0},
+    {q: "Bài hát 'Giải phóng miền Nam' - quốc ca của Chính phủ Cách mạng Lâm thời do ai sáng tác?", opts: ["Lưu Hữu Phước (Huỳnh Minh Siêng)", "Văn Cao", "Hoàng Việt", "Phạm Tuyên"], ans: 0},
+    {q: "Cây cầu lịch sử nào từng chia cắt hai miền Nam - Bắc Việt Nam trong suốt 21 năm?", opts: ["Cầu Hiền Lương", "Cầu Hàm Rồng", "Cầu Long Biên", "Cầu Tràng Tiền"], ans: 0},
+    {q: "'Hỡi đồng bào toàn quốc! Chúng ta muốn hòa bình...' là câu mở đầu của văn kiện nào?", opts: ["Lời kêu gọi toàn quốc kháng chiến", "Tuyên ngôn Độc lập", "Đường Kách mệnh", "Nhật ký trong tù"], ans: 0},
+    {q: "Lời kêu gọi toàn quốc kháng chiến được Bác Hồ phát động vào ngày tháng năm nào?", opts: ["19/12/1946", "23/9/1945", "02/9/1945", "07/5/1954"], ans: 0},
+    {q: "Bản Tuyên ngôn Độc lập được Chủ tịch Hồ Chí Minh soạn thảo tại đâu?", opts: ["Số 48 Hàng Ngang, Hà Nội", "Chiến khu Tân Trào", "Lán Nà Nưa", "Hang Pác Bó"], ans: 0},
+    {q: "Tập thơ 'Ngục trung nhật ký' (Nhật ký trong tù) được Chủ tịch Hồ Chí Minh sáng tác ở đâu?", opts: ["Quảng Tây, Trung Quốc", "Quảng Châu, Trung Quốc", "Hương Cảng", "Thái Lan"], ans: 0},
+    {q: "Chữ 'K' trong loại súng huyền thoại 'AK-47' có nghĩa là gì?", opts: ["Kalashnikov", "Kirov", "Komsomol", "Krasny"], ans: 0},
+    {q: "Anh hùng phi công nào của Không quân Việt Nam nổi tiếng với chiến thuật 'Bám thắt lưng địch mà đánh' và bắn rơi 7 máy bay Mỹ?", opts: ["Nguyễn Văn Bảy", "Trần Hanh", "Phạm Tuân", "Vũ Xuân Thiều"], ans: 0},
+    {q: "Trận thắng lớn đầu tiên đánh dấu sự phá sản của chiến thuật 'Trực thăng vận' và 'Thiết xa vận' là trận nào?", opts: ["Trận Ấp Bắc", "Trận Bình Giã", "Trận Vạn Tường", "Trận Ba Gia"], ans: 0},
+    {q: "Căn cứ địa cách mạng U Minh Thượng nằm ở tỉnh nào hiện nay?", opts: ["Kiên Giang", "Cà Mau", "Bạc Liêu", "Sóc Trăng"], ans: 0},
+    {q: "Trận hải chiến bảo vệ Gạc Ma (Quần đảo Trường Sa) diễn ra vào năm nào?", opts: ["1988", "1974", "1979", "1989"], ans: 0},
+    {q: "Hiệp định sơ bộ ngày 6/3/1946 được ký kết giữa Việt Nam và quốc gia nào?", opts: ["Pháp", "Nhật", "Mỹ", "Trung Hoa Dân Quốc"], ans: 0},
+    {q: "Nơi diễn ra Hội nghị thành lập Đảng Cộng sản Việt Nam (1930) là ở đâu?", opts: ["Cửu Long, Hương Cảng", "Quảng Châu", "Ma Cao", "Thượng Hải"], ans: 0},
+    {q: "Bác Hồ ra đi tìm đường cứu nước từ bến cảng nào?", opts: ["Bến Nhà Rồng", "Cảng Hải Phòng", "Cảng Đà Nẵng", "Cảng Quy Nhơn"], ans: 0},
+    {q: "Vị lãnh tụ nào của khởi nghĩa Lam Sơn đã giải phóng đất nước khỏi quân Minh?", opts: ["Lê Lợi", "Nguyễn Trãi", "Trần Hưng Đạo", "Quang Trung"], ans: 0},
+    {q: "Vua Quang Trung (Nguyễn Huệ) đại phá 29 vạn quân Thanh vào dịp Tết năm nào?", opts: ["Kỷ Dậu (1789)", "Mậu Thân (1788)", "Canh Tý (1780)", "Tân Hợi (1791)"], ans: 0},
+    {q: "Nhà tù Côn Đảo - nơi mệnh danh là 'địa ngục trần gian' thuộc tỉnh nào hiện nay?", opts: ["Bà Rịa - Vũng Tàu", "Kiên Giang", "Khánh Hòa", "Bình Thuận"], ans: 0},
+    {q: "Cuộc Tổng tiến công và nổi dậy mùa Xuân 1975 kết thúc thắng lợi bằng chiến dịch mang tên ai?", opts: ["Chiến dịch Hồ Chí Minh", "Chiến dịch Tây Nguyên", "Chiến dịch Huế - Đà Nẵng", "Chiến dịch Phước Long"], ans: 0}
 ];
 
 function shuffleArray(array) { let shuffled = [...array]; for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; } return shuffled; }
@@ -514,7 +592,65 @@ function prepareQuestions() {
         {type: 'FILL', q: "Cuộc chiến đấu bảo vệ Thành cổ Quảng Trị kéo dài bao nhiêu ngày đêm?", ans: 81},
         {type: 'FILL', q: "Ngày thành lập Quân đội Nhân dân Việt Nam là 22 tháng 12 năm nào?", ans: 1944},
         {type: 'FILL', q: "Bác Hồ ra đi tìm đường cứu nước vào năm nào?", ans: 1911},
-        {type: 'FILL', q: "Bác Hồ sinh năm bao nhiêu?", ans: 1890}
+        {type: 'FILL', q: "Bác Hồ sinh năm bao nhiêu?", ans: 1890},
+        // 25 CÂU ĐÚNG / SAI (TF)
+        {type: 'TF', q: "Quân đội nhân dân Việt Nam chính thức mang tên gọi này từ năm 1950.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Hiệp định Genève về việc lập lại hòa bình ở Đông Dương được ký kết vào năm 1954.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Nguyễn Thái Học là người sáng lập ra tổ chức Việt Nam Quốc dân Đảng.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Mặt trận Việt Minh được thành lập vào năm 1941 tại Cao Bằng.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Bí thư thứ nhất đầu tiên của Đoàn Thanh niên Cộng sản Hồ Chí Minh là đồng chí Lý Tự Trọng.", ans: 1, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Chị Út Tịch là nữ anh hùng nổi tiếng với câu nói 'Còn cái lai quần cũng đánh'.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Dinh Độc Lập hiện nay còn có tên gọi chính thức là Hội trường Thống Nhất.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Chiến dịch 'Điện Biên Phủ trên không' chống máy bay B-52 diễn ra trong 15 ngày đêm.", ans: 1, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Đồng chí Bùi Quang Thận là người trực tiếp cắm lá cờ Giải phóng lên nóc Dinh Độc Lập trưa 30/4/1975.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Nữ tướng Nguyễn Thị Định là nữ Thiếu tướng đầu tiên của Quân đội Nhân dân Việt Nam.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Phong trào 'Đồng Khởi' nổ ra đầu tiên và rầm rộ nhất ở tỉnh Bến Tre.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Chiến dịch Hồ Chí Minh ngay từ khi lập kế hoạch đã mang tên là Chiến dịch Hồ Chí Minh.", ans: 1, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Địa đạo Củ Chi - hệ thống đường hầm kháng chiến có tổng chiều dài lên tới khoảng 250km.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Phạm Tuân là người Việt Nam và cũng là người châu Á đầu tiên bay vào vũ trụ.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Cuộc kháng chiến chống Mỹ cứu nước của nhân dân ta kéo dài đúng 21 năm.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Ngày truyền thống của Quân đội Nhân dân Việt Nam là ngày 22/12.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Trận chiến Đắk Tô - Tân Cảnh là một trận đánh ác liệt nằm ở chiến trường miền Bắc.", ans: 1, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Cuốn 'Nhật ký Đặng Thùy Trâm' từng bị lính Mỹ thu giữ và sau này mới được trao trả lại cho Việt Nam.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Liệt sĩ Nguyễn Văn Thạc (tác giả Mãi mãi tuổi 20) đã chiến đấu và hy sinh tại chiến trường Quảng Trị.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Bài hát 'Quốc ca' của Việt Nam có tên gọi gốc lúc sáng tác là 'Tiến quân ca'.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Bác Hồ từng hoạt động cách mạng dưới bí danh 'Thầu Chín' khi ở Thái Lan.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Tác giả bài thơ nổi tiếng 'Màu tím hoa sim' là nhà thơ quân đội Hữu Loan.", ans: 0, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Tuyến đường Trường Sơn trên biển được mở và chính thức hoạt động vào năm 1959.", ans: 1, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Khu di tích lịch sử Pác Bó (nơi Bác Hồ về nước năm 1941) nằm ở tỉnh Lạng Sơn.", ans: 1, opts: ["Đúng", "Sai"]},
+        {type: 'TF', q: "Chiến dịch Phước Long (1975) là trận đánh trinh sát chiến lược, mở màn cho Đại thắng mùa Xuân.", ans: 0, opts: ["Đúng", "Sai"]},
+
+        // 30 CÂU ĐIỀN SỐ (FILL)
+        {type: 'FILL', q: "Đội Việt Nam Tuyên truyền Giải phóng quân lúc mới thành lập có bao nhiêu chiến sĩ?", ans: 34},
+        {type: 'FILL', q: "Sự kiện 'Điện Biên Phủ trên không' (năm 1972) kéo dài bao nhiêu ngày đêm?", ans: 12},
+        {type: 'FILL', q: "Cách mạng tháng Tám nổ ra và giành chính quyền thành công vào năm nào?", ans: 1945},
+        {type: 'FILL', q: "Đảng Cộng sản Việt Nam được thành lập vào ngày 3 tháng mấy?", ans: 2},
+        {type: 'FILL', q: "Chiến thắng lịch sử Điện Biên Phủ chấn động địa cầu nổ ra vào năm nào?", ans: 1954},
+        {type: 'FILL', q: "Quốc hội khóa VI đã quyết định đổi tên nước thành Cộng hòa Xã hội Chủ nghĩa Việt Nam vào năm nào?", ans: 1976},
+        {type: 'FILL', q: "Hiệp định Paris chấm dứt chiến tranh ở Việt Nam được ký kết vào năm nào?", ans: 1973},
+        {type: 'FILL', q: "Cuộc kháng chiến chống Mỹ kết thúc thắng lợi rực rỡ vào năm nào?", ans: 1975},
+        {type: 'FILL', q: "Thành phố Sài Gòn - Gia Định chính thức được đổi tên thành Thành phố Hồ Chí Minh từ năm nào?", ans: 1976},
+        {type: 'FILL', q: "Chủ tịch Hồ Chí Minh ra Lời kêu gọi toàn quốc kháng chiến vào tháng mấy?", ans: 12},
+        {type: 'FILL', q: "Hiệp định Genève chia cắt đất nước tạm thời được ký kết năm nào?", ans: 1954},
+        {type: 'FILL', q: "Mặt trận Dân tộc Giải phóng miền Nam Việt Nam được thành lập năm nào?", ans: 1960},
+        {type: 'FILL', q: "Bác Hồ đọc bản Tuyên ngôn Độc lập tại Quảng trường Ba Đình vào ngày mấy?", ans: 2},
+        {type: 'FILL', q: "Tỉnh Bến Tre nổi tiếng với phong trào 'Đồng Khởi' bùng nổ mạnh mẽ vào năm nào?", ans: 1960},
+        {type: 'FILL', q: "Cuộc Khởi nghĩa Nam Kỳ nổ ra vào năm nào?", ans: 1940},
+        {type: 'FILL', q: "Theo Hiệp định Genève, đất nước ta tạm thời bị chia cắt làm hai miền tại Vĩ tuyến bao nhiêu?", ans: 17},
+        {type: 'FILL', q: "Tên lửa SAM-2 (loại vũ khí bắn rơi B-52 của ta) thực chất là tổ hợp tên lửa phòng không SA-mấy?", ans: 2},
+        {type: 'FILL', q: "Sự kiện Tổng tiến công và nổi dậy Tết Mậu Thân diễn ra năm nào?", ans: 1968},
+        {type: 'FILL', q: "Trung tướng Phạm Tuân bay vào vũ trụ năm nào?", ans: 1980},
+        {type: 'FILL', q: "Lực lượng Tàu Không Số vận chuyển vũ khí trên biển Đông trực thuộc Đoàn số bao nhiêu?", ans: 125},
+        {type: 'FILL', q: "Ngày truyền thống của Quân đội Nhân dân Việt Nam là ngày 22 tháng mấy?", ans: 12},
+        {type: 'FILL', q: "Chiếc xe tăng húc đổ cổng chính Dinh Độc Lập mang số hiệu bao nhiêu?", ans: 390},
+        {type: 'FILL', q: "Đơn vị làm nhiệm vụ vận tải chiến lược trên tuyến đường mòn Hồ Chí Minh (đường bộ) mang phiên hiệu là Đoàn bao nhiêu?", ans: 559},
+        {type: 'FILL', q: "Chủ tịch Hồ Chí Minh qua đời vào năm nào?", ans: 1969},
+        {type: 'FILL', q: "Ngày Giải phóng Thủ đô Hà Nội là ngày 10 tháng mấy?", ans: 10},
+        {type: 'FILL', q: "Ngày Thương binh - Liệt sĩ để triền ân các anh hùng dân tộc là ngày 27 tháng mấy?", ans: 7},
+        {type: 'FILL', q: "Nghĩa trang liệt sĩ Quốc gia Trường Sơn là nơi an nghỉ của hơn bao nhiêu nghìn liệt sĩ (làm tròn số theo đơn vị nghìn)?", ans: 10},
+        {type: 'FILL', q: "Ngày sinh của Chủ tịch Hồ Chí Minh được kỷ niệm vào ngày 19 tháng mấy?", ans: 5},
+        {type: 'FILL', q: "Đại hội đại biểu toàn quốc lần thứ mấy của Đảng đã quyết định đổi tên Đảng thành Đảng Lao động Việt Nam (năm 1951)?", ans: 2},
+        {type: 'FILL', q: "Năm nay (2024), chúng ta kỷ niệm bao nhiêu năm Chiến thắng Điện Biên Phủ?", ans: 70}
     ];
     qBankMap = qBankMap.concat(extraQuestions);
     qBankMap = shuffleArray(qBankMap);
@@ -854,8 +990,13 @@ function updateStats() {
     document.getElementById('cnt-USR').innerText = myGallery.USR.length;
     document.getElementById('cnt-LSR').innerText = myGallery.LSR.length;
     
-    document.getElementById('chest-prog-text').innerText = `${openedChests}/${totalChestsToFind}`;
-    document.getElementById('chest-prog-bar').style.width = `${(openedChests/totalChestsToFind)*100}%`;
+    // HỆ THỐNG MỞ RƯƠNG VÔ TẬN: Tự động nâng mốc (75 -> 150 -> 225...)
+    let currentLimit = (Math.floor(openedChests / 75) + 1) * 75;
+    let levelProg = openedChests % 75;
+    
+    document.getElementById('chest-prog-text').innerText = `Đã mở: ${openedChests} 🎁 (Mốc ${currentLimit})`;
+    // Nếu rương mở chẵn mốc (ví dụ 75/75), tô đầy 100% thanh
+    document.getElementById('chest-prog-bar').style.width = `${(openedChests > 0 && levelProg === 0) ? 100 : (levelProg / 75) * 100}%`; 
     
     let sBtn = document.getElementById('skill-btn');
     if(isVIP) { sBtn.innerText = "👑 DÙNG KỸ NĂNG MAP (Vô Hạn)"; sBtn.style.display = "block"; sBtn.style.background = "linear-gradient(45deg, #9c27b0, #e91e63)"; } 
@@ -944,17 +1085,30 @@ function spawnMap() {
         { type: 'Platinum', class: 'chest-platinum', name: 'Rương Bạch Kim' }, { type: 'Ruby', class: 'chest-ruby', name: 'Rương Ruby' },
         { type: 'Legendary', class: 'chest-legendary', name: 'Rương Huyền Thoại' }, { type: 'Mythic', class: 'chest-mythic', name: 'Rương Thần Thoại' }
     ];
-    types.forEach(baseT => {
-        for(let i=0; i<8; i++) {
-            let cx = Math.random() * (mapData.width - 50); let cy = Math.random() * (mapData.height - 50);
-            let chest = document.createElement('div');
-            chest.className = `chest chest-hidden`; chest.innerHTML = '🌿'; 
-            chest.id = `chest_${Math.floor(Math.random()*1000000)}`; 
-            chest.style.left = `${cx}px`; chest.style.top = `${cy}px`;
-            chest.dataset.type = baseT.type; chest.dataset.name = baseT.name; chest.dataset.trueClass = baseT.class; 
-            map.appendChild(chest); chests.push(chest);
-        }
-    });
+    
+    // NERF: Thay vì chia đều, giờ thả 80 rương ngẫu nhiên theo tỉ lệ cực gắt
+    for(let i=0; i<80; i++) {
+        let rand = Math.random();
+        let selectedType;
+        if(rand < 0.40) selectedType = types[0];       // 40% Gỗ
+        else if(rand < 0.65) selectedType = types[1];  // 25% Sắt
+        else if(rand < 0.80) selectedType = types[2];  // 15% Đồng
+        else if(rand < 0.90) selectedType = types[3];  // 10% Bạc
+        else if(rand < 0.95) selectedType = types[4];  // 5% Vàng
+        else if(rand < 0.975) selectedType = types[5]; // 2.5% Kim Cương
+        else if(rand < 0.99) selectedType = types[6];  // 1.5% Bạch Kim
+        else if(rand < 0.997) selectedType = types[7]; // 0.7% Ruby
+        else if(rand < 0.999) selectedType = types[8]; // 0.2% Huyền Thoại
+        else selectedType = types[9];                  // 0.1% Thần Thoại
+
+        let cx = Math.random() * (mapData.width - 50); let cy = Math.random() * (mapData.height - 50);
+        let chest = document.createElement('div');
+        chest.className = `chest chest-hidden`; chest.innerHTML = '🌿'; 
+        chest.id = `chest_${Math.floor(Math.random()*1000000)}`; 
+        chest.style.left = `${cx}px`; chest.style.top = `${cy}px`;
+        chest.dataset.type = selectedType.type; chest.dataset.name = selectedType.name; chest.dataset.trueClass = selectedType.class; 
+        map.appendChild(chest); chests.push(chest);
+    }
     document.getElementById('player').style.left = pX + 'px'; document.getElementById('player').style.top = pY + 'px';
     updateCamera();
 }
@@ -1268,16 +1422,18 @@ function respawnChest() {
     
     let rand = Math.random();
     let selectedType;
-    if(rand < 0.3) selectedType = types[0]; 
-    else if(rand < 0.5) selectedType = types[1]; 
-    else if(rand < 0.65) selectedType = types[2]; 
-    else if(rand < 0.75) selectedType = types[3]; 
-    else if(rand < 0.85) selectedType = types[4]; 
-    else if(rand < 0.92) selectedType = types[5]; 
-    else if(rand < 0.96) selectedType = types[6]; 
-    else if(rand < 0.985) selectedType = types[7]; 
-    else if(rand < 0.995) selectedType = types[8]; 
-    else selectedType = types[9]; 
+    
+    // NERF tỉ lệ rớt rương mới cũng gắt y chang lúc đầu
+    if(rand < 0.40) selectedType = types[0];       
+    else if(rand < 0.65) selectedType = types[1];  
+    else if(rand < 0.80) selectedType = types[2];  
+    else if(rand < 0.90) selectedType = types[3];  
+    else if(rand < 0.95) selectedType = types[4];  
+    else if(rand < 0.975) selectedType = types[5]; 
+    else if(rand < 0.99) selectedType = types[6];  
+    else if(rand < 0.997) selectedType = types[7]; 
+    else if(rand < 0.999) selectedType = types[8]; 
+    else selectedType = types[9];                  
 
     let cx = Math.random() * (mapData.width - 50); 
     let cy = Math.random() * (mapData.height - 50);
@@ -1293,7 +1449,7 @@ function respawnChest() {
     
     map.appendChild(chest); 
     chests.push(chest);
-}
+} 
 
 // ==========================================
 // KỸ NĂNG MAP MỚI (CẬP NHẬT 4 THẺ NHÂN PHẨM GACHA)
@@ -1487,7 +1643,7 @@ window.openGachaCenter = function() {
             </div>
             <div style="background: linear-gradient(90deg, #8A2387, #E94057, #F27121); border: 3px solid #ffeb3b; box-shadow: 0 0 15px #F27121; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 8px;">
                 <div><h3 style="margin:0; font-size:16px; color:#ffeb3b; text-shadow: 0 0 8px #ffeb3b;">🎯 PACK ĐỊNH MỆNH (10 Thẻ Mới)</h3><div style="font-size:11px; color:#fff;">Ra 100% thẻ CHƯA SỞ HỮU (Ưu tiên quét từ R lên LSR).</div></div>
-                <button class="btn" style="background:#ffeb3b; color:#000; width:90px; margin:0; font-weight: 900;" onclick="rollMissingPack(20000)">20000 💎</button>
+                <button class="btn" style="background:#ffeb3b; color:#000; width:90px; margin:0; font-weight: 900;" onclick="rollMissingPack(10000)">10000 💎</button>
             </div>
 
         </div>
@@ -1498,10 +1654,10 @@ window.openGachaCenter = function() {
 
 const marketGachaRates = {
     basic:  { R: 70, SR: 30, UR: 0, SSR: 0, USR: 0, LSR: 0 },
-    pro:    { R: 10, SR: 40, UR: 50, SSR: 0, USR: 0, LSR: 0 },
-    elite:  { R: 0, SR: 10, UR: 30, SSR: 50, USR: 10, LSR: 0 },
-    legend: { R: 0, SR: 0, UR: 0, SSR: 20, USR: 50, LSR: 30 },
-    infinity: { R: 0, SR: 0, UR: 0, SSR: 5, USR: 35, LSR: 60 }
+    pro:    { R: 9, SR: 40, UR: 50, SSR: 0, USR: 0, LSR: 1 },
+    elite:  { R: 0, SR: 7, UR: 30, SSR: 50, USR: 10, LSR: 3 },
+    legend: { R: 0, SR: 0, UR: 0, SSR: 20, USR: 70, LSR: 10 },
+    infinity: { R: 0, SR: 0, UR: 0, SSR: 5, USR: 45, LSR: 50 }
 };
 
 window.buySkill = function() {
@@ -1558,9 +1714,6 @@ window.rollGacha = function(type) {
     }, 300);
 };
 
-// ==========================================
-// 6. THƯ VIỆN BỘ SƯU TẬP & THÀNH TỰU DẠNG DỌC CHUẨN
-// ==========================================
 // ==========================================
 // 6. THƯ VIỆN BỘ SƯU TẬP & THÀNH TỰU (TỰ ĐỘNG ĐỒNG BỘ SỐ THẺ)
 // ==========================================
@@ -2346,6 +2499,149 @@ database.ref('room_auction_wins').on('child_added', snap => {
         openModal("🎉 THẮNG ĐẤU GIÁ", html + `<button class="btn btn-warning" style="margin-top:20px;" onclick="closeModal()">Đút Túi</button>`);
     }
 });
+// ==========================================
+// LÒ RÈN TỐI THƯỢNG (DÙNG 3 THẺ BẤT KỲ CÙNG BẬC LÀM PHÔI)
+// ==========================================
+const upgradeRates = {
+    'R':   { 'SR': 75, 'UR': 25, 'SSR': 5,  'USR': 1,   'LSR': 0.1 },
+    'SR':  { 'UR': 50, 'SSR': 15, 'USR': 3,  'LSR': 0.5 },
+    'UR':  { 'SSR': 35, 'USR': 10, 'LSR': 2   },
+    'SSR': { 'USR': 20, 'LSR': 5   },
+    'USR': { 'LSR': 10  }
+};
+const tierOrder = ['R', 'SR', 'UR', 'SSR', 'USR', 'LSR'];
+
+window.openUpgradeCenter = function() {
+    let options = "";
+    let hasFodder = false;
+    
+    // Tìm các BẬC (Tier) có tổng số thẻ >= 3 (không cần trùng tên)
+    for(let t of tierOrder) {
+        if(t === 'LSR') continue; // LSR là max tier, không thể làm phôi nữa
+        let count = myGallery[t].length;
+        if(count >= 3) {
+            hasFodder = true;
+            options += `<option value='${t}'>Hy sinh 3 thẻ Bậc [${t}] (Đang có tổng: ${count} thẻ)</option>`;
+        }
+    }
+    
+    if(!hasFodder) {
+        let html = `<div style="padding: 20px; color: var(--danger); font-weight: bold; text-align:center;">Túi đồ rách nát quá!<br>Bạn không có Bậc Thẻ nào chứa đủ 3 thẻ để ép cả!</div><button class="btn btn-secondary" onclick="closeModal()">Đóng Cửa Lò</button>`;
+        return openModal("🔨 LÒ RÈN TỐI THƯỢNG", html);
+    }
+
+    let html = `
+        <div style="background: #fff; padding: 15px; border-radius: 10px; text-align: left; border: 2px dashed #ff5722;">
+            <p style="font-size: 13px; color: #555; background: #fff3e0; padding: 10px; border-radius: 8px;">💡 <b>Luật Lò Rèn MỚI:</b> Chọn 1 Bậc Thẻ, hệ thống sẽ <b>TỰ ĐỘNG BỐC ĐẠI 3 THẺ NGẪU NHIÊN</b> trong Bậc đó đem đi tế! (Thất bại sẽ <b>MẤT TRẮNG</b> cả 3 thẻ).</p>
+            
+            <h4 style="margin: 0 0 5px 0; color: var(--primary);">🔥 Chọn Bậc Phôi (Mất 3 Thẻ ngẫu nhiên):</h4>
+            <select id="upgrade-fodder" style="width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 5px; font-weight: bold; background: #e8f0fe;" onchange="updateUpgradeUI()">${options}</select>
+            
+            <h4 style="margin: 0 0 5px 0; color: var(--danger);">🎯 Chọn Bậc Mục Tiêu:</h4>
+            <select id="upgrade-target" style="width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 5px; font-weight: bold; background: #fce8e6;" onchange="updateUpgradeUI()">
+                <!-- Populated by JS -->
+            </select>
+
+            <div style="text-align: center; margin-bottom: 15px; background: #111; color: #fff; padding: 15px; border-radius: 8px; box-shadow: inset 0 0 15px rgba(0,0,0,0.8);">
+                <div style="font-size: 14px; color: #aaa; margin-bottom: 5px;">Tỉ Lệ Ép Thành Công</div>
+                <div id="upgrade-rate-display" style="font-size: 40px; font-weight: 900; color: #00e5ff; text-shadow: 0 0 10px #00e5ff;">0%</div>
+            </div>
+
+            <button class="btn" style="background: linear-gradient(45deg, #ff0044, #ff9800); color: #fff; font-size: 18px; padding: 15px; font-weight: 900; box-shadow: 0 5px 15px rgba(255,0,68,0.4);" onclick="executeUpgrade()">🔨 ĐẬP THẺ NGAY</button>
+        </div>
+    `;
+    openModal("🔨 LÒ RÈN TỐI THƯỢNG", html);
+    setTimeout(updateUpgradeUI, 50);
+};
+
+window.updateUpgradeUI = function() {
+    let fodderTier = document.getElementById('upgrade-fodder').value;
+    if(!fodderTier) return;
+    
+    let targetSelect = document.getElementById('upgrade-target');
+    let currentTarget = targetSelect.value;
+    
+    let targetOptions = "";
+    let rates = upgradeRates[fodderTier];
+    let foundCurrent = false;
+    
+    for(let target in rates) {
+        targetOptions += `<option value="${target}">Ép hóa lên [${target}]</option>`;
+        if(target === currentTarget) foundCurrent = true;
+    }
+    
+    targetSelect.innerHTML = targetOptions;
+    if(foundCurrent) targetSelect.value = currentTarget;
+    
+    let selectedTarget = targetSelect.value;
+    let rate = rates[selectedTarget] || 0;
+    
+    let display = document.getElementById('upgrade-rate-display');
+    display.innerText = rate + "%";
+    
+    if(rate >= 50) { display.style.color = "#00e5ff"; display.style.textShadow = "0 0 10px #00e5ff"; }
+    else if(rate >= 15) { display.style.color = "#ffeb3b"; display.style.textShadow = "0 0 10px #ffeb3b"; }
+    else { display.style.color = "#ff0044"; display.style.textShadow = "0 0 10px #ff0044"; }
+};
+
+window.executeUpgrade = function() {
+    let fodderTier = document.getElementById('upgrade-fodder').value;
+    let targetTier = document.getElementById('upgrade-target').value;
+    if(!fodderTier || !targetTier) return;
+    
+    let rate = upgradeRates[fodderTier][targetTier] || 0;
+    
+    if(myGallery[fodderTier].length < 3) {
+        showToast(`Lỗi: Không còn đủ 3 thẻ bậc [${fodderTier}]!`, "danger");
+        return openUpgradeCenter();
+    }
+
+    closeModal();
+    
+    let flash = document.createElement('div');
+    flash.style.cssText = `position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:999999; display:flex; flex-direction:column; justify-content:center; align-items:center; color:white; font-weight:bold;`;
+    flash.innerHTML = `<div style="font-size:80px; animation: shaking-vision 0.1s infinite;">🔨</div><h2 style="color:#ff5722; margin-top:20px; font-size:30px;">ĐANG NUNG THẺ...</h2>`;
+    document.body.appendChild(flash);
+    
+    setTimeout(() => {
+        // Lấy ngẫu nhiên 3 thẻ làm phôi và xóa ngay lập tức
+        let sacrificedCards = [];
+        for(let i = 0; i < 3; i++) {
+            let rndIdx = Math.floor(Math.random() * myGallery[fodderTier].length);
+            sacrificedCards.push(myGallery[fodderTier][rndIdx]);
+            myGallery[fodderTier].splice(rndIdx, 1);
+        }
+        updateStats();
+        
+        let rand = Math.random() * 100;
+        flash.style.background = "white";
+        
+        setTimeout(() => {
+            flash.remove();
+            if(rand <= rate) {
+                let cPool = cardDatabase[targetTier]; 
+                let newCard = cPool[Math.floor(Math.random() * cPool.length)];
+                myGallery[targetTier].push(newCard.name);
+                updateStats();
+                displayGachaResult([{ tier: targetTier, data: newCard }], `✨ ÁNH SÁNG CHÓI LÓA! ÉP THÀNH CÔNG! ✨`);
+                
+                if(targetTier === 'LSR' || targetTier === 'USR' || (rate <= 10)) {
+                    database.ref('chat_messages').push({ name: "LÒ RÈN", text: `🔥 ĐIÊN RỒ! [${playerName}] vừa liều mạng đập thẻ lên ${targetTier} thành công với tỉ lệ ${rate}%!`, timestamp: Date.now() });
+                }
+            } else {
+                // Tạch! Hiện đích danh 3 thẻ bị tế cho xót xa
+                let sacrText = sacrificedCards.map(c => `<span style="color:#ffeb3b;">${c}</span>`).join('<br>');
+                let html = `<div style="text-align:center;"><div style="font-size:80px;">💥</div><h2 style="color:var(--danger); margin-top:10px; font-size: 30px;">TẠCH RỒI!!!</h2><p style="font-size:16px;">Tiếng nát vỡ vang lên... 3 thẻ bậc <b>[${fodderTier}]</b> của bạn gồm:<br><br>${sacrText}<br><br>đã bốc hơi thành tro bụi.</p><button class="btn btn-warning" style="margin-top:20px; padding:15px;" onclick="openUpgradeCenter()">Cay quá Đập Tiếp</button></div>`;
+                openModal("⚰️ TAI NẠN LÒ RÈN", html);
+                
+                if(targetTier === 'LSR' || targetTier === 'USR') {
+                    database.ref('chat_messages').push({ name: "LÒ RÈN", text: `💀 HẢ HÊ: [${playerName}] đập thẻ lên ${targetTier} xịt lòi lìa, mất trắng 3 thẻ! Xin vĩnh biệt cụ!`, timestamp: Date.now() });
+                }
+            }
+        }, 200);
+        
+    }, 2000); // 2 giây hồi hộp
+};
 </script>
 </body>
 </html>
