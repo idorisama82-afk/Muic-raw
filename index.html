@@ -1296,14 +1296,22 @@ function respawnChest() {
 }
 
 // ==========================================
-// KỸ NĂNG MAP MỚI
+// KỸ NĂNG MAP MỚI (CẬP NHẬT 4 THẺ NHÂN PHẨM GACHA)
 // ==========================================
 window.drawSkill = function() {
     if(isInputPaused || skillCount <= 0) return;
     if(myPassive === 6 && Math.random() < 0.3) { showToast("♻️ TÁI CHẾ: Bạn không bị trừ thẻ kỹ năng!", "success"); } else { skillCount--; }
     updateStats();
     
+    // Hàm siêu nhỏ để quay tỉ lệ % cực chuẩn
+    const rollRate = (rates) => {
+        let rand = Math.random() * 100; let sum = 0;
+        for (let k in rates) { sum += rates[k]; if (rand <= sum) return k; }
+        return Object.keys(rates)[0];
+    };
+
     let skills = [
+        // ---- CÁC KỸ NĂNG CŨ ----
         {name: "Xuyên Không", desc: "Giảm 60s thời gian của bạn.", action: () => { elapsedTime = Math.max(0, elapsedTime - 60); showToast("🚀 Đã giảm 60s thời gian!", "success"); closeModal(); }},
         {name: "Đóng Băng", desc: "Đóng băng toàn bộ đối thủ 5s.", action: () => { database.ref('room_events').push({ type: 'freeze', by: playerName, time: Date.now() }); showToast("❄️ Đã đóng băng toàn server!", "success"); closeModal(); }},
         {name: "Ra Đa", desc: "Đánh dấu rương VIP trên bản đồ.", action: () => { 
@@ -1324,6 +1332,67 @@ window.drawSkill = function() {
                 updateCamera(); showToast("🚀 Đã dịch chuyển đến Rương!", "success");
             } else { showToast("Bản đồ đã hết rương!", "warning"); }
             closeModal();
+        }},
+        {name: "Thiên Nhãn", desc: "Lột trần TẤT CẢ rương trên bản đồ.", action: () => { 
+            chests.forEach(c => { c.classList.remove('chest-hidden'); c.classList.add(c.dataset.trueClass, 'chest-revealed'); c.innerHTML = '🎁'; });
+            showToast("👁️ Thiên Nhãn: Toàn bộ rương đã hiện hình!", "success"); closeModal();
+        }},
+        {name: "Hack Điểm", desc: "Bơm ngay 50 Điểm vào tài khoản.", action: () => { score += 50; updateStats(); showToast("🎯 Hack thành công 50 Điểm!", "success"); closeModal(); }},
+        {name: "Cuồng Phong", desc: "Thổi bay người chơi khác đi nơi ngẫu nhiên.", action: () => { database.ref('room_events').push({ type: 'tornado', by: playerName, time: Date.now() }); showToast("🌪️ Đã tạo bão Cuồng Phong quét toàn server!", "success"); closeModal(); }},
+        {name: "Đạo Tặc", desc: "Nhận 200 Gems và trộm 200 Gems của đối thủ.", action: () => { gems += 200; updateStats(); database.ref('room_events').push({ type: 'steal', by: playerName, time: Date.now() }); showToast("🥷 Kích hoạt Đạo Tặc: Bú 200 Gems và phá đối thủ!", "success"); closeModal(); }},
+
+        // ---- 4 THẺ NHÂN PHẨM MỚI CHẾ ----
+        {name: "Chìa Khóa Vạn Năng", desc: "Mở tung 1 Rương ngẫu nhiên không cần giải đố. Rương xịn tỉ lệ rớt thấp.", action: () => {
+            let chestWeights = { Wood: 30, Iron: 25, Bronze: 18, Silver: 12, Gold: 7, Diamond: 4, Platinum: 2, Ruby: 1.2, Legendary: 0.6, Mythic: 0.2 };
+            let cType = rollRate(chestWeights);
+            let earnedGems = chestGemRewards[cType] || 50;
+            if(myPassive === 0) earnedGems = Math.floor(earnedGems * 1.2); // Tính cả nội tại Thương Nhân
+            gems += earnedGems; score += 10; openedChests++;
+            
+            let rates = chestGachaRates[cType]; 
+            let pulls = (myPassive === 7 && Math.random() < 0.2) ? 10 : 5; // Tính cả Phước Lành x2 thẻ
+            let results = [];
+            for(let i=0; i<pulls; i++) {
+                let pTier = rollRate(rates);
+                let cPool = cardDatabase[pTier]; let card = cPool[Math.floor(Math.random() * cPool.length)];
+                myGallery[pTier].push(card.name); results.push({ tier: pTier, data: card });
+            }
+            updateStats(); closeModal();
+            displayGachaResult(results, `🗝 Bẻ khóa thành công [Rương ${cType}]!`, earnedGems);
+        }},
+        {name: "Mưa Thẻ Phạt", desc: "Trời độ! Nhận ngẫu nhiên 5 thẻ. Thẻ càng xịn tỉ lệ ra càng thấp.", action: () => {
+            let rates = { R: 60, SR: 25, UR: 10, SSR: 4, USR: 0.8, LSR: 0.2 };
+            let results = [];
+            for(let i=0; i<5; i++) {
+                let pTier = rollRate(rates);
+                let cPool = cardDatabase[pTier]; let card = cPool[Math.floor(Math.random() * cPool.length)];
+                myGallery[pTier].push(card.name); results.push({ tier: pTier, data: card });
+            }
+            updateStats(); closeModal();
+            displayGachaResult(results, `🌧 Mưa Thẻ Phạt! Nhận 5 thẻ ngẫu nhiên!`, 0);
+        }},
+        {name: "Hacker Chợ Đen", desc: "Đột nhập Cửa Hàng chôm ngẫu nhiên 1 Pack (Tỉ lệ hack trúng Pack Vô Cực cực thấp).", action: () => {
+            let packWeights = { basic: 45, pro: 30, elite: 15, legend: 8, infinity: 2 };
+            let pType = rollRate(packWeights);
+            let pulls = (pType === 'infinity') ? 10 : 5;
+            let pRates = marketGachaRates[pType];
+            let results = [];
+            for(let i=0; i<pulls; i++) {
+                let pTier = rollRate(pRates);
+                let cPool = cardDatabase[pTier]; let card = cPool[Math.floor(Math.random() * cPool.length)];
+                myGallery[pTier].push(card.name); results.push({ tier: pTier, data: card });
+            }
+            updateStats(); closeModal();
+            let pNames = { basic: "TẬP SỰ", pro: "ANH HÙNG", elite: "SIÊU SAO", legend: "HUYỀN THOẠI", infinity: "VÔ CỰC" };
+            displayGachaResult(results, `💻 Hack thành công Pack [${pNames[pType]}]!`, 0);
+        }},
+        {name: "Thẻ Bài Nhân Phẩm", desc: "Nhận 1 Thẻ Duy Nhất. Độ hiếm càng cao tỉ lệ càng thấp (LSR chỉ 1%).", action: () => {
+            let rates = { R: 50, SR: 30, UR: 12, SSR: 5, USR: 2, LSR: 1 };
+            let pTier = rollRate(rates);
+            let cPool = cardDatabase[pTier]; let card = cPool[Math.floor(Math.random() * cPool.length)];
+            myGallery[pTier].push(card.name); 
+            updateStats(); closeModal();
+            displayGachaResult([{ tier: pTier, data: card }], `🃏 Phép màu! Bạn nhận 1 thẻ nhân phẩm!`, 0);
         }}
     ];
     
@@ -1333,10 +1402,10 @@ window.drawSkill = function() {
             <div style="font-size: 50px; margin-bottom: 10px; animation: pulse 1s infinite;">🃏</div>
             <h2 style="color:var(--warning); margin: 0 0 10px 0;">${rndSkill.name}</h2>
             <p style="font-size:16px; color: #ccc; margin-bottom: 20px;">${rndSkill.desc}</p>
-            <button class="btn btn-warning" id="btn-activate-skill">⚡ Kích Hoạt Ngay</button>
+            <button class="btn btn-warning" id="btn-activate-skill" style="padding:15px; font-size:18px;">⚡ Kích Hoạt Ngay</button>
         </div>
     `;
-    openModal("🎉 RÚT THẺ THÀNH CÔNG", htmlContent);
+    openModal("🎉 RÚT THẺ KỸ NĂNG", htmlContent);
     
     setTimeout(() => { let btn = document.getElementById('btn-activate-skill'); if(btn) btn.onclick = rndSkill.action; }, 50);
 };
