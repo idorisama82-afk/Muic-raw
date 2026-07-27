@@ -3686,10 +3686,7 @@ window.executeBreakthrough = function() {
 
 
 // ==========================================
-// HỆ THỐNG ĐỌC THẺ & RENDER ICON THẺ MINI
-// ==========================================
-// ==========================================
-// 1. BỘ CÔNG CỤ HIỂN THỊ THẺ CHỐNG CRASH TỐI THƯỢNG
+// 1. CÔNG CỤ HIỂN THỊ THẺ VÀ BỘ LỌC 2 LỚP SIÊU NHẸ (CHỐNG LAG)
 // ==========================================
 window.parseCardName = function(rawName) {
     let isShiny = rawName.includes('✨');
@@ -3717,6 +3714,103 @@ window.getMiniCardHtml = function(tier, rawCardName) {
     </div>`;
 };
 
+// ==========================================
+// THIẾT KẾ MỚI: CHỈ RENDER DUY NHẤT 110 THẺ GỐC ĐỂ CHỐNG LAG
+// ==========================================
+window.buildGlobalCardCacheHTML = function(callbackName) {
+    let html = '';
+    const tierOrderAdmin = ['LSR', 'USR', 'SSR', 'UR', 'SR', 'R'];
+    tierOrderAdmin.forEach(tier => {
+        html += `<h3 style="color:var(--primary); border-bottom:2px solid #ccc; text-align:left; padding-bottom:5px; margin-top:15px;">Bậc ${tier}</h3><div style="display:flex; flex-wrap:wrap; gap:6px;">`;
+        cardDatabase[tier].forEach(cData => {
+            let safeName = cData.name.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+            // Thay vì render đủ loại sao/shiny, giờ chỉ bấm vào thẻ gốc để mở form Tùy chỉnh (Bộ lọc Lớp 2)
+            html += `<div class="visual-card-select tier-${tier}" style="width: 75px; padding: 4px; border-radius: 6px; text-align: center; margin: 2px; cursor:pointer;" onclick="openCardConfigurator('${tier}', '${safeName}', '${callbackName}')">
+                <div style="font-size:10px; font-weight:900;">${tier}</div>
+                <div style="height: 50px; background: rgba(0,0,0,0.5); border-radius: 4px; margin: 4px 0; display:flex; justify-content:center; align-items:center;">${cData.img ? `<img src="${cData.img}" style="width:100%; height:100%; object-fit:contain;">` : '👤'}</div>
+                <div style="font-size:9px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#fff;" title="${cData.name}">${cData.name}</div>
+            </div>`;
+        });
+        html += `</div>`;
+    });
+    return html;
+};
+
+// ==========================================
+// BỘ LỌC LỚP 2: TÙY CHỈNH SAO VÀ SHINY CỦA THẺ GỐC
+// ==========================================
+window.openCardConfigurator = function(tier, safeBaseName, callbackName) {
+    let baseName = safeBaseName.replace(/&quot;/g, '"');
+    let cData = cardDatabase[tier].find(c => c.name === baseName);
+    let imgTag = cData && cData.img ? `<img src="${cData.img}" style="width:100%; height:100%; object-fit:contain;">` : '👤';
+
+    let html = `
+        <div style="background:#fff; padding:15px; border-radius:10px; border:2px solid var(--primary); text-align:center;">
+            <div style="height: 100px; margin-bottom:10px; display:flex; justify-content:center; align-items:center;">${imgTag}</div>
+            <h4 style="color:var(--danger); margin:0 0 15px 0;">[${tier}] ${baseName}</h4>
+            
+            <div style="display:flex; flex-direction:column; gap:10px; text-align:left;">
+                <div style="background:#fffde7; padding:10px; border-radius:5px; border:1px solid var(--warning);">
+                    <label style="font-size:13px; font-weight:bold; color:var(--warning);">🌟 Chọn mức Sao Đột Phá:</label>
+                    <select id="inline-config-stars" style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; font-weight:bold; margin-top:5px;">
+                        <option value="1">1 Sao ⭐</option>
+                        <option value="2">2 Sao ⭐⭐</option>
+                        <option value="3">3 Sao ⭐⭐⭐</option>
+                        <option value="4">4 Sao ⭐⭐⭐⭐</option>
+                        <option value="5">5 Sao ⭐⭐⭐⭐⭐</option>
+                    </select>
+                </div>
+                <div style="background:#e0f7fa; padding:10px; border-radius:5px; border:1px solid #00bcd4;">
+                    <label style="font-size:13px; font-weight:bold; color:#00bcd4;">✨ Thuộc tính lấp lánh (Shiny):</label>
+                    <select id="inline-config-shiny" style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; font-weight:bold; margin-top:5px;">
+                        <option value="no">Bản Thường</option>
+                        <option value="yes">Bản Shiny Lấp Lánh ✨</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button class="btn btn-danger" style="flex:1; padding:12px; font-size:16px;" onclick="confirmInlineCardConfig('${tier}', '${safeBaseName}', '${callbackName}')">✅ Chốt Thẻ Này</button>
+                <button class="btn btn-secondary" style="width:auto; padding:12px;" onclick="cancelInlineCardConfig()">Quay lại Kho</button>
+            </div>
+        </div>
+    `;
+    
+    // Tiêm thẳng giao diện này vào khung đang hiển thị (Chợ hoặc Admin) để không làm hỏng Modal
+    let container = document.getElementById('trade-req-selector-container') || document.getElementById('admin-global-cache-container');
+    if(container) {
+        if(!container.dataset.origHtml) container.dataset.origHtml = container.innerHTML; // Lưu lại kho thẻ
+        container.innerHTML = html;
+    }
+};
+
+window.confirmInlineCardConfig = function(tier, safeBaseName, callbackName) {
+    let baseName = safeBaseName.replace(/&quot;/g, '"');
+    let stars = parseInt(document.getElementById('inline-config-stars').value) || 1;
+    let isShiny = document.getElementById('inline-config-shiny').value === 'yes';
+    
+    let starStr = stars > 1 ? " " + "⭐".repeat(stars) : "";
+    let shinyStr = isShiny ? " ✨" : "";
+    let finalCardName = baseName + shinyStr + starStr;
+    
+    cancelInlineCardConfig(); // Phục hồi lại HTML của kho thẻ gốc
+    
+    // Truyền dữ liệu siêu sạch về Hàm Yêu cầu
+    if (callbackName && typeof window[callbackName] === 'function') {
+        window[callbackName](tier, finalCardName);
+    }
+};
+
+window.cancelInlineCardConfig = function() {
+    let container = document.getElementById('trade-req-selector-container') || document.getElementById('admin-global-cache-container');
+    if(container && container.dataset.origHtml) {
+        container.innerHTML = container.dataset.origHtml;
+    }
+};
+
+// ==========================================
+// HÀM CHỌN THẺ TRONG KHO (VẬT PHẨM ĐANG SỞ HỮU)
+// ==========================================
 window.renderVisualCardSelector = function(containerId, hiddenInputId, requirement = 1, callbackName = '') {
     let container = document.getElementById(containerId);
     if (!container) return;
@@ -3770,41 +3864,8 @@ window.selectVisualCard = function(el, inputId, callbackName) {
     if (callbackName && typeof window[callbackName] === 'function') window[callbackName]();
 };
 
-window.buildGlobalCardCacheHTML = function(callbackName) {
-    let html = '';
-    const tierOrderAdmin = ['LSR', 'USR', 'SSR', 'UR', 'SR', 'R'];
-    tierOrderAdmin.forEach(tier => {
-        html += `<h3 style="color:var(--primary); border-bottom:2px solid #ccc; text-align:left; padding-bottom:5px; margin-top:15px;">Bậc ${tier}</h3><div style="display:flex; flex-wrap:wrap; gap:6px;">`;
-        cardDatabase[tier].forEach(cData => {
-            for(let star=1; star<=5; star++) {
-                let starStr = star > 1 ? " " + "⭐".repeat(star) : "";
-                
-                let nName = cData.name + starStr;
-                let nSafe = nName.replace(/"/g, '&quot;');
-                html += `<div class="visual-card-select tier-${tier}" style="width: 75px; padding: 4px; border-radius: 6px; text-align: center; margin: 2px; cursor:pointer;" data-tier="${tier}" data-card="${nSafe}" onclick="${callbackName}(this)">
-                    ${star > 1 ? `<div class="star-badge">${star}⭐</div>` : ''}
-                    <div style="font-size:10px; font-weight:900;">${tier}</div>
-                    <div style="height: 50px; background: rgba(0,0,0,0.5); border-radius: 4px; margin: 4px 0; display:flex; justify-content:center; align-items:center;">${cData.img ? `<img src="${cData.img}" style="width:100%; height:100%; object-fit:contain;">` : '👤'}</div>
-                    <div style="font-size:9px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#fff;">${cData.name}</div>
-                </div>`;
-                
-                let sName = cData.name + " ✨" + starStr;
-                let sSafe = sName.replace(/"/g, '&quot;');
-                html += `<div class="visual-card-select tier-${tier} shiny-card-border" style="width: 75px; padding: 4px; border-radius: 6px; text-align: center; margin: 2px; cursor:pointer;" data-tier="${tier}" data-card="${sSafe}" onclick="${callbackName}(this)">
-                    ${star > 1 ? `<div class="star-badge">${star}⭐</div>` : ''}
-                    <div style="font-size:10px; font-weight:900;"><span class="shiny-text">${tier}</span></div>
-                    <div style="height: 50px; background: rgba(0,0,0,0.5); border-radius: 4px; margin: 4px 0; display:flex; justify-content:center; align-items:center;">${cData.img ? `<img src="${cData.img}" style="width:100%; height:100%; object-fit:contain;">` : '👤'}</div>
-                    <div style="font-size:9px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#fff;"><span class="shiny-text">${cData.name}</span></div>
-                </div>`;
-            }
-        });
-        html += `</div>`;
-    });
-    return html;
-};
-
 // ==========================================
-// 2. SÀN GIAO DỊCH TỰ DO (CHỢ ĐEN) HOÀN HẢO
+// 2. CHỢ GIAO DỊCH TỰ DO (ĐÃ GẮN BỘ LỌC 2 LỚP)
 // ==========================================
 window.globalFreeTrades = [];
 database.ref('room_free_trades').on('value', snap => {
@@ -3833,18 +3894,16 @@ window.showFreeTradeList = function() {
     window.renderFreeTrades();
 };
 
-window.selectTradeReqCard = function(el) {
-    let tier = el.getAttribute('data-tier'); 
-    let cardName = el.getAttribute('data-card').replace(/&quot;/g, '"');
-    document.getElementById('trade-req-card').value = JSON.stringify({tier: tier, card: cardName});
-    document.getElementById('trade-req-preview').innerHTML = window.getMiniCardHtml(tier, cardName);
+window.selectTradeReqCard = function(tier, finalCardName) {
+    document.getElementById('trade-req-card').value = JSON.stringify({tier: tier, card: finalCardName});
+    document.getElementById('trade-req-preview').innerHTML = window.getMiniCardHtml(tier, finalCardName);
     document.getElementById('trade-req-selector-container').style.display = 'none';
 };
 
 window.toggleTradeReqSelector = function() {
     let el = document.getElementById('trade-req-selector-container');
     if(el.style.display === 'none') {
-        if(!el.innerHTML.trim()) el.innerHTML = window.buildGlobalCardCacheHTML('window.selectTradeReqCard');
+        if(!el.innerHTML.trim()) el.innerHTML = window.buildGlobalCardCacheHTML('selectTradeReqCard');
         el.style.display = 'block';
     } else el.style.display = 'none';
 };
@@ -3871,7 +3930,7 @@ window.openCreateFreeTrade = function() {
             <div id="trade-req-preview" style="min-height: 80px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; width:100%; border:1px dashed #555; border-radius:6px; background:#f8f9fa;">
                 <div style="color:#999; font-style:italic; font-weight:bold;">- Chưa chọn thẻ yêu cầu -</div>
             </div>
-            <button class="btn btn-secondary" style="width:100%; margin-bottom:15px; padding:10px;" onclick="window.toggleTradeReqSelector()">🔍 Mở Kho Tìm Thẻ Yêu Cầu (1⭐-5⭐)</button>
+            <button class="btn btn-secondary" style="width:100%; margin-bottom:15px; padding:10px;" onclick="window.toggleTradeReqSelector()">🔍 Mở Kho Tìm Thẻ Yêu Cầu</button>
             <div id="trade-req-selector-container" style="display:none; max-height:40vh; overflow-y:auto; background:#f0f2f5; padding:10px; border-radius:8px; border:1px solid #ccc; margin-bottom:15px;"></div>
 
             <input type="number" id="trade-req-gems" value="0" min="0" placeholder="Yêu cầu Gems (Tùy chọn)" style="width:100%; padding:12px; margin-bottom:15px; border-radius:5px; background:#e6f4ea; font-weight:bold; box-sizing: border-box;">
@@ -3881,10 +3940,8 @@ window.openCreateFreeTrade = function() {
 };
 
 window.postFreeTrade = function() {
-    let offerVal = document.getElementById('trade-offer-card').value; 
-    let reqVal = document.getElementById('trade-req-card').value;
-    let offerGems = parseInt(document.getElementById('trade-offer-gems').value) || 0; 
-    let reqGems = parseInt(document.getElementById('trade-req-gems').value) || 0;
+    let offerVal = document.getElementById('trade-offer-card').value; let reqVal = document.getElementById('trade-req-card').value;
+    let offerGems = parseInt(document.getElementById('trade-offer-gems').value) || 0; let reqGems = parseInt(document.getElementById('trade-req-gems').value) || 0;
     
     if((!offerVal || offerVal === 'none') && offerGems === 0) return showToast("Không được tay không bắt giặc!", "warning");
     if(gems < offerGems) return showToast("Không đủ Gems để cọc tiền!", "danger");
@@ -3901,13 +3958,9 @@ window.postFreeTrade = function() {
     gems -= offerGems; updateStats();
 
     database.ref('room_free_trades').push({ poster: playerName, offerTier, offerCard, offerGems, reqTier, reqCard, reqGems, time: Date.now() }).then(() => {
-        showToast("Niêm yết lên Sàn thành công!", "success");
-        database.ref('chat_messages').push({ name: "SÀN GIAO DỊCH", text: `📢 [${playerName}] vừa quăng 1 kèo trade lên sàn! Vào xem ngay!`, timestamp: Date.now() });
-        window.showFreeTradeList(); 
+        showToast("Niêm yết lên Sàn thành công!", "success"); window.showFreeTradeList(); 
     }).catch(err => {
-        if(offerCard !== 'none') myGallery[offerTier].push(offerCard);
-        gems += offerGems; updateStats();
-        showToast("Lỗi mạng Firebase: " + err.message, "danger");
+        if(offerCard !== 'none') myGallery[offerTier].push(offerCard); gems += offerGems; updateStats(); showToast("Lỗi mạng Firebase!", "danger");
     });
 };
 
@@ -3923,8 +3976,8 @@ window.renderFreeTrades = function() {
         let hasGemsReq = gems >= item.reqGems;
         let isMine = item.poster === playerName;
         
-        let safeOfferCard = item.offerCard.replace(/"/g, '&quot;');
-        let safeReqCard = item.reqCard.replace(/"/g, '&quot;');
+        let safeOfferCard = item.offerCard.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+        let safeReqCard = item.reqCard.replace(/"/g, '&quot;').replace(/'/g, "\\'");
         
         let btnHtml = isMine ? `<button class="btn btn-secondary" style="width:100%; padding:10px; margin-top:10px; font-size:14px; font-weight:bold;" onclick="window.cancelFreeTrade('${item.id}', '${item.offerTier}', '${safeOfferCard}', ${item.offerGems})">Hủy Bỏ / Trả Đồ</button>` : ((hasCardReq && hasGemsReq) ? `<button class="btn btn-success" style="width:100%; padding:10px; margin-top:10px; font-size:14px; font-weight:bold; animation:pulse 1s infinite;" onclick="window.acceptFreeTrade('${item.id}', '${item.poster}', '${item.offerTier}', '${safeOfferCard}', ${item.offerGems}, '${item.reqTier}', '${safeReqCard}', ${item.reqGems})">🤝 Chốt Deal Ngay</button>` : `<button class="btn btn-secondary" style="width:100%; padding:10px; margin-top:10px; font-size:14px;" disabled>Thiếu Điều Kiện</button>`);
         
@@ -3980,7 +4033,7 @@ window.acceptFreeTrade = function(id, posterName, offerTier, offerCardRaw, offer
 };
 
 // ==========================================
-// 3. NHÀ ĐẤU GIÁ LIÊN SERVER (AUCTION)
+// 3. NHÀ ĐẤU GIÁ LIÊN SERVER (TỰ NHẬP GIÁ CHUẨN)
 // ==========================================
 window.globalAuctions = [];
 database.ref('room_auctions').on('value', snap => {
@@ -4009,7 +4062,61 @@ window.showAuctionList = function() {
     window.renderAuctions();
 };
 
+window.openCreateAuction = function() {
+    let content = document.getElementById('auction-content'); 
+    if(!content) return;
+    content.dataset.mode = "form"; content.style.background = "#fff"; content.style.border = "2px dashed var(--danger)";
+    
+    let myCardsCount = 0; for(let t in myGallery) myCardsCount += myGallery[t].length;
+    if(myCardsCount === 0) {
+        content.innerHTML = "<div style='padding:40px 20px; text-align:center; color:var(--danger); font-weight:bold;'>Kho đồ của bạn đang trống! Không có gì để đem đi đấu giá!</div>"; return;
+    }
+    
+    content.innerHTML = `
+        <div style="padding:15px; text-align:left;">
+            <h4 style="margin:0 0 5px 0; color:var(--primary);">📤 Chọn Thẻ Lên Sàn Đấu Giá:</h4>
+            <input type="hidden" id="auc-card" value="none">
+            <div id="visual-auction-cards" style="margin-bottom: 15px;"></div>
+            
+            <div style="background: #e8f0fe; padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #b8d0fc;">
+                <h4 style="margin:0 0 5px 0; color:#00bcd4; font-size:14px;">💎 Giá Khởi Điểm (Tự do chỉnh sửa):</h4>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <input type="number" id="auc-start-price" value="0" min="1" style="flex:1; padding:12px; font-size: 22px; font-weight: 900; color: var(--danger); border: 2px solid var(--danger); border-radius: 6px; box-sizing:border-box; text-align:center; background:#fff;">
+                    <span style="font-size:28px;">💎</span>
+                </div>
+                <div id="auc-auto-price-text" style="font-size:12px; color:#555; margin-top:8px; font-style:italic;">Vui lòng chọn thẻ ở trên...</div>
+            </div>
 
+            <h4 style="margin:0 0 5px 0; color:var(--warning);">⏳ Thời Gian Đấu Giá:</h4>
+            <select id="auc-duration" style="width:100%; padding:12px; margin-bottom:20px; border-radius:5px; background:#fff3e0; font-weight:bold;">
+                <option value="1">1 Phút (Nhanh gọn)</option><option value="3" selected>3 Phút (Tiêu chuẩn)</option><option value="5">5 Phút (Hàng hiếm)</option>
+            </select>
+            <button class="btn btn-danger" style="padding:15px; font-size:16px;" onclick="window.postAuction()">Lên Sàn Đấu Giá Ngay</button>
+        </div>
+    `;
+    window.renderVisualCardSelector('visual-auction-cards', 'auc-card', 1, 'updateAuctionAutoPrice');
+};
+
+window.updateAuctionAutoPrice = function() {
+    let cardVal = document.getElementById('auc-card').value;
+    let priceBox = document.getElementById('auc-auto-price-text');
+    let priceInput = document.getElementById('auc-start-price');
+    
+    if(!cardVal || cardVal === 'none') { priceBox.innerText = "Vui lòng chọn thẻ ở trên..."; priceInput.value = 0; return; }
+    
+    let o = JSON.parse(cardVal); 
+    let baseVals = { R: 10, SR: 50, UR: 200, SSR: 500, USR: 2000, LSR: 5000 };
+    let basePrice = baseVals[o.tier] || 100;
+    let isShiny = o.card.includes('✨');
+    let shinyMultiplier = isShiny ? 5 : 1; 
+    let starMatch = o.card.match(/⭐/g);
+    let starCount = starMatch ? starMatch.length : 1;
+    let starMultiplier = Math.pow(4, starCount - 1); 
+    
+    let calculatedPrice = basePrice * shinyMultiplier * starMultiplier;
+    priceInput.value = calculatedPrice;
+    priceBox.innerHTML = `(Hệ thống đề xuất: Hệ số ${starCount}⭐ ${isShiny ? '+ Shiny x5' : ''})`;
+};
 
 window.postAuction = function() {
     let cardEl = document.getElementById('auc-card');
@@ -4235,10 +4342,10 @@ window.renderLiveTradeSelectionGrid = function() {
         let starMatch = c.card.match(/⭐/g);
         let starHtml = starMatch ? `<div class="star-badge" style="position:absolute; top:-5px; right:-5px; background:#000; border:1px solid #ffeb3b; padding:2px 5px; border-radius:8px; font-size:9px; color:#ffeb3b; z-index:2;">${starMatch.length}⭐</div>` : '';
         
-        let safeCard = c.card.replace(/"/g, '&quot;');
+        let safeCard = c.card.replace(/"/g, '&quot;').replace(/'/g, "\\'");
         let isExhausted = available <= 0;
         let cardStyle = isExhausted ? "opacity: 0.3; filter: grayscale(100%); cursor:not-allowed;" : "cursor:pointer; transition: 0.2s;";
-        let clickAction = isExhausted ? "" : `data-tier="${c.tier}" data-card="${safeCard}" onclick="window.addCardToLiveTrade(this)"`;
+        let clickAction = isExhausted ? "" : `onclick="window.addCardToLiveTrade('${c.tier}', '${safeCard}')"`;
 
         html += `
         <div class="tier-${c.tier} ${sClass}" style="width: 75px; padding: 4px; border-radius: 6px; text-align: center; margin: 2px; display: flex; flex-direction: column; justify-content: space-between; position:relative; ${cardStyle}" ${clickAction}>
@@ -4260,10 +4367,10 @@ window.renderLiveTradeSelectionGrid = function() {
     document.getElementById('live-trade-selected-count').innerText = window.tempLiveSelectedCards.length;
 };
 
-window.addCardToLiveTrade = function(el) {
-    let tier = el.getAttribute('data-tier'); let card = el.getAttribute('data-card').replace(/&quot;/g, '"');
+window.addCardToLiveTrade = function(tier, rawCard) {
+    let card = rawCard.replace(/&quot;/g, '"');
     window.tempLiveSelectedCards.push({tier: tier, card: card});
-    window.renderLiveTradeSelectionGrid();
+    window.renderLiveTradeSelectionGrid(); 
 };
 
 window.removeCardFromLiveTrade = function(idx) {
@@ -4365,6 +4472,285 @@ if(!window.isLiveTradeHooked) {
     });
     window.isLiveTradeHooked = true;
 }
+
+// ==========================================
+// 5. ĐẶC QUYỀN ADMIN (CHỌN THẺ 2 BƯỚC CHO ĐẤU GIÁ VÀ GIVEAWAY)
+// ==========================================
+window.selectAdminItemCard = function(tier, finalCardName) {
+    selectAdminItem(tier, finalCardName, 'card');
+};
+
+window.openAdminSelector = function(mode) {
+    window.adminCurrentSelectMode = mode;
+    let html = '';
+    if(mode === 'auction' || (mode === 'giveaway' && document.getElementById('admin-ga-type').value === 'card')) {
+        html = `
+            <h3 style="color:var(--primary); margin-top:0;">Duyệt Kho Thẻ Gốc</h3>
+            <p style="font-size:12px; color:#666;">Bấm vào 1 thẻ để chọn thuộc tính Shiny và Số Sao.</p>
+            <div id="admin-global-cache-container" style="max-height:60vh; overflow-y:auto; background:#f8f9fa; border-radius:8px; padding:10px; border:1px solid #ddd;">
+                ${window.buildGlobalCardCacheHTML('selectAdminItemCard')}
+            </div>
+            <button class="btn btn-secondary" style="margin-top:15px; width:100%;" onclick="closeModal()">Hủy Bỏ</button>`;
+    } else {
+        html = `<h3 style="color:#ff5722; margin-top:0;">Chọn Pack / Kỹ Năng Tặng Quà</h3><div style="max-height:60vh; overflow-y:auto; padding:10px;">${window.getAdminPacksHTML()}</div><button class="btn btn-secondary" style="margin-top:15px; width:100%;" onclick="closeModal()">Hủy Bỏ</button>`;
+    }
+    openModal("🔍 KHO DỮ LIỆU TỐI THƯỢNG", html);
+};
+
+window.getAdminPacksHTML = function() {
+    const packs = [
+        { id: 'skill_1', name: '⚡ 1 Thẻ Kỹ Năng Map', icon: '🃏' },
+        { id: 'skill_5', name: '📦 Pack Kỹ Năng Bí Ẩn (2-5 Thẻ)', icon: '📦' },
+        { id: 'skill_12', name: '🔥 Pack Kỹ Năng Tối Thượng (6-12)', icon: '🔥' },
+        { id: 'gacha_basic', name: '📦 Pack Tập Sự (5 Thẻ)', icon: '🔰' },
+        { id: 'gacha_pro', name: '🔥 Pack Anh Hùng (5 Thẻ)', icon: '⚔️' },
+        { id: 'gacha_elite', name: '🌟 Pack Siêu Sao (5 Thẻ)', icon: '🌟' },
+        { id: 'gacha_legend', name: '👑 Pack Huyền Thoại (5 Thẻ)', icon: '👑' },
+        { id: 'gacha_infinity', name: '🌌 Pack Vô Cực (10 Thẻ)', icon: '🌌' },
+        { id: 'gacha_destiny', name: '🎯 Pack Định Mệnh (10 Thẻ Mới)', icon: '🎯' }
+    ];
+    let html = '<div style="display:flex; flex-direction:column; gap:10px;">';
+    packs.forEach(p => {
+        html += `<div style="background:#222; border:2px dashed #ffeb3b; padding:15px; border-radius:8px; display:flex; align-items:center; gap:15px; cursor:pointer; color:#fff; font-weight:bold; font-size:16px; transition:0.2s;" onmouseover="this.style.background='#333'" onmouseout="this.style.background='#222'" onclick="window.selectAdminItem('${p.id}', '${p.name}', 'pack')">
+            <span style="font-size:30px;">${p.icon}</span><span>${p.name}</span>
+        </div>`;
+    });
+    html += '</div>';
+    return html;
+};
+
+window.selectAdminItem = function(tierOrId, nameRaw, itemType) {
+    let name = nameRaw.replace(/&quot;/g, '"');
+    if(window.adminCurrentSelectMode === 'auction') {
+        document.getElementById('admin-auc-card-val').value = JSON.stringify({tier: tierOrId, card: name});
+        document.getElementById('admin-auc-preview').innerHTML = window.getMiniCardHtml(tierOrId, name);
+        
+        let baseVals = { R: 10, SR: 50, UR: 200, SSR: 500, USR: 2000, LSR: 5000 };
+        let basePrice = baseVals[tierOrId] || 100;
+        let shinyMultiplier = name.includes('✨') ? 5 : 1; 
+        let starMatch = name.match(/⭐/g);
+        let starMultiplier = Math.pow(4, (starMatch ? starMatch.length : 1) - 1); 
+        document.getElementById('admin-auc-price').value = basePrice * shinyMultiplier * starMultiplier;
+        
+    } else if (window.adminCurrentSelectMode === 'giveaway') {
+        document.getElementById('admin-ga-val').value = tierOrId;
+        document.getElementById('admin-ga-name').value = name;
+        document.getElementById('admin-ga-type-hidden').value = itemType;
+        
+        if(itemType === 'card') {
+            document.getElementById('admin-ga-preview').innerHTML = window.getMiniCardHtml(tierOrId, name);
+        } else {
+            document.getElementById('admin-ga-preview').innerHTML = `<div style="font-size:18px; font-weight:bold; background:#222; padding:15px; border-radius:8px; border:2px dashed #ffeb3b; color:#ffeb3b;">🎁 ${name}</div>`;
+        }
+    }
+    closeModal();
+};
+
+window.resetAdminGA = function() {
+    document.getElementById('admin-ga-val').value = ""; document.getElementById('admin-ga-name').value = ""; document.getElementById('admin-ga-type-hidden').value = "";
+    document.getElementById('admin-ga-preview').innerHTML = `<div style="color:#999; font-style:italic; font-weight:bold;">- Chưa chọn quà -</div>`;
+};
+
+window.adminForceAuction = function() {
+    let cardVal = document.getElementById('admin-auc-card-val').value;
+    let startPrice = parseInt(document.getElementById('admin-auc-price').value) || 0;
+    
+    if(!cardVal) return showToast("Lỗi: Chưa vào kho chọn thẻ!", "danger");
+    if(startPrice <= 0) return showToast("Giá khởi điểm phải lớn hơn 0!", "danger");
+
+    let o = JSON.parse(cardVal);
+    database.ref('room_auctions').push({ 
+        seller: "HỆ THỐNG", tier: o.tier, card: o.card, startPrice: startPrice, currentBid: startPrice, highestBidder: "none", 
+        endTime: Date.now() + (180000), status: 'active', timeCreated: Date.now() 
+    }).then(() => {
+        let msg = `🚨 [HỆ THỐNG VIP] Vừa thả siêu phẩm [${o.tier}] ${o.card} lên Sàn Đấu Giá! Khởi điểm ${startPrice.toLocaleString()}💎! TẤT CẢ VÀO CƯỚP!`;
+        database.ref('chat_messages').push({ name: "NHÀ ĐẤU GIÁ", text: msg, timestamp: Date.now() }); 
+        showToast("Đã tống cổ Thẻ lên Sàn Đấu Giá!", "success");
+        document.getElementById('admin-auc-card-val').value = ""; document.getElementById('admin-auc-preview').innerHTML = `<div style="color:#999; font-style:italic; font-weight:bold;">- Chưa chọn thẻ -</div>`; document.getElementById('admin-auc-price').value = "0";
+    });
+};
+
+window.adminExecuteGiveaway = function() {
+    let itemType = document.getElementById('admin-ga-type-hidden').value; 
+    let itemVal = document.getElementById('admin-ga-val').value; 
+    let itemNameText = document.getElementById('admin-ga-name').value;
+
+    if (!itemType || !itemVal) return showToast("Chưa chọn Quà Giveaway! Bấm 🔍 Mở Kho Quà để chọn.", "warning");
+
+    database.ref('room_players').once('value', snap => {
+        let players = [];
+        snap.forEach(child => { 
+            let p = child.val();
+            if (p.name && p.name.toLowerCase() !== 'idori') players.push({ key: child.key, name: p.name });
+        });
+
+        if (players.length === 0) return showToast("Sảnh vắng hoe, không có ai để phát lộc!", "warning");
+        let winner = players[Math.floor(Math.random() * players.length)];
+        let rewardPayload = itemType === 'card' ? JSON.stringify({tier: itemVal, card: itemNameText}) : itemVal;
+
+        database.ref('room_events').push({
+            type: 'giveaway', winnerKey: winner.key, winnerName: winner.name, rewardType: itemType, rewardValue: rewardPayload,
+            rewardNameText: itemType === 'card' ? `[${itemVal}] ${itemNameText}` : itemNameText, time: Date.now()
+        });
+
+        showToast(`Quay số thành công! Đã chuyển quà cho ${winner.name}`, "success");
+        window.resetAdminGA();
+    });
+};
+
+database.ref('room_events').on('child_added', snap => {
+    if (!isGameActive) return; let ev = snap.val(); if (!ev || (Date.now() - ev.time > 15000)) return; 
+    if (ev.type === 'giveaway') {
+        if (playerName.toLowerCase() === 'idori') {
+            database.ref('chat_messages').push({ name: "HỆ THỐNG", text: `🎉 TING TINH! CHÚC MỪNG [${ev.winnerName}] VỪA TRÚNG ĐỘC ĐẮC GIVEAWAY CỦA ADMIN: 🎁 ${ev.rewardNameText}!`, timestamp: Date.now() });
+            showGlobalBroadcast(`🎉 CHÚC MỪNG [${ev.winnerName}] TRÚNG GIVEAWAY!`);
+        }
+        if (myPlayerRef && myPlayerRef.key === ev.winnerKey) {
+            if (ev.rewardType === 'pack') {
+                if (ev.rewardValue === 'skill_1') { skillCount += 1; }
+                else if (ev.rewardValue === 'skill_5') { skillCount += Math.floor(Math.random() * 4) + 2; }
+                else if (ev.rewardValue === 'skill_12') { skillCount += Math.floor(Math.random() * 7) + 6; }
+                else if (ev.rewardValue.startsWith('gacha_')) {
+                    let packType = ev.rewardValue.replace('gacha_', '');
+                    if (packType === 'destiny') { 
+                        let missingCards = [];
+                        ['R', 'SR', 'UR', 'SSR', 'USR', 'LSR'].forEach(tier => { cardDatabase[tier].filter(c => !myGallery[tier].includes(c.name)).forEach(c => missingCards.push({ tier: tier, data: c })); });
+                        missingCards.slice(0, 10).forEach(c => myGallery[c.tier].push(c.data.name));
+                    } else { 
+                        let pRates = marketGachaRates[packType]; let pulls = packType === 'infinity' ? 10 : 5;
+                        for(let i=0; i<pulls; i++) {
+                            let rand = Math.random() * 100; let sum = 0; let pTier = 'R';
+                            for (let k in pRates) { sum += pRates[k]; if (rand <= sum) { pTier = k; break; } }
+                            let cPool = cardDatabase[pTier]; let card = cPool[Math.floor(Math.random() * cPool.length)];
+                            let isShiny = Math.random() < 0.05; let finalName = card.name + (isShiny ? " ✨" : "");
+                            myGallery[pTier].push(finalName);
+                        }
+                    }
+                }
+            } 
+            else if (ev.rewardType === 'card') { let o = JSON.parse(ev.rewardValue); myGallery[o.tier].push(o.card); }
+
+            updateStats(); 
+            let html = `<div style="text-align:center;"><div style="font-size:80px; animation: bounce 1s infinite;">🎁</div><h2 style="color:var(--danger); margin-top:10px; font-size: 30px;">TRÚNG ĐỘC ĐẮC!!!</h2><p style="font-size:16px;">Phước lộc từ trên trời rơi xuống! Bạn vừa nhận được quà từ Admin:</p><div style="background:#111; border:2px dashed #ffeb3b; padding:15px; border-radius:10px; color:#ffeb3b; font-weight:900; font-size:18px; margin: 20px 0; box-shadow: 0 0 20px rgba(255,235,59,0.5);">${ev.rewardNameText}</div><button class="btn btn-warning" style="margin-top:10px; padding:15px; font-size:16px;" onclick="closeModal()">Đút Quà Vào Túi Ngay</button></div>`;
+            openModal("🎉 LỤM GIVEAWAY ADMIN", html);
+        }
+    }
+});
+
+// ==========================================
+// 6. LÒ RÈN TỐI THƯỢNG (ÉP BẬC VÀ ĐỘT PHÁ)
+// ==========================================
+window.updateBreakthroughUI = function() {
+    let cardVal = document.getElementById('breakthrough-card').value;
+    let display = document.getElementById('breakthrough-rate-display');
+    let infoBox = document.getElementById('breakthrough-selected-info');
+    if(!infoBox && display) {
+        infoBox = document.createElement('div'); infoBox.id = 'breakthrough-selected-info';
+        infoBox.style.cssText = "font-size: 14px; color: #ffeb3b; font-weight: bold; margin-bottom: 8px; text-align: center;";
+        display.parentElement.insertBefore(infoBox, display);
+    }
+    if(!cardVal || cardVal === 'none') { 
+        if(display) display.innerText = "--%"; 
+        if(infoBox) infoBox.innerHTML = "⚠️ Chưa chọn thẻ nào để đột phá"; return; 
+    }
+    let c = JSON.parse(cardVal);
+    let countInBag = myGallery[c.tier] ? myGallery[c.tier].filter(x => x === c.card).length : 0;
+    let currentStars = c.card.match(/⭐/g) ? c.card.match(/⭐/g).length : 1;
+    
+    if(infoBox) infoBox.innerHTML = `Đang chọn: <span style="color:#fff;">${c.card}</span> (Kho đang có: <span style="color:#00e5ff;">${countInBag}</span> thẻ)`;
+
+    let rate = {1:60, 2:40, 3:20, 4:5}[currentStars] || 0;
+    if(currentStars >= 5) { if(display) { display.innerText = "MAX SAO"; display.style.color = "#ff0044"; } return; }
+    if(display) { display.innerText = rate + "%"; display.style.color = "#ffeb3b"; }
+};
+
+window.switchUpgradeTab = function(tabName) {
+    document.getElementById('tab-btn-tier').classList.remove('active'); document.getElementById('tab-btn-star').classList.remove('active');
+    document.getElementById('upgrade-tier-section').style.display = 'none'; document.getElementById('upgrade-star-section').style.display = 'none';
+    document.getElementById('tab-btn-' + tabName).classList.add('active'); document.getElementById('upgrade-' + tabName + '-section').style.display = 'block';
+    
+    if(tabName === 'tier') {
+        window.manualFodders = [null, null, null];
+        renderManualFodderUI();
+    } else if(tabName === 'star') {
+        window.renderVisualCardSelector('visual-breakthrough-cards', 'breakthrough-card', 3, 'updateBreakthroughUI');
+        let infoBox = document.getElementById('breakthrough-selected-info');
+        if(infoBox) infoBox.innerHTML = "⚠️ Chưa chọn thẻ nào để đột phá";
+        let display = document.getElementById('breakthrough-rate-display');
+        if(display) display.innerText = "--%";
+    }
+};
+
+window.renderManualFodderUI = function() {
+    let tier = document.getElementById('upgrade-fodder').value;
+    let container = document.getElementById('manual-fodder-grid');
+    let slotsContainer = document.getElementById('manual-fodder-slots');
+    if(!tier) { container.innerHTML = ''; slotsContainer.innerHTML = ''; return; }
+
+    let slotsHtml = '';
+    for(let i=0; i<3; i++) {
+        if(window.manualFodders[i]) {
+            let cardName = window.manualFodders[i];
+            let baseName = cardName.replace(' ✨','').replace(/⭐/g,'').trim();
+            let cData = cardDatabase[tier].find(c => c.name === baseName);
+            let imgTag = cData && cData.img ? `<img src="${cData.img}" style="width:100%; height:100%; object-fit:cover; border-radius:4px;">` : '👤';
+            let isShiny = cardName.includes('✨');
+            let sClass = isShiny ? 'shiny-card-border' : '';
+            
+            slotsHtml += `<div class="tier-${tier} ${sClass}" style="width:65px; height:90px; border-radius:6px; background:#222; position:relative; cursor:pointer; padding:4px; box-sizing:border-box; box-shadow:0 4px 10px rgba(0,0,0,0.8);" onclick="window.removeManualFodder(${i})" title="Bấm để gỡ thẻ">
+                <div style="height:50px; display:flex; justify-content:center; align-items:center; background:rgba(0,0,0,0.5); border-radius:4px; margin-bottom:4px; border: 1px solid rgba(255,255,255,0.2);">${imgTag}</div>
+                <div style="font-size:9px; color:#fff; text-align:center; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; font-weight:bold;">${baseName}</div>
+                <div style="position:absolute; top:-5px; right:-5px; background:var(--danger); color:white; border-radius:50%; width:18px; height:18px; font-size:10px; text-align:center; line-height:18px; font-weight:bold;">X</div>
+            </div>`;
+        } else {
+            slotsHtml += `<div style="width:65px; height:90px; border:2px dashed #666; border-radius:6px; background:#333; display:flex; justify-content:center; align-items:center; font-size:24px; color:#666; font-weight:bold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);">+</div>`;
+        }
+    }
+    slotsContainer.innerHTML = slotsHtml;
+
+    let counts = {};
+    myGallery[tier].forEach(c => counts[c] = (counts[c] || 0) + 1);
+    window.manualFodders.forEach(c => { if(c) counts[c]--; }); 
+
+    let gridHtml = '';
+    for(let cardName in counts) {
+        let available = counts[cardName] - 1; 
+        if(available > 0) {
+            let baseName = cardName.replace(' ✨','').replace(/⭐/g,'').trim();
+            let cData = cardDatabase[tier].find(c => c.name === baseName);
+            let imgTag = cData && cData.img ? `<img src="${cData.img}" style="width:100%; height:100%; object-fit:contain;">` : '👤';
+            let isShiny = cardName.includes('✨');
+            let sClass = isShiny ? 'shiny-card-border' : '';
+            let sText = isShiny ? 'shiny-text' : '';
+            let starMatch = cardName.match(/⭐/g);
+            let starCount = starMatch ? starMatch.length : 1;
+            let starHtml = starCount > 1 ? `<div class="star-badge" style="position:absolute; top:-5px; right:-5px; background:#000; border:1px solid #ffeb3b; padding:2px 5px; border-radius:8px; font-size:9px; color:#ffeb3b;">${starCount}⭐</div>` : '';
+            
+            let safeCard = cardName.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+            gridHtml += `<div class="visual-card-select tier-${tier} ${sClass}" style="width: 75px; padding: 6px; border-radius: 6px; text-align: center; margin: 4px; display:flex; flex-direction:column; justify-content:space-between; position:relative;" onclick="window.addManualFodder('${safeCard}')">
+                ${starHtml}
+                <div style="height: 50px; background: rgba(0,0,0,0.5); border-radius: 4px; margin-bottom:4px; display:flex; justify-content:center; align-items:center;">${imgTag}</div>
+                <div style="font-size:9px; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:bold;"><span class="${sText}">${baseName}</span></div>
+                <div style="font-size:10px; color:var(--warning); font-weight:900; margin-top:2px; background: rgba(0,0,0,0.7); border-radius:4px; border: 1px solid #ff9800;">Dư: ${available}</div>
+            </div>`;
+        }
+    }
+    if(gridHtml === '') gridHtml = '<div style="color:var(--danger); font-size:14px; width:100%; text-align:center; padding:15px; font-weight:bold;">Đã dùng hết phôi dư ở bậc này!</div>';
+    container.innerHTML = gridHtml;
+};
+
+window.addManualFodder = function(safeCardName) {
+    let cardName = safeCardName.replace(/&quot;/g, '"');
+    let emptyIdx = window.manualFodders.indexOf(null);
+    if(emptyIdx === -1) return showToast("Lò rèn đã đầy! Hãy gỡ bớt thẻ ra nếu muốn đổi.", "warning");
+    window.manualFodders[emptyIdx] = cardName;
+    window.renderManualFodderUI();
+};
+
+window.removeManualFodder = function(idx) {
+    window.manualFodders[idx] = null;
+    window.renderManualFodderUI();
+};
 </script>
 </body>
 </html>
