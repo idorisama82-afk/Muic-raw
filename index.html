@@ -2774,11 +2774,36 @@ window.executeUpgrade = function() {
 // SIÊU BẢN VÁ: HỆ THỐNG THẺ SHINY & KỸ NĂNG NAM CHÂM
 // ==========================================
 
-// 1. Tự động bơm CSS Hiệu Ứng Lấp Lánh vào Web
+// 1. Tự động bơm CSS Hiệu Ứng Lấp Lánh vào Web (FIX LỖI MẤT GIAO DIỆN BỘ SƯU TẬP)
 let shinyStyle = document.createElement('style');
 shinyStyle.innerHTML = `
-    .shiny-card-border { animation: shinyRainbow 2s linear infinite, ssrGlow 1s alternate infinite !important; background: linear-gradient(135deg, #111, #333, #00bcd4) !important; border: 3px solid #ffeb3b !important; box-shadow: 0 0 25px #ffeb3b, inset 0 0 15px #00e5ff !important; }
+    /* ĐÃ THÊM LỆNH TRÓI (position: relative) ĐỂ BÓNG MA KHÔNG PHÌNH TO CHE MÀN HÌNH */
+    .shiny-card-border { 
+        position: relative !important; 
+        z-index: 1 !important; /* Tạo vùng an toàn */
+        background: transparent !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+    }
+    
+    /* Lớp bóng ma bảy màu nằm ngoan ngoãn dưới mông tấm ảnh */
+    .shiny-card-border::before {
+        content: "";
+        position: absolute;
+        top: -3px; left: -3px; right: -3px; bottom: -3px;
+        border-radius: inherit;
+        background: linear-gradient(135deg, #111, #333, #00bcd4) !important; 
+        border: 3px solid #ffeb3b !important; 
+        box-shadow: 0 0 25px #ffeb3b, inset 0 0 15px #00e5ff !important;
+        z-index: -1; /* Ép nó nằm dưới */
+        animation: shinyRainbow 2s linear infinite, ssrGlow 1s alternate infinite !important;
+        pointer-events: none;
+    }
+    
+    /* Hiệu ứng chói lóa nguyên bản của Lớp trưởng */
     @keyframes shinyRainbow { 100% { filter: hue-rotate(360deg); } }
+    
+    /* Chữ lấp lánh (vẫn giữ nguyên độ chói) */
     .shiny-text { 
         background: linear-gradient(90deg, #ffeb3b, #ff00cc, #00e5ff, #ffeb3b) !important; 
         background-size: 200% 200% !important; 
