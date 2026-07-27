@@ -393,22 +393,69 @@
 </div>
 
 <!-- ================= TRẠM CHỈ HUY (ADMIN) ================= -->
-<div id="admin-section" class="card" style="display: none; max-width: 1000px; margin: 30px auto;">
-    <h1 style="color: var(--warning);">TRẠM CHỈ HUY</h1>
-    <div id="admin-login-div">
+<!-- ================= TRẠM CHỈ HUY (ADMIN) ================= -->
+<div id="admin-section" class="card" style="display: none; max-width: 1000px; margin: 30px auto; max-height: 90vh; overflow-y: auto; position: relative;">
+    
+    <h1 style="color: var(--warning); position: sticky; top: -20px; background: var(--card-bg); padding: 15px 0; z-index: 100; border-bottom: 2px dashed #ccc; margin-top: -10px;">TRẠM CHỈ HUY</h1>
+    
+    <div id="admin-login-div" style="margin-top: 20px;">
         <input type="password" id="adminPass" placeholder="Nhập mật khẩu Admin...">
-        <button class="btn btn-warning" onclick="unlockAdmin()">Mở Khóa</button>
+        <button class="btn btn-warning" onclick="window.unlockAdmin()">Mở Khóa</button>
         <button class="btn btn-secondary" onclick="document.getElementById('admin-section').style.display='none'; document.getElementById('setup-section').style.display='block';">Quay lại</button>
     </div>
     
-    <div id="admin-controls-div" style="display: none;">
+    <div id="admin-controls-div" style="display: none; padding-top: 10px;">
         <div style="display: flex; gap: 15px; margin-bottom: 20px;">
             <button class="btn btn-danger" style="flex:1; padding: 15px; font-size: 18px;" onclick="adminStartGame()">🚀 PHÁT LỆNH HÀNH QUÂN</button>
             <button class="btn btn-warning" style="flex:1; padding: 15px; font-size: 18px;" onclick="adminEndGame()">🛑 KẾT THÚC TRẬN ĐẤU</button>
-            <!-- ADMIN TẠO ĐẤU GIÁ HỆ THỐNG -->
-            <button class="btn btn-warning" style="margin-bottom: 20px; background: linear-gradient(45deg, #ff9800, #ff5722); color: #fff; font-size: 16px; font-weight: bold; padding: 12px;" onclick="adminCreateSystemAuction()">🔨 HỆ THỐNG MỞ ĐẤU GIÁ LSR/USR</button>
         </div>
         
+        <!-- BẢNG TÁP LÔ ADMIN (ĐẤU GIÁ VÀ GIVEAWAY TRỰC QUAN) -->
+        <div style="background: #111; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #ffeb3b; box-shadow: 0 0 15px rgba(255,235,59,0.5);">
+            <h3 style="color: #ffeb3b; margin-top: 0; border-bottom: 1px dashed #555; padding-bottom: 10px;">👑 ĐẶC QUYỀN LỚP TRƯỞNG (QUẢN LÝ KHO DỮ LIỆU)</h3>
+            
+            <div style="display: flex; gap: 10px; flex-wrap:wrap;">
+                
+                <!-- CỤM TỔ CHỨC ĐẤU GIÁ TỰ CHỌN THẺ -->
+                <div style="flex: 1; min-width: 250px; background: #222; padding: 15px; border-radius: 6px; border: 1px solid #444; display:flex; flex-direction:column; align-items:center;">
+                    <h4 style="color: #00bcd4; margin: 0 0 10px 0;">🔨 ĐẤU GIÁ VIP TỰ CHỌN</h4>
+                    
+                    <input type="hidden" id="admin-auc-card-val" value="">
+                    <div id="admin-auc-preview" style="min-height: 100px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; width:100%; border:1px dashed #555; border-radius:6px; background:#1a1a1a;">
+                        <div style="color:#999; font-style:italic; font-weight:bold;">- Chưa chọn thẻ -</div>
+                    </div>
+                    <button class="btn btn-secondary" style="width:100%; margin-bottom:10px; padding:10px;" onclick="window.openAdminSelector('auction')">🔍 Duyệt Kho Thẻ Tùy Chỉnh</button>
+                    
+                    <div style="width:100%; text-align:left; margin-bottom:5px; color:#aaa; font-size:12px;">Giá Khởi Điểm (Tự Động Tính):</div>
+                    <input type="number" id="admin-auc-price" value="0" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; background: #333; color: #ffeb3b; border: 1px solid #555; box-sizing: border-box; font-weight: bold; font-size:18px; text-align:center;">
+                    
+                    <button class="btn" style="background: linear-gradient(45deg, #00bcd4, #2196f3); color: #fff; margin: auto 0 0 0; padding: 12px; width: 100%; font-size:16px;" onclick="window.adminForceAuction()">Đẩy Lên Sàn Đấu Giá</button>
+                </div>
+
+                <!-- CỤM GIVEAWAY RANDOM -->
+                <div style="flex: 1; min-width: 250px; background: #222; padding: 15px; border-radius: 6px; border: 1px solid #444; display:flex; flex-direction:column; align-items:center;">
+                    <h4 style="color: #ff5722; margin: 0 0 10px 0;">🎁 GIVEAWAY (PHÁT LỘC)</h4>
+                    
+                    <select id="admin-ga-type" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 4px; background: #333; color: #fff; border: 1px solid #555; font-weight:bold;" onchange="window.resetAdminGA()">
+                        <option value="pack">🎁 Phát Pack Gacha / Kỹ Năng</option>
+                        <option value="card" selected>🃏 Phát Thẻ Bài Trực Tiếp</option>
+                    </select>
+                    
+                    <input type="hidden" id="admin-ga-val" value="">
+                    <input type="hidden" id="admin-ga-name" value="">
+                    <input type="hidden" id="admin-ga-type-hidden" value="">
+                    
+                    <div id="admin-ga-preview" style="min-height: 100px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; width:100%; border:1px dashed #555; border-radius:6px; background:#1a1a1a;">
+                        <div style="color:#999; font-style:italic; font-weight:bold;">- Chưa chọn quà -</div>
+                    </div>
+                    
+                    <button class="btn btn-secondary" style="width:100%; margin-bottom:15px; padding:10px;" onclick="window.openAdminSelector('giveaway')">🔍 Mở Kho Quà Tặng</button>
+                    
+                    <button class="btn" style="background: linear-gradient(45deg, #ff5722, #e91e63); color: #fff; margin: auto 0 0 0; padding: 12px; width: 100%; font-size:16px;" onclick="window.adminExecuteGiveaway()">🎲 Quay Random Tặng Quà</button>
+                </div>
+            </div>
+        </div>
+
         <!-- NÚT XÓA CHỈ XÓA BXH, GIỮ CHAT & NÚT XÓA SẠCH RIÊNG KÊNH CHAT -->
         <button class="btn btn-secondary" style="margin-bottom: 10px;" onclick="adminResetGameKeepChat()">🧹 Xóa Bảng Xếp Hạng (Giữ Lịch Sử Chat)</button>
         <button class="btn btn-danger" style="margin-bottom: 20px; background: #9c27b0;" onclick="adminClearChatOnly()">🗑️ Xóa Sạch Riêng Lịch Sử Kênh Chat</button>
@@ -4751,6 +4798,272 @@ window.removeManualFodder = function(idx) {
     window.manualFodders[idx] = null;
     window.renderManualFodderUI();
 };
+// ==========================================
+// CÔNG CỤ CHỐNG LAG: CHỈ HIỂN THỊ 110 THẺ GỐC
+// ==========================================
+window.buildGlobalCardCacheHTML = function(callbackName) {
+    let html = '';
+    const tierOrderAdmin = ['LSR', 'USR', 'SSR', 'UR', 'SR', 'R'];
+    tierOrderAdmin.forEach(tier => {
+        html += `<h3 style="color:var(--primary); border-bottom:2px solid #ccc; text-align:left; padding-bottom:5px; margin-top:15px;">Bậc ${tier}</h3><div style="display:flex; flex-wrap:wrap; gap:6px;">`;
+        cardDatabase[tier].forEach(cData => {
+            let safeName = cData.name.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+            // Khi click vào thẻ gốc, mở ra bộ lọc cấp độ Sao và Shiny (Tránh render ngàn thẻ)
+            html += `<div class="visual-card-select tier-${tier}" style="width: 75px; padding: 4px; border-radius: 6px; text-align: center; margin: 2px; cursor:pointer;" onclick="window.openCardConfigurator('${tier}', '${safeName}', '${callbackName}')">
+                <div style="font-size:10px; font-weight:900;">${tier}</div>
+                <div style="height: 50px; background: rgba(0,0,0,0.5); border-radius: 4px; margin: 4px 0; display:flex; justify-content:center; align-items:center;">${cData.img ? `<img src="${cData.img}" style="width:100%; height:100%; object-fit:contain;">` : '👤'}</div>
+                <div style="font-size:9px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#fff;">${cData.name}</div>
+            </div>`;
+        });
+        html += `</div>`;
+    });
+    return html;
+};
+
+// ==========================================
+// BỘ LỌC BƯỚC 2: TÙY CHỈNH SAO & SHINY TRỰC QUAN
+// ==========================================
+window.openCardConfigurator = function(tier, safeBaseName, callbackName) {
+    let baseName = safeBaseName.replace(/&quot;/g, '"');
+    let cData = cardDatabase[tier].find(c => c.name === baseName);
+    let imgTag = cData && cData.img ? `<img src="${cData.img}" style="width:100%; height:100%; object-fit:contain;">` : '👤';
+
+    let html = `
+        <div style="background:#fff; padding:15px; border-radius:10px; border:2px solid var(--primary); text-align:center;">
+            <div style="height: 100px; margin-bottom:10px; display:flex; justify-content:center; align-items:center;">${imgTag}</div>
+            <h4 style="color:var(--danger); margin:0 0 15px 0;">[${tier}] ${baseName}</h4>
+            
+            <div style="display:flex; flex-direction:column; gap:10px; text-align:left;">
+                <div style="background:#fffde7; padding:10px; border-radius:5px; border:1px solid var(--warning);">
+                    <label style="font-size:13px; font-weight:bold; color:var(--warning);">🌟 Chọn mức Sao Đột Phá:</label>
+                    <select id="inline-config-stars" style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; font-weight:bold; margin-top:5px;">
+                        <option value="1">1 Sao ⭐</option>
+                        <option value="2">2 Sao ⭐⭐</option>
+                        <option value="3">3 Sao ⭐⭐⭐</option>
+                        <option value="4">4 Sao ⭐⭐⭐⭐</option>
+                        <option value="5">5 Sao ⭐⭐⭐⭐⭐</option>
+                    </select>
+                </div>
+                <div style="background:#e0f7fa; padding:10px; border-radius:5px; border:1px solid #00bcd4;">
+                    <label style="font-size:13px; font-weight:bold; color:#00bcd4;">✨ Thuộc tính lấp lánh (Shiny):</label>
+                    <select id="inline-config-shiny" style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; font-weight:bold; margin-top:5px;">
+                        <option value="no">Bản Thường</option>
+                        <option value="yes">Bản Shiny Lấp Lánh ✨</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button class="btn btn-danger" style="flex:1; padding:12px; font-size:16px;" onclick="window.confirmInlineCardConfig('${tier}', '${safeBaseName}', '${callbackName}')">✅ Chốt Thẻ Này</button>
+                <button class="btn btn-secondary" style="width:auto; padding:12px;" onclick="window.cancelInlineCardConfig()">Quay lại Kho</button>
+            </div>
+        </div>
+    `;
+    
+    // Gắn vào khung của Admin hoặc Chợ Đen
+    let container = document.getElementById('trade-req-selector-container') || document.getElementById('admin-global-cache-container');
+    if(container) {
+        if(!container.dataset.origHtml) container.dataset.origHtml = container.innerHTML; 
+        container.innerHTML = html;
+    }
+};
+
+window.confirmInlineCardConfig = function(tier, safeBaseName, callbackName) {
+    let baseName = safeBaseName.replace(/&quot;/g, '"');
+    let stars = parseInt(document.getElementById('inline-config-stars').value) || 1;
+    let isShiny = document.getElementById('inline-config-shiny').value === 'yes';
+    
+    let starStr = stars > 1 ? " " + "⭐".repeat(stars) : "";
+    let shinyStr = isShiny ? " ✨" : "";
+    let finalCardName = baseName + shinyStr + starStr;
+    
+    window.cancelInlineCardConfig(); 
+    
+    // Đẩy kết quả về hàm gốc (Của Chợ Đen hoặc Admin)
+    if (callbackName && typeof window[callbackName] === 'function') {
+        window[callbackName](tier, finalCardName);
+    }
+};
+
+window.cancelInlineCardConfig = function() {
+    let container = document.getElementById('trade-req-selector-container') || document.getElementById('admin-global-cache-container');
+    if(container && container.dataset.origHtml) {
+        container.innerHTML = container.dataset.origHtml;
+    }
+};
+
+// ==========================================
+// LIÊN KẾT BỘ LỌC 2 LỚP VỚI CHỢ ĐEN
+// ==========================================
+window.selectTradeReqCard = function(tier, finalCardName) {
+    document.getElementById('trade-req-card').value = JSON.stringify({tier: tier, card: finalCardName});
+    document.getElementById('trade-req-preview').innerHTML = window.getMiniCardHtml(tier, finalCardName);
+    document.getElementById('trade-req-selector-container').style.display = 'none';
+};
+
+window.toggleTradeReqSelector = function() {
+    let el = document.getElementById('trade-req-selector-container');
+    if(el.style.display === 'none') {
+        if(!el.innerHTML.trim()) el.innerHTML = window.buildGlobalCardCacheHTML('selectTradeReqCard');
+        el.style.display = 'block';
+    } else el.style.display = 'none';
+};
+
+// ==========================================
+// LIÊN KẾT BỘ LỌC 2 LỚP VỚI TRẠM ĐẶC QUYỀN ADMIN (ĐẤU GIÁ / GIVEAWAY)
+// ==========================================
+window.adminCurrentSelectMode = '';
+
+window.adminCardConfigCallback = function(tier, finalCardName) {
+    if(window.adminCurrentSelectMode === 'auction') {
+        document.getElementById('admin-auc-card-val').value = JSON.stringify({tier: tier, card: finalCardName});
+        document.getElementById('admin-auc-preview').innerHTML = window.getMiniCardHtml(tier, finalCardName);
+        
+        let baseVals = { R: 10, SR: 50, UR: 200, SSR: 500, USR: 2000, LSR: 5000 };
+        let basePrice = baseVals[tier] || 100;
+        let shinyMult = finalCardName.includes('✨') ? 5 : 1; 
+        let starMatch = finalCardName.match(/⭐/g);
+        let starMult = Math.pow(4, (starMatch ? starMatch.length : 1) - 1); 
+        document.getElementById('admin-auc-price').value = basePrice * shinyMult * starMult;
+        
+    } else if (window.adminCurrentSelectMode === 'giveaway') {
+        document.getElementById('admin-ga-val').value = tier;
+        document.getElementById('admin-ga-name').value = finalCardName;
+        document.getElementById('admin-ga-type-hidden').value = 'card';
+        document.getElementById('admin-ga-preview').innerHTML = window.getMiniCardHtml(tier, finalCardName);
+    }
+    closeModal();
+};
+
+window.selectAdminPackCallback = function(packId, packName) {
+    document.getElementById('admin-ga-val').value = packId;
+    document.getElementById('admin-ga-name').value = packName;
+    document.getElementById('admin-ga-type-hidden').value = 'pack';
+    document.getElementById('admin-ga-preview').innerHTML = `<div style="font-size:18px; font-weight:bold; background:#222; padding:15px; border-radius:8px; border:2px dashed #ffeb3b; color:#ffeb3b;">🎁 ${packName}</div>`;
+    closeModal();
+};
+
+window.openAdminSelector = function(mode) {
+    window.adminCurrentSelectMode = mode;
+    let html = '';
+    
+    if(mode === 'auction' || (mode === 'giveaway' && document.getElementById('admin-ga-type').value === 'card')) {
+        html = `
+            <h3 style="color:var(--primary); margin-top:0;">Duyệt Kho Thẻ Gốc</h3>
+            <p style="font-size:12px; color:#666;">Bấm vào thẻ gốc, sau đó chọn số Sao và Shiny.</p>
+            <div id="admin-global-cache-container" style="max-height:60vh; overflow-y:auto; background:#f8f9fa; border-radius:8px; padding:10px; border:1px solid #ddd;">
+                ${window.buildGlobalCardCacheHTML('adminCardConfigCallback')}
+            </div>
+            <button class="btn btn-secondary" style="margin-top:15px; width:100%;" onclick="closeModal()">Hủy Bỏ</button>`;
+    } else {
+        html = `
+            <h3 style="color:#ff5722; margin-top:0;">Chọn Pack Tặng Quà</h3>
+            <div style="max-height:60vh; overflow-y:auto; padding:10px;">
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <div style="background:#222; border:2px dashed #ffeb3b; padding:15px; border-radius:8px; cursor:pointer; color:#fff; font-weight:bold; font-size:16px;" onclick="window.selectAdminPackCallback('skill_1', '⚡ 1 Thẻ Kỹ Năng')">🃏 ⚡ 1 Thẻ Kỹ Năng</div>
+                    <div style="background:#222; border:2px dashed #ffeb3b; padding:15px; border-radius:8px; cursor:pointer; color:#fff; font-weight:bold; font-size:16px;" onclick="window.selectAdminPackCallback('skill_12', '🔥 Pack Kỹ Năng Tối Thượng')">🔥 Pack Kỹ Năng Tối Thượng</div>
+                    <div style="background:#222; border:2px dashed #ffeb3b; padding:15px; border-radius:8px; cursor:pointer; color:#fff; font-weight:bold; font-size:16px;" onclick="window.selectAdminPackCallback('gacha_basic', '📦 Pack Tập Sự')">🔰 Pack Tập Sự</div>
+                    <div style="background:#222; border:2px dashed #ffeb3b; padding:15px; border-radius:8px; cursor:pointer; color:#fff; font-weight:bold; font-size:16px;" onclick="window.selectAdminPackCallback('gacha_elite', '🌟 Pack Siêu Sao')">🌟 Pack Siêu Sao</div>
+                    <div style="background:#222; border:2px dashed #ffeb3b; padding:15px; border-radius:8px; cursor:pointer; color:#fff; font-weight:bold; font-size:16px;" onclick="window.selectAdminPackCallback('gacha_infinity', '🌌 Pack Vô Cực')">🌌 Pack Vô Cực</div>
+                    <div style="background:#222; border:2px dashed #ffeb3b; padding:15px; border-radius:8px; cursor:pointer; color:#fff; font-weight:bold; font-size:16px;" onclick="window.selectAdminPackCallback('gacha_destiny', '🎯 Pack Định Mệnh')">🎯 Pack Định Mệnh</div>
+                </div>
+            </div>
+            <button class="btn btn-secondary" style="margin-top:15px; width:100%;" onclick="closeModal()">Hủy Bỏ</button>`;
+    }
+    openModal("🔍 KHO DỮ LIỆU TỐI THƯỢNG", html);
+};
+
+window.resetAdminGA = function() {
+    document.getElementById('admin-ga-val').value = ""; document.getElementById('admin-ga-name').value = ""; document.getElementById('admin-ga-type-hidden').value = "";
+    document.getElementById('admin-ga-preview').innerHTML = `<div style="color:#999; font-style:italic; font-weight:bold;">- Chưa chọn quà -</div>`;
+};
+
+window.adminForceAuction = function() {
+    let cardVal = document.getElementById('admin-auc-card-val').value;
+    let startPrice = parseInt(document.getElementById('admin-auc-price').value) || 0;
+    
+    if(!cardVal) return showToast("Lỗi: Chưa vào kho chọn thẻ!", "danger");
+    if(startPrice <= 0) return showToast("Giá khởi điểm phải lớn hơn 0!", "danger");
+
+    let o = JSON.parse(cardVal);
+    database.ref('room_auctions').push({ 
+        seller: "HỆ THỐNG", tier: o.tier, card: o.card, startPrice: startPrice, currentBid: startPrice, highestBidder: "none", 
+        endTime: Date.now() + (180000), status: 'active', timeCreated: Date.now() 
+    }).then(() => {
+        let msg = `🚨 [HỆ THỐNG VIP] Vừa thả siêu phẩm [${o.tier}] ${o.card} lên Sàn Đấu Giá! Khởi điểm ${startPrice.toLocaleString()}💎! TẤT CẢ VÀO CƯỚP!`;
+        database.ref('chat_messages').push({ name: "NHÀ ĐẤU GIÁ", text: msg, timestamp: Date.now() }); 
+        showToast("Đã tống cổ Thẻ lên Sàn Đấu Giá!", "success");
+        document.getElementById('admin-auc-card-val').value = ""; document.getElementById('admin-auc-preview').innerHTML = `<div style="color:#999; font-style:italic; font-weight:bold;">- Chưa chọn thẻ -</div>`; document.getElementById('admin-auc-price').value = "0";
+    });
+};
+
+window.adminExecuteGiveaway = function() {
+    let itemType = document.getElementById('admin-ga-type-hidden').value; 
+    let itemVal = document.getElementById('admin-ga-val').value; 
+    let itemNameText = document.getElementById('admin-ga-name').value;
+
+    if (!itemType || !itemVal) return showToast("Chưa chọn Quà Giveaway! Bấm 🔍 Mở Kho Quà để chọn.", "warning");
+
+    database.ref('room_players').once('value', snap => {
+        let players = [];
+        snap.forEach(child => { 
+            let p = child.val();
+            if (p.name && p.name.toLowerCase() !== 'idori') players.push({ key: child.key, name: p.name });
+        });
+
+        if (players.length === 0) return showToast("Sảnh vắng hoe, không có ai để phát lộc!", "warning");
+        let winner = players[Math.floor(Math.random() * players.length)];
+        let rewardPayload = itemType === 'card' ? JSON.stringify({tier: itemVal, card: itemNameText}) : itemVal;
+
+        database.ref('room_events').push({
+            type: 'giveaway', winnerKey: winner.key, winnerName: winner.name, rewardType: itemType, rewardValue: rewardPayload,
+            rewardNameText: itemType === 'card' ? `[${itemVal}] ${itemNameText}` : itemNameText, time: Date.now()
+        });
+
+        showToast(`Quay số thành công! Đã chuyển quà cho ${winner.name}`, "success");
+        window.resetAdminGA();
+    });
+};
+
+// Cấu hình Máy nhận Giveaway
+database.ref('room_events').on('child_added', snap => {
+    if (!isGameActive) return; let ev = snap.val(); if (!ev || (Date.now() - ev.time > 15000)) return; 
+    if (ev.type === 'giveaway') {
+        if (playerName.toLowerCase() === 'idori') {
+            database.ref('chat_messages').push({ name: "HỆ THỐNG", text: `🎉 TING TINH! CHÚC MỪNG [${ev.winnerName}] VỪA TRÚNG ĐỘC ĐẮC GIVEAWAY CỦA ADMIN: 🎁 ${ev.rewardNameText}!`, timestamp: Date.now() });
+            window.showGlobalBroadcast(`🎉 CHÚC MỪNG [${ev.winnerName}] TRÚNG GIVEAWAY!`);
+        }
+        if (myPlayerRef && myPlayerRef.key === ev.winnerKey) {
+            if (ev.rewardType === 'pack') {
+                if (ev.rewardValue === 'skill_1') { skillCount += 1; }
+                else if (ev.rewardValue === 'skill_5') { skillCount += Math.floor(Math.random() * 4) + 2; }
+                else if (ev.rewardValue === 'skill_12') { skillCount += Math.floor(Math.random() * 7) + 6; }
+                else if (ev.rewardValue.startsWith('gacha_')) {
+                    let packType = ev.rewardValue.replace('gacha_', '');
+                    if (packType === 'destiny') { 
+                        let missingCards = [];
+                        ['R', 'SR', 'UR', 'SSR', 'USR', 'LSR'].forEach(tier => { cardDatabase[tier].filter(c => !myGallery[tier].includes(c.name)).forEach(c => missingCards.push({ tier: tier, data: c })); });
+                        missingCards.slice(0, 10).forEach(c => myGallery[c.tier].push(c.data.name));
+                    } else { 
+                        let pRates = marketGachaRates[packType]; let pulls = packType === 'infinity' ? 10 : 5;
+                        for(let i=0; i<pulls; i++) {
+                            let rand = Math.random() * 100; let sum = 0; let pTier = 'R';
+                            for (let k in pRates) { sum += pRates[k]; if (rand <= sum) { pTier = k; break; } }
+                            let cPool = cardDatabase[pTier]; let card = cPool[Math.floor(Math.random() * cPool.length)];
+                            let isShiny = Math.random() < 0.05; let finalName = card.name + (isShiny ? " ✨" : "");
+                            myGallery[pTier].push(finalName);
+                        }
+                    }
+                }
+            } 
+            else if (ev.rewardType === 'card') { let o = JSON.parse(ev.rewardValue); myGallery[o.tier].push(o.card); }
+
+            updateStats(); 
+            let html = `<div style="text-align:center;"><div style="font-size:80px; animation: bounce 1s infinite;">🎁</div><h2 style="color:var(--danger); margin-top:10px; font-size: 30px;">TRÚNG ĐỘC ĐẮC!!!</h2><p style="font-size:16px;">Phước lộc từ trên trời rơi xuống! Bạn vừa nhận được quà từ Admin:</p><div style="background:#111; border:2px dashed #ffeb3b; padding:15px; border-radius:10px; color:#ffeb3b; font-weight:900; font-size:18px; margin: 20px 0; box-shadow: 0 0 20px rgba(255,235,59,0.5);">${ev.rewardNameText}</div><button class="btn btn-warning" style="margin-top:10px; padding:15px; font-size:16px;" onclick="closeModal()">Đút Quà Vào Túi Ngay</button></div>`;
+            openModal("🎉 LỤM GIVEAWAY ADMIN", html);
+        }
+    }
+});
 </script>
 </body>
 </html>
