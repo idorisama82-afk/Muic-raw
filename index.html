@@ -9,6 +9,52 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
+        /* --- BẢN VÁ TRIỆT ĐỂ: ĐỔI MÀU VIỀN TRỰC TIẾP, GIỮ NGUYÊN ẢNH GỐC --- */
+    .shiny-card-border { 
+        animation: shinyBorderGlow 2s infinite alternate !important; 
+        background: linear-gradient(135deg, #1a1a1a, #2c3e50) !important; 
+        border: 3px solid #ffeb3b !important; 
+        box-shadow: 0 0 20px #ffeb3b, inset 0 0 10px #00e5ff !important; 
+    }
+    
+    @keyframes shinyBorderGlow { 
+        0% { 
+            border-color: #ffeb3b; 
+            box-shadow: 0 0 15px #ffeb3b, inset 0 0 10px #00e5ff; 
+        } 
+        50% { 
+            border-color: #ff00cc; 
+            box-shadow: 0 0 25px #ff00cc, inset 0 0 15px #ff00cc; 
+        } 
+        100% { 
+            border-color: #00e5ff; 
+            box-shadow: 0 0 15px #00e5ff, inset 0 0 10px #ffeb3b; 
+        } 
+    }
+
+    .shiny-text { 
+        background: linear-gradient(90deg, #ffeb3b, #ff00cc, #00e5ff, #ffeb3b) !important; 
+        background-size: 200% 200% !important; 
+        -webkit-background-clip: text !important; 
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important; 
+        color: transparent !important;
+        animation: shinyTextMove 3s linear infinite !important; 
+        display: inline-block;
+    }
+
+    @keyframes shinyTextMove { 
+        0% { background-position: 0% 50%; } 
+        50% { background-position: 100% 50%; } 
+        100% { background-position: 0% 50%; } 
+    }
+
+    /* BẢO VỆ ẢNH KHÔNG BỊ ÁM MÀU */
+    .owned-card img, .fc-card-back img, .card-image-box img { 
+        filter: none !important; 
+        mix-blend-mode: normal !important; 
+        opacity: 1 !important;
+    }
         /* ==========================================
            TỐI ƯU MOBILE - CHỐNG TRÀN VIỀN GIAO DIỆN CHỢ / ĐẤU GIÁ
            ========================================== */
@@ -304,7 +350,7 @@
 
 <!-- ================= MENU ĐĂNG NHẬP ================= -->
 <div id="setup-section" class="card" style="max-width: 600px; margin: 50px auto;">
-    <h1 style="color: var(--danger);">HÀNH TRÌNH 27/7<br><span style="color: var(--warning); font-size: 20px;">ULTIMATE GAME V1.0.0</span></h1>
+    <h1 style="color: var(--danger);">HÀNH TRÌNH 27/7<br><span style="color: var(--warning); font-size: 20px;">ULTIMATE GAME V1.0.1</span></h1>
     <input type="text" id="playerName" placeholder="Nhập Tên của bạn...">
     <button class="btn btn-danger" onclick="joinLobby()">🚀 VÀO CHIẾN TRƯỜNG</button>
     <button class="btn btn-secondary" onclick="document.getElementById('setup-section').style.display='none'; document.getElementById('admin-section').style.display='block';" style="width: auto; margin-top: 15px; font-size: 13px;">👨‍💻 Trạm Chỉ Huy (Admin)</button>
@@ -410,6 +456,7 @@
         <button class="btn" style="background: linear-gradient(90deg, #8E2DE2, #4A00E0); color: white; font-size: 15px; padding: 10px; border: 1px solid #8E2DE2; margin-top: 10px;" onclick="openLiveTradeMenu()">🤝 GIAO DỊCH LIVE (MỜI BẠN)</button>
         <button class="btn" style="background: linear-gradient(90deg, #d35400, #c0392b); color: white; font-size: 15px; padding: 10px; border: 1px solid #c0392b; margin-top: 10px;" onclick="openAuctionHouse()">🔨 NHÀ ĐẤU GIÁ (AUCTION)</button>
         <button class="btn" style="background: linear-gradient(90deg, #ff9800, #ff5722); color: white; font-size: 15px; padding: 10px; border: 1px solid #ff5722; margin-top: 10px; box-shadow: 0 0 10px #ff9800;" onclick="openUpgradeCenter()">🔨 LÒ RÈN THẺ (ÉP THẺ)</button>
+        <button class="btn" style="background: linear-gradient(90deg, #00C9FF, #92FE9D); color: #000; font-size: 15px; padding: 10px; border: 1px solid #00C9FF; margin-top: 10px; font-weight: 900; box-shadow: 0 0 10px #00C9FF;" onclick="openQuestCenter()">📜 BẢNG NHIỆM VỤ</button>
     </div>
 
     <!-- KHU VỰC TRUNG TÂM MAP & CHAT -->
@@ -657,18 +704,7 @@ function prepareQuestions() {
 }
 
 // 10 NỘI TẠI THẦN BÍ
-const passivesInfo = [
-    {id: 0, icon: "💰", name: "Thương Nhân", desc: "Nhận thêm 20% Gems khi cạy rương thành công."},
-    {id: 1, icon: "💣", name: "Chuyên Gia Mìn", desc: "Trả lời sai khi mở rương KHÔNG bị trừ điểm."},
-    {id: 2, icon: "⚡", name: "Tốc Biến", desc: "Tốc độ di chuyển trên Map cực nhanh."},
-    {id: 3, icon: "👁️", name: "Tầm Nhìn", desc: "Phạm vi phát hiện rương rộng hơn bình thường."},
-    {id: 4, icon: "🌟", name: "Hào Quang", desc: "Vừa vào game đã có sẵn 5000 Gems làm vốn."},
-    {id: 5, icon: "💎", name: "Triệu Phú", desc: "Cứ mỗi 60s trôi qua tự động nhận 150 Gems."},
-    {id: 6, icon: "♻️", name: "Tái Chế", desc: "Dùng Thẻ Kỹ Năng Map có 30% không bị tiêu hao."},
-    {id: 7, icon: "🎁", name: "Phước Lành", desc: "Có 20% tỉ lệ rương rớt x2 lượng thẻ (10 thẻ/rương)."},
-    {id: 8, icon: "🛡️", name: "Bảo Hiểm", desc: "Kháng 100% mọi hiệu ứng Đóng Băng và Tắt Đèn."},
-    {id: 9, icon: "🚀", name: "Thợ Săn", desc: "Luôn nhìn thấy toàn bộ rương VIP trên bản đồ từ xa."}
-];
+
 
 // ==========================================
 // 2. DATA 110 THẺ GACHA
@@ -685,7 +721,9 @@ const cardDatabase = {
         {name: "Anh hùng Nguyễn Văn Lập (Kostas)", desc: "Chiến sĩ quốc tế người Hy Lạp tình nguyện gia nhập Việt Minh kháng chiến, người nước ngoài duy nhất được phong tặng danh hiệu Anh hùng LLVTND Việt Nam.", img: "https://i1-vnexpress.vnecdn.net/2022/08/01/kostas-nguyen-van-lap-001-2079-1659360533.jpg?w=1020&h=0&q=100&dpr=1&fit=crop&s=adliFSqNKzM73itlFOxagg"},
         {name: "Hùng Vương (Vua Hùng)", desc: "Các vị vua có công dựng nước Văn Lang, nguồn cội thiêng liêng và là biểu tượng muôn đời của đạo lý 'Uống nước nhớ nguồn'.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/T%C6%B0%E1%BB%A3ng_H%C3%B9ng_V%C6%B0%C6%A1ng_t%E1%BA%A1i_%C4%90%E1%BB%81n_H%C3%B9ng%2C_Tao_%C4%90%C3%A0n%2C_th%C3%A1ng_12_n%C4%83m_2021_%2812%29.jpg/960px-T%C6%B0%E1%BB%A3ng_H%C3%B9ng_V%C6%B0%C6%A1ng_t%E1%BA%A1i_%C4%90%E1%BB%81n_H%C3%B9ng%2C_Tao_%C4%90%C3%A0n%2C_th%C3%A1ng_12_n%C4%83m_2021_%2812%29.jpg"},
         {name: "Liệt sĩ", desc: "Những người đã hiến dâng cả cuộc đời nơi chiến trường để đổi lấy hòa bình hôm nay.", img: "https://cdn.thuviennhadat.vn/upload/hinh-anh-bai-viet/TTND/110807liet-si-la-ai.jpg"},
-        {name: "Cố Thủ tướng Võ Văn Kiệt", desc: "Cố Thủ tướng Võ Văn Kiệt là một trong những nhà lãnh đạo xuất sắc nhất của Đảng và Nhà nước Việt Nam, người được mệnh danh là 'tổng công trình sư' của thời kỳ Đổi Mới", img: "https://baoquankhu4.com.vn/upload/18269/20220923/graba8118images2416700_BVL_a__22_.jpg"}
+        {name: "Cố Thủ tướng Võ Văn Kiệt", desc: "Cố Thủ tướng Võ Văn Kiệt là một trong những nhà lãnh đạo xuất sắc nhất của Đảng và Nhà nước Việt Nam, người được mệnh danh là 'tổng công trình sư' của thời kỳ Đổi Mới", img: "https://baoquankhu4.com.vn/upload/18269/20220923/graba8118images2416700_BVL_a__22_.jpg"},
+        {name: "Đại tướng Văn Tiến Dũng", desc: "Tổng tham mưu trưởng QĐNDVN, trực tiếp ký mệnh lệnh tấn công lịch sử trong Chiến dịch Hồ Chí Minh.", img: "https://special.nhandan.vn/van-tien-dung/assets/Ossviv3vZo/van-tien-dung-huan-chuong-492x650.webp"},
+        {name: "Mẹ Việt Nam Anh Hùng", desc: "Biểu tượng cao cả nhất của lòng hy sinh thầm lặng, người mẹ hiến dâng những người con ưu tú cho Tổ quốc.", img: "https://images.hcmcpv.org.vn/res/news/2021/03/05-03-2021-tu-hao-nhung-ba-me-viet-nam-anh-hung-2CEFB5B2.jpg"}
         
     ],
     USR: [ 
@@ -696,6 +734,7 @@ const cardDatabase = {
         {name: "Anh hùng Nguyễn Văn Bảy", desc: "Phi công huyền thoại lái MiG-17 bắn rơi 7 máy bay Mỹ, biểu tượng kiên trung của Không quân Nhân dân Việt Nam.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/%C4%90%E1%BA%A1i_T%C3%A1_Nguy%E1%BB%85n_V%C4%83n_B%E1%BA%A3y_%28A%29.jpg/500px-%C4%90%E1%BA%A1i_T%C3%A1_Nguy%E1%BB%85n_V%C4%83n_B%E1%BA%A3y_%28A%29.jpg"},
         {name: "Chị Võ Thị Sáu", desc: "Nữ anh hùng trẻ tuổi kiên trung bất khuất tại Côn Đảo.", img: "https://images.hcmcpv.org.vn/res/news/2021/07/25-07-2021-khong-ai-duoc-phep-xuc-pham-nu-anh-hung-liet-si-vo-thi-sau-20AC1F64-details.jpg?vs=25072021080925"},
         {name: "Anh Lý Tự Trọng", desc: "Thanh niên cộng sản với câu nói bất hủ về con đường cách mạng.", img: "https://upload.wikimedia.org/wikipedia/commons/4/43/%E1%BA%A2nh_ch%E1%BB%A5p_L%C3%BD_T%E1%BB%B1_Tr%E1%BB%8Dng_%281914-1931%29.jpg"},
+        {name: "Đại tướng Hoàng Văn Thái", desc: "Tổng tham mưu trưởng đầu tiên của QĐNDVN, nhà quân sự tài ba xuất thân từ quê hương Thái Bình.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/%C4%90%E1%BA%A1i_t%C6%B0%E1%BB%9Bng_Ho%C3%A0ng_V%C4%83n_Th%C3%A1i.jpg/500px-%C4%90%E1%BA%A1i_t%C6%B0%E1%BB%9Bng_Ho%C3%A0ng_V%C4%83n_Th%C3%A1i.jpg"},
         {name: "Anh hùng Tô Vĩnh Diện", desc: "Dùng thân mình chèn pháo, bảo vệ vũ khí của quân ta.", img: "https://imgnvsk.vnanet.vn/MediaUpload/Content/2024/04/10/anh-1-r10-13-39-11.jpg"},
         {name: "Đại Thắng Mùa Xuân 1975", desc: "Chiến dịch Hồ Chí Minh lịch sử, thống nhất đất nước.", img: "https://cantholib.org.vn/uploads/news/gts/xuatban2005/dai-thang-mua-xuan-1975_300_429.jpg"}
     ],
@@ -713,6 +752,8 @@ const cardDatabase = {
         {name: "Nghĩa trang Trường Sơn", desc: "Nơi an nghỉ của vạn liệt sĩ trên tuyến lửa."},
         {name: "Nhà tù Côn Đảo", desc: "Địa ngục trần gian thử thách ý chí người cộng sản."},
         {name: "Bến Nhà Rồng", desc: "Nơi người thanh niên Nguyễn Tất Thành ra đi tìm đường cứu nước."},
+        {name: "Đường Hồ Chí Minh trên biển", desc: "Tuyến vận tải quân sự chiến lược huyền thoại qua những con tàu không số."},
+        {name: "Chiến dịch Tây Nguyên 1975", desc: "Trận đòn quyết định mở màn cho cuộc Tổng tiến công mùa Xuân 1975."},
         {name: "Dinh Độc Lập", desc: "Chứng nhân lịch sử ngày miền Nam hoàn toàn giải phóng."}
     ],
     UR: [ 
@@ -736,7 +777,9 @@ const cardDatabase = {
         {name: "Lê Văn Tám", desc: "Ngọn đuốc sống thiêu rụi kho xăng địch."},
         {name: "Nguyễn Bá Ngọc", desc: "Thiếu niên lấy thân mình che đạn cứu các em nhỏ."},
         {name: "Tố Hữu", desc: "Cánh chim đầu đàn của thơ ca cách mạng Việt Nam, tác giả của những vần thơ trữ tình chính trị bất hủ."},
-        {name: "Trần Phú", desc: "Tổng Bí thư đầu tiên của Đảng, soạn thảo Luận cương."}
+        {name: "Trần Phú", desc: "Tổng Bí thư đầu tiên của Đảng, soạn thảo Luận cương."},
+        {name: "Anh hùng Phan Hữu Doãn", desc: "Người tiểu đoàn trưởng dũng cảm trong các chiến dịch lớn."},
+        {name: "Nữ sĩ Lê Hằng Phương", desc: "Nhà văn, nhà thơ cách mạng với ngòi bút sắc bén kháng chiến."}
     ],
     SR: [ 
         {name: "Cuốn Nhật Ký Máu", desc: "Ghi lại dòng máu nóng tuổi hai mươi của các liệt sĩ."},
@@ -763,7 +806,9 @@ const cardDatabase = {
         {name: "Giày Xanh", desc: "Đôi giày vải đồng hành cùng bộ đội cụ Hồ."},
         {name: "Tấm Mảnh Dù", desc: "Chiến lợi phẩm thu được từ giặc lái."},
         {name: "Dao Găm", desc: "Vũ khí cận chiến sắc bén."},
-        {name: "Súng AK-47", desc: "Hỏa lực uy lực của quân Giải phóng."}
+        {name: "Súng AK-47", desc: "Hỏa lực uy lực của quân Giải phóng."},
+        {name: "Đèn Hoa Đăng Tri Ân", desc: "Ngọn đèn thắp sáng nghĩa trang liệt sĩ mỗi dịp 27/7."},
+        {name: "Huy Hiệu 75 Năm Tuổi Đảng", desc: "Minh chứng cho một đời kiên trung theo Đảng."}
     ],
     R: [ 
         {name: "Nguồn gốc 27/7", desc: "Đổi tên thành Ngày Thương binh - Liệt sĩ tháng 7/1955."},
@@ -805,7 +850,9 @@ const cardDatabase = {
         {name: "Phòng không Không quân", desc: "Lưới lửa bảo vệ bầu trời Tổ quốc."},
         {name: "Hải quân NDVN", desc: "Bảo vệ vững chắc chủ quyền biển đảo."},
         {name: "Bộ đội Biên phòng", desc: "Những người lính mang quân hàm xanh."},
-        {name: "Dân quân tự vệ", desc: "Lực lượng vũ trang quần chúng vô địch."}
+        {name: "Dân quân tự vệ", desc: "Lực lượng vũ trang quần chúng vô địch."},
+        {name: "Sổ Tiết Kiệm Tình Nghĩa", desc: "Món quà vật chất ấm lòng thương binh, gia đình chính sách."},
+        {name: "Bản Đồ Tri Ân", desc: "Hành trình về nguồn thăm các 'địa chỉ đỏ' trên khắp mọi miền đất nước."}
     ]
 };
 
@@ -942,6 +989,21 @@ database.ref('room_state').on('value', (snapshot) => {
     else if(state === 'ended' && playerName !== "") { showFinalLeaderboard(); }
 });
 
+// 11 NỘI TẠI THẦN BÍ
+const passivesInfo = [
+    {id: 0, icon: "💰", name: "Thương Nhân", desc: "Nhận thêm 20% Gems khi cạy rương thành công."},
+    {id: 1, icon: "💣", name: "Chuyên Gia Mìn", desc: "Trả lời sai khi mở rương KHÔNG bị trừ điểm."},
+    {id: 2, icon: "⚡", name: "Tốc Biến", desc: "Tốc độ di chuyển trên Map cực nhanh."},
+    {id: 3, icon: "👁️", name: "Tầm Nhìn", desc: "Phạm vi phát hiện rương rộng hơn bình thường."},
+    {id: 4, icon: "🌟", name: "Hào Quang", desc: "Vừa vào game đã có sẵn 5000 Gems làm vốn."},
+    {id: 5, icon: "💎", name: "Triệu Phú", desc: "Cứ mỗi 60s trôi qua tự động nhận 150 Gems."},
+    {id: 6, icon: "♻️", name: "Tái Chế", desc: "Dùng Thẻ Kỹ Năng Map có 30% không bị tiêu hao."},
+    {id: 7, icon: "🎁", name: "Phước Lành", desc: "Có 20% tỉ lệ rương rớt x2 lượng thẻ (10 thẻ/rương)."},
+    {id: 8, icon: "🛡️", name: "Bảo Hiểm", desc: "Kháng 100% mọi hiệu ứng Đóng Băng và Tắt Đèn."},
+    {id: 9, icon: "🚀", name: "Thợ Săn", desc: "Luôn nhìn thấy toàn bộ rương VIP trên bản đồ từ xa."},
+    {id: 10, icon: "👑", name: "Vua Shiny", desc: "Tăng GẤP 3 LẦN tỉ lệ nổ thẻ Shiny (từ 5% lên 15%) khi bóc thẻ!"}
+];
+
 function initiateGame() {
     document.getElementById('waiting-section').style.display = 'none'; 
     document.getElementById('setup-section').style.display = 'none'; 
@@ -950,11 +1012,12 @@ function initiateGame() {
     let displayName = playerName.toLowerCase() === 'idori' ? `<span class="admin-tag">[Admin]</span> <span class="idori-container"><span class="letter">I</span><span class="letter">d</span><span class="letter">o</span><span class="letter">r</span><span class="letter">i</span></span>` : `<b style="font-size: 18px; color: var(--primary);">${playerName}</b>`;
     document.getElementById('player-display-name').innerHTML = displayName;
     
-    myPassive = Math.floor(Math.random() * 10);
+    // Nâng trần quay ngẫu nhiên lên 11 để ra được Vua Shiny
+    myPassive = Math.floor(Math.random() * 11);
     let pInfo = passivesInfo[myPassive];
     document.getElementById('passive-display').innerText = `✨ NỘI TẠI: ${pInfo.icon} ${pInfo.name}`;
     
-    if(myPassive === 3) mapData.speed = 60; // Tốc biến
+    if(myPassive === 3) mapData.speed = 60; 
     if(myPassive === 4) { gems += 5000; showToast("🌟 HÀO QUANG: Nhận 5000 Gems khởi nghiệp!", "success"); }
 
     prepareQuestions();
@@ -979,7 +1042,7 @@ function calcTotalValue() {
     return score + gems + cardValue;
 }
 
-function updateStats() {
+window.updateStats = function() {
     document.getElementById('current-score').innerText = score;
     document.getElementById('current-gems').innerText = gems;
     
@@ -990,12 +1053,10 @@ function updateStats() {
     document.getElementById('cnt-USR').innerText = myGallery.USR.length;
     document.getElementById('cnt-LSR').innerText = myGallery.LSR.length;
     
-    // HỆ THỐNG MỞ RƯƠNG VÔ TẬN: Tự động nâng mốc (75 -> 150 -> 225...)
     let currentLimit = (Math.floor(openedChests / 75) + 1) * 75;
     let levelProg = openedChests % 75;
     
     document.getElementById('chest-prog-text').innerText = `Đã mở: ${openedChests} 🎁 (Mốc ${currentLimit})`;
-    // Nếu rương mở chẵn mốc (ví dụ 75/75), tô đầy 100% thanh
     document.getElementById('chest-prog-bar').style.width = `${(openedChests > 0 && levelProg === 0) ? 100 : (levelProg / 75) * 100}%`; 
     
     let sBtn = document.getElementById('skill-btn');
@@ -1003,27 +1064,41 @@ function updateStats() {
     else if(skillCount > 0) { sBtn.innerText = "⚡ DÙNG KỸ NĂNG MAP (" + skillCount + ")"; sBtn.style.display = "block"; } 
     else { sBtn.style.display = "none"; }
 
+    // TÍNH ĐIỂM XẾP HẠNG LÊN LOBBY (1 SHINY = 5 THẺ THƯỜNG)
+    let wR = 0, wSR = 0, wUR = 0, wSSR = 0, wUSR = 0, wLSR = 0;
+    myGallery.R.forEach(c => wR += c.includes("✨") ? 5 : 1);
+    myGallery.SR.forEach(c => wSR += c.includes("✨") ? 5 : 1);
+    myGallery.UR.forEach(c => wUR += c.includes("✨") ? 5 : 1);
+    myGallery.SSR.forEach(c => wSSR += c.includes("✨") ? 5 : 1);
+    myGallery.USR.forEach(c => wUSR += c.includes("✨") ? 5 : 1);
+    myGallery.LSR.forEach(c => wLSR += c.includes("✨") ? 5 : 1);
+
     if(myPlayerRef) { 
         myPlayerRef.update({ 
             gems: gems, 
             score: score, 
             totalVal: calcTotalValue(),
-            cntLSR: myGallery.LSR.length,
-            cntUSR: myGallery.USR.length,
-            cntSSR: myGallery.SSR.length,
-            cntUR: myGallery.UR.length,
-            cntSR: myGallery.SR.length,
-            cntR: myGallery.R.length
+            cntLSR: wLSR,
+            cntUSR: wUSR,
+            cntSSR: wSSR,
+            cntUR: wUR,
+            cntSR: wSR,
+            cntR: wR
         }); 
     }
-}
-
-function showPassiveDesc() { 
+};
+// ==========================================
+// FIX LỖI BẤM XEM THÔNG TIN NỘI TẠI
+// ==========================================
+window.showPassiveDesc = function() { 
     if(myPassive === -1) return; 
     let pInfo = passivesInfo[myPassive]; 
-    let htmlContent = `<div style="font-size:16px; margin-bottom:20px; color:var(--text);">${pInfo.desc}</div><button class="btn btn-warning" style="width:120px;" onclick="closeModal()">Đã Hiểu</button>`;
+    let htmlContent = `
+        <div style="font-size:16px; margin-bottom:20px; color:var(--text);">${pInfo.desc}</div>
+        <button class="btn btn-warning" style="width:120px;" onclick="closeModal()">Đã Hiểu</button>
+    `;
     openModal(`${pInfo.icon} NỘI TẠI: ${pInfo.name}`, htmlContent); 
-}
+};
 
 // BẢNG THÁNH CHỈ IDORI (ADMIN GOD MODE)
 function activateGodMode() {
@@ -1719,17 +1794,42 @@ window.rollGacha = function(type) {
 // ==========================================
 
 // Hàm tự động đếm tổng số thẻ trong Database và tạo mốc thưởng
+// ==========================================
+// 6. THƯ VIỆN BỘ SƯU TẬP (CẬP NHẬT FULL MỐC QUÀ TỚI CẢ SHINY)
+// ==========================================
+// ==========================================
+// 6. THƯ VIỆN BỘ SƯU TẬP (AUTO TẠO MỐC MỖI 50 THẺ)
+// ==========================================
 window.getDynamicMilestones = function() {
     let maxCards = 0;
     for (let tier in cardDatabase) maxCards += cardDatabase[tier].length;
-    
-    return [
-        { req: 10, gems: 1000, skills: 2, desc: "Sưu tầm 10 thẻ khác nhau" },
-        { req: 25, gems: 3000, skills: 3, desc: "Sưu tầm 25 thẻ khác nhau" },
-        { req: 50, gems: 8000, skills: 5, desc: "Sưu tầm 50 thẻ khác nhau" },
-        { req: 80, gems: 15000, skills: 10, desc: "Sưu tầm 80 thẻ khác nhau" },
-        { req: maxCards, gems: 50000, skills: 20, desc: `Sưu tầm TOÀN BỘ ${maxCards} thẻ` }
-    ];
+    let trueMax = maxCards * 2; // Tổng thẻ tính cả bản Shiny
+
+    let milestones = [];
+    let currentStep = 50; // Bắt đầu từ mốc 50 thẻ
+    let stepCount = 1;
+
+    // Vòng lặp: Tự động đẻ ra các mốc 50, 100, 150, 200...
+    while (currentStep < trueMax) {
+        milestones.push({
+            req: currentStep,
+            gems: currentStep * 100 * stepCount, // Quà tự nhân lên (VD: mốc 50 được 5k, mốc 100 được 20k...)
+            skills: Math.floor(currentStep / 10), // Cứ 50 thẻ cho 5 kỹ năng, 100 thẻ cho 10 kỹ năng
+            desc: `Cột mốc ${stepCount}: Sưu tầm ${currentStep} thẻ`
+        });
+        currentStep += 50; // Cộng dồn thêm 50 cho mốc tiếp theo
+        stepCount++;
+    }
+
+    // Chốt sổ: Mốc cuối cùng luôn là Tối Thượng (Full 100% thẻ)
+    milestones.push({
+        req: trueMax,
+        gems: 500000, // Quà khủng cho dân cày hệ VIP
+        skills: 100,
+        desc: `TỐI THƯỢNG: Sưu tầm TOÀN BỘ ${trueMax} thẻ (Thường + Shiny ✨)`
+    });
+
+    return milestones;
 };
 
 window.claimMilestone = function(idx) {
@@ -1748,35 +1848,27 @@ window.claimMilestone = function(idx) {
 };
 
 window.openGallery = function() {
-    let allCards = [];
-    for(let tier in myGallery) allCards = allCards.concat(myGallery[tier]);
-    let uniqueCount = new Set(allCards).size;
-
+    let allCards = []; 
+    for(let t in myGallery) allCards = allCards.concat(myGallery[t]);
+    
+    // Đếm số thẻ độc bản đang có
+    let uniqueCount = new Set(allCards).size; 
     let milestones = window.getDynamicMilestones();
-    let totalMaxCards = milestones[milestones.length - 1].req; // Lấy tổng số thẻ tự động đếm được
+    
+    // Lấy số lượng thẻ của mốc TỐI THƯỢNG (mốc cuối) làm mốc kịch kim hiển thị
+    let trueTotalMaxCards = milestones[milestones.length - 1].req; 
 
+    // Gắn thêm "max-height" và "overflow-y" để tạo thanh cuộn cho bảng nhiệm vụ
     let milestoneHtml = `<div style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 2px dashed #00bcd4; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-        <h3 style="margin-top: 0; color: var(--primary); text-align: center; font-size: 18px;">🏆 TIẾN ĐỘ SƯU TẬP: <span style="color: var(--danger); font-size: 22px;">${uniqueCount}/${totalMaxCards}</span> THẺ</h3>
-        <div style="display: flex; flex-direction: column; gap: 10px;">`;
-        
+        <h3 style="margin-top: 0; color: var(--primary); text-align: center; font-size: 18px;">🏆 TIẾN ĐỘ SƯU TẬP: <span style="color: var(--danger); font-size: 22px;">${uniqueCount} / ${trueTotalMaxCards}</span> THẺ</h3>
+        <p style="text-align:center; font-size: 11px; color: #777; margin-top:-5px; margin-bottom: 10px;">(Lụm thẻ Thường hay Shiny đều được tính để ăn mốc quà bên dưới)</p>
+        <div style="display: flex; flex-direction: column; gap: 10px; max-height: 220px; overflow-y: auto; padding-right: 5px;">`;
+    
     milestones.forEach((m, idx) => {
-        let isClaimed = claimedMilestones.includes(idx);
+        let isClaimed = claimedMilestones.includes(idx); 
         let canClaim = uniqueCount >= m.req && !isClaimed;
-        
-        let btnHtml = "";
-        if (isClaimed) { btnHtml = `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #ccc; color: #666; cursor: not-allowed;" disabled>Đã Nhận</button>`; } 
-        else if (canClaim) { btnHtml = `<button class="btn btn-warning" style="width: 100px; padding: 6px; margin: 0; animation: pulse 1s infinite;" onclick="claimMilestone(${idx})">Nhận Quà</button>`; } 
-        else { btnHtml = `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #e0e0e0; color: #999; cursor: not-allowed;" disabled>Chưa Đạt</button>`; }
-
-        milestoneHtml += `
-            <div style="display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
-                <div style="text-align: left;">
-                    <div style="font-weight: bold; font-size: 14px; color: #333;">${m.desc}</div>
-                    <div style="font-size: 12px; color: var(--danger); font-weight: bold;">💎 +${m.gems} Gems | ⚡ +${m.skills} Kỹ Năng Map</div>
-                </div>
-                ${btnHtml}
-            </div>
-        `;
+        let btnHtml = isClaimed ? `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #ccc; color: #666;" disabled>Đã Nhận</button>` : (canClaim ? `<button class="btn btn-warning" style="width: 100px; padding: 6px; margin: 0; animation: pulse 1s infinite;" onclick="claimMilestone(${idx})">Nhận Quà</button>` : `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #e0e0e0; color: #999;" disabled>Chưa Đạt</button>`);
+        milestoneHtml += `<div style="display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #ddd;"><div style="text-align: left;"><div style="font-weight: bold; font-size: 14px; color: #333;">${m.desc}</div><div style="font-size: 12px; color: var(--danger); font-weight: bold;">💎 +${m.gems} Gems | ⚡ +${m.skills} Kỹ Năng Map</div></div>${btnHtml}</div>`;
     });
     milestoneHtml += `</div></div>`;
 
@@ -1785,30 +1877,22 @@ window.openGallery = function() {
     
     for(let tier in tierLabels) {
         html += `<h3 style="color:var(--primary); text-align:left; border-bottom:1px solid #ccc; padding-bottom:5px; margin-top:20px;">${tierLabels[tier]}</h3><div class="gallery-grid" style="display:flex; flex-wrap:wrap; gap:10px;">`;
-        
         cardDatabase[tier].forEach(cData => {
-            let isOwned = myGallery[tier].includes(cData.name);
-            let count = myGallery[tier].filter(x => x === cData.name).length;
+            let countNormal = myGallery[tier].filter(x => x === cData.name).length;
+            let countShiny = myGallery[tier].filter(x => x === cData.name + " ✨").length;
             
-            if(isOwned) {
-                html += `<div style="width: 140px; aspect-ratio: 2.1/3.6; border-radius: 8px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;" class="owned-card tier-${tier}" onclick="viewCardDetail('${cData.name}', '${tier}', '${cData.desc.replace(/'/g,"\\'")}', '${cData.img || ''}')">
-                    <div style="font-size:15px; font-weight:900; text-align:center; color: #fff; text-shadow: 1px 1px 3px #000;">${tier}</div>
-                    <div class="card-image-box" style="flex: 1; min-height: 45px; margin: 4px 0; border: none; background: transparent; display: flex; justify-content: center; align-items: center;">
-                        ${cData.img ? `<img src="${cData.img}" alt="${cData.name}" style="border-radius:4px; max-height:100%; max-width:100%; object-fit:contain;">` : `<span style="font-size: 28px; opacity: 0.8; color: #fff;">👤</span>`}
-                    </div>
-                    <div style="background:rgba(0,0,0,0.8); padding:5px; border-radius:4px; font-size:11px; font-weight:bold; text-align:center; color:#fff; border: 1px solid rgba(255,255,255,0.3); margin-bottom: 4px;">${cData.name} (x${count})</div>
-                    <div style="background:rgba(0,0,0,0.8); padding:5px; border-radius:4px; font-size:9px; text-align:center; color:#fff; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; border: 1px solid rgba(255,255,255,0.3); line-height: 1.3;">${cData.desc}</div>
-                </div>`;
-            } else {
-                html += `<div style="width: 140px; aspect-ratio: 2.1/3.6; border-radius: 8px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; align-items:center; justify-content: center;" class="locked-card">
-                    <div style="font-size: 26px; margin-bottom: 5px; color:#555;">🔒</div>
-                    <b class="card-name-text" style="font-size:11px; text-align:center; color:#555;">Đang khóa</b>
-                </div>`;
+            if(countNormal > 0) {
+                html += `<div style="width: 140px; aspect-ratio: 2.1/3.6; border-radius: 8px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;" class="owned-card tier-${tier}" onclick="viewCardDetail('${cData.name}', '${tier}', '${cData.desc.replace(/'/g,"\\'")}', '${cData.img || ''}')"><div style="font-size:15px; font-weight:900; text-align:center; color: #fff; text-shadow: 1px 1px 3px #000; flex-shrink: 0;">${tier}</div><div class="card-image-box" style="flex: 1; min-height: 0; margin: 4px 0; border: none; background: transparent; display: flex; justify-content: center; align-items: center;">${cData.img ? `<img src="${cData.img}" style="border-radius:4px; max-height:100%; max-width:100%; object-fit:contain;">` : `<span style="font-size: 28px; opacity: 0.8; color: #fff;">👤</span>`}</div><div style="background:rgba(0,0,0,0.8); padding:5px; border-radius:4px; font-size:11px; font-weight:bold; text-align:center; color:#fff; border: 1px solid rgba(255,255,255,0.3); margin-bottom: 4px; flex-shrink: 0;">${cData.name} (x${countNormal})</div></div>`;
+            } else if (countShiny === 0) {
+                html += `<div style="width: 140px; aspect-ratio: 2.1/3.6; border-radius: 8px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; align-items:center; justify-content: center;" class="locked-card"><div style="font-size: 26px; margin-bottom: 5px; color:#555;">🔒</div><b class="card-name-text" style="font-size:11px; text-align:center; color:#555;">Đang khóa</b></div>`;
+            }
+
+            if(countShiny > 0) {
+                html += `<div style="width: 140px; aspect-ratio: 2.1/3.6; border-radius: 8px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;" class="owned-card tier-${tier} shiny-card-border" onclick="viewCardDetail('${cData.name} ✨', '${tier}', '🌈 BẢN SHINY SIÊU HIẾM (x10 GIÁ TRỊ) 🌈<br>${cData.desc.replace(/'/g,"\\'")}', '${cData.img || ''}')"><div style="font-size:15px; text-align:center; flex-shrink: 0;"><span class="shiny-text" style="font-weight:900;">${tier}</span></div><div class="card-image-box" style="flex: 1; min-height: 0; margin: 4px 0; border: none; background: transparent; display: flex; justify-content: center; align-items: center;">${cData.img ? `<img src="${cData.img}" style="border-radius:4px; max-height:100%; max-width:100%; object-fit:contain;">` : `<span style="font-size: 28px; opacity: 0.8; color: #fff;">👤</span>`}</div><div style="background:rgba(0,0,0,0.8); padding:5px; border-radius:4px; font-size:11px; text-align:center; border: 1px solid rgba(255,255,255,0.3); margin-bottom: 4px; flex-shrink: 0;"><span class="shiny-text" style="font-weight:bold;">${cData.name} ✨ (x${countShiny})</span></div></div>`;
             }
         });
         html += `</div>`;
     }
-    
     html += `</div>`;
     openModal("📖 THƯ VIỆN KÝ ỨC", html + `<button class="btn btn-danger" style="margin-top: 25px;" onclick="closeModal()">Đóng</button>`);
 };
@@ -2405,8 +2489,30 @@ window.postAuction = function() {
 window.adminCreateSystemAuction = function() {
     let isUSR = Math.random() > 0.5; let tier = isUSR ? 'USR' : 'LSR';
     let card = cardDatabase[tier][Math.floor(Math.random() * cardDatabase[tier].length)].name;
-    database.ref('room_auctions').push({ seller: "HỆ THỐNG", tier: tier, card: card, startPrice: (isUSR ? 2000 : 5000), currentBid: (isUSR ? 2000 : 5000), highestBidder: "none", endTime: Date.now() + (180000), status: 'active', timeCreated: Date.now() }).then(() => {
-        database.ref('chat_messages').push({ name: "NHÀ ĐẤU GIÁ", text: `🚨 HỆ THỐNG vừa thả thẻ VIP ${tier} [${card}] lên Sàn! Vào cướp mau!`, timestamp: Date.now() }); 
+    
+    // TỈ LỆ VÀNG: Hệ thống có 20% khả năng thả thẻ Shiny ra Sàn đấu giá
+    let isShiny = Math.random() < 0.2;
+    if(isShiny) card += " ✨";
+
+    // ÉP GIÁ: Nếu là Shiny thì giá khởi điểm tự động x10
+    let basePrice = isUSR ? 2000 : 5000;
+    let startPrice = isShiny ? basePrice * 10 : basePrice;
+
+    database.ref('room_auctions').push({ 
+        seller: "HỆ THỐNG", 
+        tier: tier, 
+        card: card, 
+        startPrice: startPrice, 
+        currentBid: startPrice, 
+        highestBidder: "none", 
+        endTime: Date.now() + (180000), 
+        status: 'active', 
+        timeCreated: Date.now() 
+    }).then(() => {
+        let msg = isShiny 
+            ? `🚨 SIÊU PHẨM! HỆ THỐNG vừa thả thẻ SHINY ${tier} [${card}] lên Sàn! Giá khởi điểm ${startPrice}💎! VÀO CƯỚP!`
+            : `🚨 HỆ THỐNG vừa thả thẻ VIP ${tier} [${card}] lên Sàn! Vào cướp mau!`;
+        database.ref('chat_messages').push({ name: "NHÀ ĐẤU GIÁ", text: msg, timestamp: Date.now() }); 
         showToast("Đã kích hoạt Đấu Giá Hệ Thống!", "success");
     }).catch(err => {
         showToast("Lỗi Hệ Thống: " + err.message, "danger");
@@ -2515,7 +2621,7 @@ window.openUpgradeCenter = function() {
     let options = "";
     let hasFodder = false;
     
-    // Tìm các BẬC (Tier) có tổng số phôi dư >= 3 (bảo toàn 1 bản gốc)
+    // Tìm các BẬC (Tier) có tổng số phôi dư >= 3
     for(let t of tierOrder) {
         if(t === 'LSR') continue; 
         let counts = {};
@@ -2533,20 +2639,20 @@ window.openUpgradeCenter = function() {
     }
     
     if(!hasFodder) {
-        let html = `<div style="padding: 20px; color: var(--danger); font-weight: bold; text-align:center;">Kho đồ không đủ phôi!<br>Hệ thống bắt buộc giữ lại 1 bản gốc cho mỗi thẻ. Bạn không có Bậc Thẻ nào chứa đủ 3 phôi dư để ép cả!</div><button class="btn btn-secondary" onclick="closeModal()">Đóng Cửa Lò</button>`;
+        let html = `<div style="padding: 20px; color: var(--danger); font-weight: bold; text-align:center;">Kho đồ không đủ phôi!<br>Hệ thống bắt buộc giữ lại 1 bản gốc cho mỗi thẻ. Bạn không có Bậc Thẻ nào chứa đủ 3 phôi dư để ép cả!</div>
+        <button class="btn btn-secondary" style="margin-top: 15px; width: 100%; padding: 15px; background: #555;" onclick="closeModal()">❌ ĐÓNG CỬA LÒ</button>`;
         return openModal("🔨 LÒ RÈN TỐI THƯỢNG", html);
     }
 
     let html = `
         <div style="background: #fff; padding: 15px; border-radius: 10px; text-align: left; border: 2px dashed #ff5722;">
-            <p style="font-size: 13px; color: #555; background: #fff3e0; padding: 10px; border-radius: 8px;">💡 <b>Luật Lò Rèn BẢO TỒN:</b> Hệ thống sẽ <b>TỰ ĐỘNG BỐC ĐẠI 3 PHÔI DƯ</b> ngẫu nhiên trong Bậc đó đem đi tế, cam kết giữ lại 1 bản gốc cho bạn! (Thất bại sẽ <b>MẤT TRẮNG</b> cả 3 phôi).</p>
+            <p style="font-size: 13px; color: #555; background: #fff3e0; padding: 10px; border-radius: 8px;">💡 <b>Luật Lò Rèn BẢO TỒN:</b> Hệ thống sẽ <b>TỰ ĐỘNG BỐC ĐẠI 3 PHÔI DƯ</b> ngẫu nhiên trong Bậc đó đem đi tế, cam kết giữ lại 1 bản gốc cho bạn!</p>
             
-            <h4 style="margin: 0 0 5px 0; color: var(--primary);">🔥 Chọn Bậc Phôi (Mất 3 Phôi dư):</h4>
+            <h4 style="margin: 0 0 5px 0; color: var(--primary);">🔥 Chọn Bậc Phôi:</h4>
             <select id="upgrade-fodder" style="width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 5px; font-weight: bold; background: #e8f0fe;" onchange="updateUpgradeUI()">${options}</select>
             
             <h4 style="margin: 0 0 5px 0; color: var(--danger);">🎯 Chọn Bậc Mục Tiêu:</h4>
             <select id="upgrade-target" style="width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 5px; font-weight: bold; background: #fce8e6;" onchange="updateUpgradeUI()">
-                <!-- Populated by JS -->
             </select>
 
             <div style="text-align: center; margin-bottom: 15px; background: #111; color: #fff; padding: 15px; border-radius: 8px; box-shadow: inset 0 0 15px rgba(0,0,0,0.8);">
@@ -2554,8 +2660,10 @@ window.openUpgradeCenter = function() {
                 <div id="upgrade-rate-display" style="font-size: 40px; font-weight: 900; color: #00e5ff; text-shadow: 0 0 10px #00e5ff;">0%</div>
             </div>
 
-            <button class="btn" style="background: linear-gradient(45deg, #ff0044, #ff9800); color: #fff; font-size: 18px; padding: 15px; font-weight: 900; box-shadow: 0 5px 15px rgba(255,0,68,0.4);" onclick="executeUpgrade()">🔨 ĐẬP THẺ NGAY</button>
+            <button class="btn" style="background: linear-gradient(45deg, #ff0044, #ff9800); color: #fff; font-size: 18px; padding: 15px; font-weight: 900; width: 100%; box-shadow: 0 5px 15px rgba(255,0,68,0.4);" onclick="executeUpgrade()">🔨 ĐẬP THẺ NGAY</button>
         </div>
+        <!-- CÁI NÚT THOÁT HIỂM ĐÂY RỒI 😂 -->
+        <button class="btn btn-secondary" style="margin-top: 15px; width: 100%; background: #666; font-size: 16px; padding: 12px;" onclick="closeModal()">❌ KHÔNG ÉP NỮA (ĐÓNG)</button>
     `;
     openModal("🔨 LÒ RÈN TỐI THƯỢNG", html);
     setTimeout(updateUpgradeUI, 50);
@@ -2661,6 +2769,574 @@ window.executeUpgrade = function() {
         }, 200);
         
     }, 2000); // 2 giây hồi hộp
+};
+// ==========================================
+// SIÊU BẢN VÁ: HỆ THỐNG THẺ SHINY & KỸ NĂNG NAM CHÂM
+// ==========================================
+
+// 1. Tự động bơm CSS Hiệu Ứng Lấp Lánh vào Web
+let shinyStyle = document.createElement('style');
+shinyStyle.innerHTML = `
+    .shiny-card-border { animation: shinyRainbow 2s linear infinite, ssrGlow 1s alternate infinite !important; background: linear-gradient(135deg, #111, #333, #00bcd4) !important; border: 3px solid #ffeb3b !important; box-shadow: 0 0 25px #ffeb3b, inset 0 0 15px #00e5ff !important; }
+    @keyframes shinyRainbow { 100% { filter: hue-rotate(360deg); } }
+    .shiny-text { 
+        background: linear-gradient(90deg, #ffeb3b, #ff00cc, #00e5ff, #ffeb3b) !important; 
+        background-size: 200% 200% !important; 
+        -webkit-background-clip: text !important; 
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important; 
+        color: transparent !important;
+        animation: shinyRainbow 3s linear infinite !important; 
+        display: inline-block;
+    }
+`;
+document.head.appendChild(shinyStyle);
+
+// 2. Hack thẳng vào máy Gacha: Cho 5% tự động hóa Shiny khi bóc thẻ!
+const originalDisplay = window.displayGachaResult;
+window.displayGachaResult = function(results, title, gems) {
+    // 💡 KIỂM TRA NỘI TẠI: Nếu là Vua Shiny thì x3 nhân phẩm (15%), không thì 5%
+    let shinyRate = (myPassive === 10) ? 0.15 : 0.05;
+
+    results.forEach(res => {
+        // Đột biến Shiny theo Tỉ lệ
+        if(!res.data.name.includes("✨") && Math.random() < shinyRate) { 
+            let idx = myGallery[res.tier].lastIndexOf(res.data.name);
+            if(idx !== -1) {
+                myGallery[res.tier].splice(idx, 1);
+                res.data = Object.assign({}, res.data);
+                res.data.name += " ✨";
+                res.data.desc = "🌈 BẢN SHINY SIÊU HIẾM (x10 GIÁ TRỊ) 🌈<br>" + res.data.desc;
+                res.isShiny = true;
+                myGallery[res.tier].push(res.data.name);
+            }
+        }
+    });
+
+    currentStackResults = results;
+    currentStackIndex = 0;
+
+    // GIAO DIỆN MỞ 1 THẺ ĐƠN
+    if(results.length === 1) {
+        let c = results[0];
+        let isShiny = (c.isShiny || c.data.name.includes('✨'));
+        let imgTag = (c.data.img) ? `<img src="${c.data.img}" style="width: 100%; height: 100%; object-fit: contain;">` : `<span style="font-size: 50px; opacity: 0.5;">👤</span>`;
+        let sClass = isShiny ? 'shiny-card-border' : '';
+        let sText = isShiny ? 'shiny-text' : '';
+        let normalText = isShiny ? '' : 'color:#fff; text-shadow:1px 1px 3px #000;';
+        
+        let gemHtml = gems ? `<div style="text-align:center; color: #00e5ff; font-weight:bold; font-size:20px; margin-top:15px; text-shadow: 0 0 10px #00e5ff;">💎 +${gems} Gems</div>` : '';
+        
+        let html = `
+        <div style="width: 240px; height: 350px; margin: 0 auto; border-radius: 12px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); background: #111;">
+            <div class="tier-${c.tier} ${sClass}" style="position: absolute; inset: 0; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; color: white;">
+                <div style="font-size: 28px; flex-shrink: 0; text-align: center; margin:0;"><span class="${sText}" style="font-weight:900; ${normalText}">${c.tier}</span></div>
+                <div style="flex: 1; min-height: 0; margin: 10px 0; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); overflow: hidden;">
+                    ${imgTag}
+                </div>
+                <div style="font-size: 16px; flex-shrink: 0; text-align: center; margin-bottom: 5px;"><span class="${sText}" style="font-weight:900; ${normalText}">${c.data.name}</span></div>
+                <div style="font-size: 12px; flex-shrink: 0; text-align: center; padding: 0; color: #ddd; text-shadow: 1px 1px 2px #000;">${c.data.desc}</div>
+            </div>
+        </div>
+        ${gemHtml}
+        <button class="btn btn-warning" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 18px;" onclick="closeModal()">Tuyệt Vời</button>`;
+        openModal(title, html);
+    } 
+    // GIAO DIỆN MỞ NHIỀU THẺ (STACK)
+    else {
+        let extraGemText = gems > 0 ? `<div style="font-size:24px; color:#00bcd4; font-weight:bold; margin-bottom:10px;">+${gems} 💎</div>` : '';
+        let html = `
+            <h3 style="color: var(--success); margin:0;" id="gacha-pts-text">${title}</h3>
+            ${extraGemText}
+            <div id="stack-counter" style="margin-top: 10px; font-weight: bold; color: #555;">Thẻ 1 / ${results.length}</div>
+            <div class="fc-stack-wrapper" id="fc-stack-slot-container"></div>
+            <button id="skip-pack-btn" class="btn btn-secondary" style="margin-top: 15px;" onclick="skipAllFlips()">Lật Nhanh Tất Cả</button>
+            <div id="all-cards-grid" class="all-cards-grid" style="display:none; transform: scale(0.9); margin-top: 0;"></div>
+            <button id="collect-pack-btn" class="btn btn-warning" style="margin-top: 10px; display: none;" onclick="closeModal()">Thu Thập & Đi Tiếp</button>
+        `;
+        openModal("🎉 KẾT QUẢ GACHA", html);
+        renderNextStackCard();
+    }
+};
+
+// 3. Tính toán lại Tổng tài sản (Thẻ Shiny x10 Tiền)
+window.calcTotalValue = function() {
+    let val = score + gems;
+    let baseVals = { LSR: 5000, USR: 2000, SSR: 500, UR: 200, SR: 50, R: 10 };
+    for(let t in myGallery) {
+        myGallery[t].forEach(cName => {
+            val += cName.includes("✨") ? baseVals[t] * 10 : baseVals[t];
+        });
+    }
+    return val;
+};
+
+// 4. Render hiệu ứng khi đập hộp Pack Gacha
+window.renderNextStackCard = function() {
+    let container = document.getElementById('fc-stack-slot-container');
+    if(!container) return;
+    if(currentStackIndex >= currentStackResults.length) { showAllCardsSummary(); return; }
+    
+    let c = currentStackResults[currentStackIndex];
+    let counter = document.getElementById('stack-counter');
+    if(counter) counter.innerText = `Thẻ ${currentStackIndex + 1} / ${currentStackResults.length}`;
+    
+    let isShiny = (c.isShiny || c.data.name.includes('✨'));
+    let imgTag = (c.data.img) ? `<img src="${c.data.img}" style="width: 100%; height: 100%; object-fit: contain;">` : `<span style="font-size: 40px; opacity: 0.5;">👤</span>`;
+    let sClass = isShiny ? 'shiny-card-border' : '';
+    let sText = isShiny ? 'shiny-text' : '';
+    let normalText = isShiny ? '' : 'color:#fff; text-shadow:1px 1px 3px #000;';
+
+    container.innerHTML = `
+        <div class="fc-card-slot" onclick="flipStackCard(this, '${c.tier}')" style="width: 190px; aspect-ratio: 2.1/3.6;">
+            <div class="fc-card-inner" id="active-stack-card">
+                <div class="fc-card-front">
+                    <span style="font-size:45px;">📦</span>
+                    <div style="font-size:13px; margin-top:10px; animation: pulse 1s infinite;">Bấm để lật thẻ</div>
+                </div>
+                <div class="fc-card-back tier-${c.tier} ${sClass}" style="padding: 10px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="font-size: 22px; flex-shrink: 0; text-align:center;"><span class="${sText}" style="font-weight:900; ${normalText}">${c.tier}</span></div>
+                    <div style="flex: 1; min-height: 0; margin: 6px 0; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
+                        ${imgTag}
+                    </div>
+                    <div style="font-size: 13px; flex-shrink: 0; text-align:center; line-height: 1.2; margin-bottom:4px;"><span class="${sText}" style="font-weight:900; ${normalText}">${c.data.name}</span></div>
+                    <div style="font-size: 10px; flex-shrink: 0; text-align:center; color: #ccc; line-height: 1.1;">${c.data.desc}</div>
+                </div>
+            </div>
+        </div>
+    `;
+};
+
+window.showAllCardsSummary = function() {
+    let container = document.getElementById('fc-stack-slot-container'); if(container) container.style.display = 'none';
+    let skipBtn = document.getElementById('skip-pack-btn'); if(skipBtn) skipBtn.style.display = 'none';
+    let counter = document.getElementById('stack-counter'); if(counter) counter.innerText = "TỔNG KẾT PACK";
+    let grid = document.getElementById('all-cards-grid');
+    if(grid) {
+        grid.style.display = 'flex';
+        grid.innerHTML = currentStackResults.map(c => {
+            let isShiny = (c.isShiny || c.data.name.includes('✨'));
+            let sClass = isShiny ? 'shiny-card-border' : '';
+            let sText = isShiny ? 'shiny-text' : '';
+            let normalText = isShiny ? '' : 'color:#fff; text-shadow:1px 1px 3px #000;';
+            return `
+            <div class="fc-card-slot" style="width: 110px; aspect-ratio: 2.1/3.6;">
+                <div class="fc-card-inner flipped" style="transition:none; cursor:default;">
+                    <div class="fc-card-back tier-${c.tier} ${sClass}" style="padding: 6px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div style="font-size: 16px; flex-shrink: 0; text-align:center; margin-bottom:2px;"><span class="${sText}" style="font-weight:900; ${normalText}">${c.tier}</span></div>
+                        <div style="flex: 1; min-height: 0; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); border-radius: 4px; overflow: hidden; margin-bottom: 4px; border: 1px solid rgba(255,255,255,0.2);">
+                            ${c.data.img ? `<img src="${c.data.img}" style="width: 100%; height: 100%; object-fit: contain;">` : `<span style="font-size: 20px; opacity: 0.5;">👤</span>`}
+                        </div>
+                        <div style="font-size: 9px; flex-shrink: 0; text-align:center; line-height: 1.1;"><span class="${sText}" style="font-weight:900; ${normalText}">${c.data.name}</span></div>
+                    </div>
+                </div>
+            </div>
+        `}).join('');
+    }
+    let collectBtn = document.getElementById('collect-pack-btn');
+    if(collectBtn) collectBtn.style.display = 'block';
+};
+
+// 5. Thêm 2 Thẻ Kỹ Năng Đỉnh Cao vào Game
+window.drawSkill = function() {
+    if(isInputPaused || skillCount <= 0) return;
+    if(myPassive === 6 && Math.random() < 0.3) { showToast("♻️ TÁI CHẾ: Bạn không bị trừ thẻ kỹ năng!", "success"); } else { skillCount--; }
+    updateStats();
+    
+    let skills = [
+        {name: "Xuyên Không", desc: "Giảm 60s thời gian của bạn.", action: () => { elapsedTime = Math.max(0, elapsedTime - 60); showToast("🚀 Đã giảm 60s thời gian!", "success"); closeModal(); }},
+        {name: "Đóng Băng", desc: "Đóng băng toàn bộ đối thủ 5s.", action: () => { database.ref('room_events').push({ type: 'freeze', by: playerName, time: Date.now() }); showToast("❄️ Đã đóng băng toàn server!", "success"); closeModal(); }},
+        {name: "Ra Đa", desc: "Đánh dấu rương VIP trên bản đồ.", action: () => { chests.forEach(c => { if(['Gold', 'Diamond', 'Platinum', 'Ruby', 'Legendary', 'Mythic'].includes(c.dataset.type)) { c.classList.remove('chest-hidden'); c.classList.add(c.dataset.trueClass, 'chest-revealed'); c.innerHTML = '🎁'; }}); showToast("📡 Ra Đa: Các rương xịn đã lộ diện!", "success"); closeModal(); }},
+        {name: "Hút Gems", desc: "Hút 500 Gems từ hệ thống.", action: () => { gems += 500; updateStats(); showToast("🧲 Đã hút 500 Gems!", "success"); closeModal(); }},
+        {name: "Tắt Đèn", desc: "Làm mù màn hình người chơi khác 10s.", action: () => { database.ref('room_events').push({ type: 'blackout', by: playerName, time: Date.now() }); showToast("🌑 Đã tắt đèn toàn server!", "success"); closeModal(); }},
+        {name: "Cân Đẩu Vân", desc: "Dịch chuyển ngẫu nhiên đến 1 rương.", action: () => { if(chests.length > 0) { let rc = chests[Math.floor(Math.random()*chests.length)]; pX = parseInt(rc.style.left); pY = parseInt(rc.style.top); document.getElementById('player').style.left = pX + 'px'; document.getElementById('player').style.top = pY + 'px'; updateCamera(); showToast("🚀 Đã dịch chuyển đến Rương!", "success"); } else { showToast("Bản đồ đã hết rương!", "warning"); } closeModal(); }},
+        {name: "Thiên Nhãn", desc: "Lột trần TẤT CẢ rương trên bản đồ.", action: () => { chests.forEach(c => { c.classList.remove('chest-hidden'); c.classList.add(c.dataset.trueClass, 'chest-revealed'); c.innerHTML = '🎁'; }); showToast("👁️ Thiên Nhãn: Toàn bộ rương đã hiện hình!", "success"); closeModal(); }},
+        {name: "Hack Điểm", desc: "Bơm ngay 50 Điểm vào tài khoản.", action: () => { score += 50; updateStats(); showToast("🎯 Hack thành công 50 Điểm!", "success"); closeModal(); }},
+        {name: "Cuồng Phong", desc: "Thổi bay người chơi khác đi nơi ngẫu nhiên.", action: () => { database.ref('room_events').push({ type: 'tornado', by: playerName, time: Date.now() }); showToast("🌪️ Đã tạo bão Cuồng Phong quét toàn server!", "success"); closeModal(); }},
+        {name: "Đạo Tặc", desc: "Nhận 200 Gems và trộm 200 Gems của đối thủ.", action: () => { gems += 200; updateStats(); database.ref('room_events').push({ type: 'steal', by: playerName, time: Date.now() }); showToast("🥷 Kích hoạt Đạo Tặc: Bú 200 Gems và phá đối thủ!", "success"); closeModal(); }},
+        {name: "Nam Châm Vĩnh Cửu", desc: "Gom TOÀN BỘ rương trên bản đồ rơi vào đầu bạn!", action: () => { 
+            chests.forEach(c => { c.style.left = (pX + (Math.random() * 150 - 75)) + 'px'; c.style.top = (pY + (Math.random() * 150 - 75)) + 'px'; });
+            showToast("🧲 Lực hút vô cực! Rương đã quy tụ về đây!", "success"); closeModal();
+        }},
+        {name: "Bàn Tay Vàng", desc: "Rút ngay 1 thẻ. ĐẢM BẢO 100% LÀ THẺ SHINY SIÊU HIẾM ✨!", action: () => {
+            let rates = { R: 40, SR: 30, UR: 15, SSR: 10, USR: 4, LSR: 1 };
+            let rand = Math.random() * 100; let sum = 0; let pTier = 'R';
+            for (let k in rates) { sum += rates[k]; if (rand <= sum) { pTier = k; break; } }
+            let cPool = cardDatabase[pTier]; 
+            let baseCard = cPool[Math.floor(Math.random() * cPool.length)];
+            let shinyCard = Object.assign({}, baseCard); 
+            shinyCard.name += " ✨"; 
+            shinyCard.desc = "🌟 BẢN SHINY SIÊU HIẾM (x10 GIÁ TRỊ) 🌟<br>" + shinyCard.desc;
+            myGallery[pTier].push(shinyCard.name);
+            updateStats(); closeModal();
+            displayGachaResult([{ tier: pTier, data: shinyCard, isShiny: true }], `🌟 BÀN TAY VÀNG TẠO TÁC PHẨM!`, 0);
+            database.ref('chat_messages').push({ name: "HỆ THỐNG", text: `💥 ĐẠI HỒNG THỦY! [${playerName}] vừa dùng Bàn Tay Vàng múc ngay thẻ [${pTier}] ${shinyCard.name}!`, timestamp: Date.now() });
+        }}
+    ];
+    
+    let rndSkill = skills[Math.floor(Math.random() * skills.length)];
+    let htmlContent = `<div style="background: linear-gradient(135deg, #111, #333); color: white; padding: 20px; border-radius: 12px; border: 2px solid var(--warning); box-shadow: 0 0 20px var(--warning);"><div style="font-size: 50px; margin-bottom: 10px; animation: pulse 1s infinite;">🃏</div><h2 style="color:var(--warning); margin: 0 0 10px 0;">${rndSkill.name}</h2><p style="font-size:16px; color: #ccc; margin-bottom: 20px;">${rndSkill.desc}</p><button class="btn btn-warning" id="btn-activate-skill" style="padding:15px; font-size:18px;">⚡ Kích Hoạt Ngay</button></div>`;
+    openModal("🎉 RÚT THẺ KỸ NĂNG", htmlContent);
+    setTimeout(() => { let btn = document.getElementById('btn-activate-skill'); if(btn) btn.onclick = rndSkill.action; }, 50);
+};
+
+// ==========================================
+// 6. THƯ VIỆN BỘ SƯU TẬP (BẢN CHUẨN NHẤT - GỘP TẤT CẢ TÍNH NĂNG)
+// ==========================================
+// ==========================================
+// 6. THƯ VIỆN BỘ SƯU TẬP (FIX LỖI NHÂN ĐÔI 480 THẺ)
+// ==========================================
+window.openGallery = function() {
+    let allCards = []; 
+    for(let t in myGallery) allCards = allCards.concat(myGallery[t]);
+    
+    let uniqueCount = new Set(allCards).size; 
+    let milestones = window.getDynamicMilestones();
+    let trueTotalMaxCards = milestones[milestones.length - 1].req; 
+
+    let milestoneHtml = `<div style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 2px dashed #00bcd4; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+        <h3 style="margin-top: 0; color: var(--primary); text-align: center; font-size: 18px;">🏆 TIẾN ĐỘ SƯU TẬP: <span style="color: var(--danger); font-size: 22px;">${uniqueCount} / ${trueTotalMaxCards}</span> THẺ</h3>
+        <p style="text-align:center; font-size: 11px; color: #777; margin-top:-5px; margin-bottom: 10px;">(Lụm thẻ Thường hay Shiny đều được tính để ăn mốc quà bên dưới)</p>
+        <div style="display: flex; flex-direction: column; gap: 10px; max-height: 220px; overflow-y: auto; padding-right: 5px;">`;
+    
+    milestones.forEach((m, idx) => {
+        let isClaimed = claimedMilestones.includes(idx); 
+        let canClaim = uniqueCount >= m.req && !isClaimed;
+        let btnHtml = isClaimed ? `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #ccc; color: #666;" disabled>Đã Nhận</button>` : (canClaim ? `<button class="btn btn-warning" style="width: 100px; padding: 6px; margin: 0; animation: pulse 1s infinite;" onclick="claimMilestone(${idx})">Nhận Quà</button>` : `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #e0e0e0; color: #999;" disabled>Chưa Đạt</button>`);
+        milestoneHtml += `<div style="display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #ddd;"><div style="text-align: left;"><div style="font-weight: bold; font-size: 14px; color: #333;">${m.desc}</div><div style="font-size: 12px; color: var(--danger); font-weight: bold;">💎 +${m.gems} Gems | ⚡ +${m.skills} Kỹ Năng Map</div></div>${btnHtml}</div>`;
+    });
+    milestoneHtml += `</div></div>`;
+
+    let html = milestoneHtml + `<div style="text-align:left;">`;
+    const tierLabels = { LSR: "👑 Huyền Thoại", USR: "💎 Tráng Ca", SSR: "🌟 Di Tích", UR: "🔥 Anh Hùng", SR: "🎒 Kỷ Vật", R: "📝 Thông Tin" };
+    
+    for(let tier in tierLabels) {
+        html += `<h3 style="color:var(--primary); text-align:left; border-bottom:1px solid #ccc; padding-bottom:5px; margin-top:20px;">${tierLabels[tier]}</h3><div class="gallery-grid" style="display:flex; flex-wrap:wrap; gap:10px;">`;
+        cardDatabase[tier].forEach(cData => {
+            let countNormal = myGallery[tier].filter(x => x === cData.name).length;
+            let countShiny = myGallery[tier].filter(x => x === cData.name + " ✨").length;
+            
+            // 1. RENDER BẢN THƯỜNG (Sở hữu hoặc Bị Khóa)
+            if(countNormal > 0) {
+                html += `<div style="width: 140px; aspect-ratio: 2.1/3.6; border-radius: 8px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;" class="owned-card tier-${tier}" onclick="viewCardDetail('${cData.name}', '${tier}', '${cData.desc.replace(/'/g,"\\'")}', '${cData.img || ''}')"><div style="font-size:15px; font-weight:900; text-align:center; color: #fff; text-shadow: 1px 1px 3px #000; flex-shrink: 0;">${tier}</div><div class="card-image-box" style="flex: 1; min-height: 0; margin: 4px 0; border: none; background: transparent; display: flex; justify-content: center; align-items: center;">${cData.img ? `<img src="${cData.img}" style="border-radius:4px; max-height:100%; max-width:100%; object-fit:contain;">` : `<span style="font-size: 28px; opacity: 0.8; color: #fff;">👤</span>`}</div><div style="background:rgba(0,0,0,0.8); padding:5px; border-radius:4px; font-size:11px; font-weight:bold; text-align:center; color:#fff; border: 1px solid rgba(255,255,255,0.3); margin-bottom: 4px; flex-shrink: 0;">${cData.name} (x${countNormal})</div></div>`;
+            } else {
+                html += `<div style="width: 140px; aspect-ratio: 2.1/3.6; border-radius: 8px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; align-items:center; justify-content: center;" class="locked-card"><div style="font-size: 26px; margin-bottom: 5px; color:#555;">🔒</div><b class="card-name-text" style="font-size:11px; text-align:center; color:#555;">Đang khóa</b></div>`;
+            }
+
+            // 2. RENDER BẢN SHINY (Sở hữu hoặc Bị Khóa)
+            if(countShiny > 0) {
+                html += `<div style="width: 140px; aspect-ratio: 2.1/3.6; border-radius: 8px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;" class="owned-card tier-${tier} shiny-card-border" onclick="viewCardDetail('${cData.name} ✨', '${tier}', '🌈 BẢN SHINY SIÊU HIẾM (x10 GIÁ TRỊ) 🌈<br>${cData.desc.replace(/'/g,"\\'")}', '${cData.img || ''}')"><div style="font-size:15px; text-align:center; flex-shrink: 0;"><span class="shiny-text" style="font-weight:900;">${tier}</span></div><div class="card-image-box" style="flex: 1; min-height: 0; margin: 4px 0; border: none; background: transparent; display: flex; justify-content: center; align-items: center;">${cData.img ? `<img src="${cData.img}" style="border-radius:4px; max-height:100%; max-width:100%; object-fit:contain;">` : `<span style="font-size: 28px; opacity: 0.8; color: #fff;">👤</span>`}</div><div style="background:rgba(0,0,0,0.8); padding:5px; border-radius:4px; font-size:11px; text-align:center; border: 1px solid rgba(255,255,255,0.3); margin-bottom: 4px; flex-shrink: 0;"><span class="shiny-text" style="font-weight:bold;">${cData.name} ✨ (x${countShiny})</span></div></div>`;
+            } else {
+                html += `<div style="width: 140px; aspect-ratio: 2.1/3.6; border-radius: 8px; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; align-items:center; justify-content: center; background: #e8e8e8; border: 1px dashed #bbb;" class="locked-card">
+                    <div style="font-size: 26px; margin-bottom: 5px; color:#555; animation: pulse 2s infinite;">✨</div>
+                    <b class="card-name-text" style="font-size:11px; text-align:center; color:#555;">Bản Shiny<br>(Đang khóa)</b>
+                </div>`;
+            }
+        });
+        html += `</div>`;
+    }
+    html += `</div>`;
+    openModal("📖 THƯ VIỆN KÝ ỨC", html + `<button class="btn btn-danger" style="margin-top: 25px;" onclick="closeModal()">Đóng</button>`);
+};
+
+window.viewCardDetail = function(name, tier, desc, img) {
+    let isShiny = name.includes('✨');
+    let sClass = isShiny ? 'shiny-card-border' : '';
+    let sText = isShiny ? 'shiny-text' : '';
+    let normalText = isShiny ? '' : 'color:#fff; text-shadow:1px 1px 3px #000;';
+    let imgTag = (img && img !== 'undefined' && img !== '') ? `<img src="${img}" style="width: 100%; height: 100%; object-fit: contain;">` : `<span style="font-size: 50px; opacity: 0.5;">👤</span>`;
+
+    let html = `
+    <div style="width: 260px; height: 380px; margin: 0 auto; border-radius: 12px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); background: #111;">
+        <div class="tier-${tier} ${sClass}" style="position: absolute; inset: 0; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; color: white;">
+            
+            <div style="font-size: 28px; flex-shrink: 0; text-align: center; margin:0;"><span class="${sText}" style="font-weight:900; ${normalText}">${tier}</span></div>
+            
+            <div style="flex: 1; min-height: 0; margin: 10px 0; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); overflow: hidden;">
+                ${imgTag}
+            </div>
+            
+            <div style="font-size: 16px; flex-shrink: 0; text-align: center; margin-bottom: 5px;"><span class="${sText}" style="font-weight:900; ${normalText}">${name}</span></div>
+            <div style="font-size: 13px; flex-shrink: 0; text-align: center; padding: 0; color: #ddd; text-shadow: 1px 1px 2px #000;">${desc}</div>
+        </div>
+    </div>
+    <button class="btn btn-warning" style="margin-top: 25px; width: 100%; padding: 12px;" onclick="openGallery()">Quay Lại</button>`;
+    
+    openModal(`CHI TIẾT THẺ`, html);
+};
+// ==========================================
+// HỆ THỐNG NHIỆM VỤ (QUESTS) THƯỜNG & SHINY
+// ==========================================
+let claimedQuests = []; // Lưu vết các nhiệm vụ đã nhận thưởng
+
+// Danh sách các nhiệm vụ (Ông có thể copy paste thêm các dòng để chế thêm nhiệm vụ nha)
+const questList = [
+    { id: 0, title: "Tân Binh Thu Thập", desc: "Sở hữu tổng cộng 20 thẻ Thường trong túi.", reqNormal: 20, reqShiny: 0, reqShinyTier: null, rewardGems: 2000, rewardSkills: 1 },
+    { id: 1, title: "Kẻ Săn Đồ Cổ", desc: "Sở hữu tổng cộng 100 thẻ Thường.", reqNormal: 100, reqShiny: 0, reqShinyTier: null, rewardGems: 10000, rewardSkills: 5 },
+    { id: 2, title: "Kẻ Được Chọn", desc: "Sở hữu 1 thẻ Shiny lấp lánh đầu tiên.", reqNormal: 0, reqShiny: 1, reqShinyTier: null, rewardGems: 5000, rewardSkills: 2 },
+    { id: 3, title: "Đại Gia Lấp Lánh", desc: "Sở hữu tổng cộng 10 thẻ Shiny các loại.", reqNormal: 0, reqShiny: 10, reqShinyTier: null, rewardGems: 25000, rewardSkills: 10 },
+    { id: 4, title: "Thao Túng Nhân Phẩm", desc: "Sở hữu ít nhất 1 thẻ Huyền Thoại (LSR) bản Shiny.", reqNormal: 0, reqShiny: 0, reqShinyTier: 'LSR', rewardGems: 150000, rewardSkills: 30 }
+];
+
+window.openQuestCenter = function() {
+    let totalNormal = 0;
+    let totalShiny = 0;
+    let hasShinyLSR = false;
+
+    // Máy quét tự động lùng sục trong kho đồ
+    for(let t in myGallery) {
+        myGallery[t].forEach(cardName => {
+            if(cardName.includes('✨')) {
+                totalShiny++;
+                if(t === 'LSR') hasShinyLSR = true; // Bắt quả tang có LSR Shiny
+            } else {
+                totalNormal++;
+            }
+        });
+    }
+
+    let html = `
+        <div style="background: linear-gradient(135deg, #111 0%, #333 100%); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 2px dashed #00C9FF; box-shadow: 0 5px 15px rgba(0,201,255,0.3);">
+            <h3 style="margin-top: 0; color: #00C9FF; text-align: center; text-shadow: 0 0 5px #00C9FF;">📊 THỐNG KÊ KHO ĐỒ</h3>
+            <div style="display:flex; justify-content:space-around; font-weight:bold; font-size:16px;">
+                <span style="color:#ddd;">Thẻ Thường: <span style="color:#fff; font-size:24px;">${totalNormal}</span></span>
+                <span class="shiny-text">Thẻ Shiny: <span style="font-size:24px; color:#fff;">${totalShiny}</span></span>
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px; text-align:left;">
+    `;
+
+    questList.forEach(q => {
+        let isClaimed = claimedQuests.includes(q.id);
+        
+        // Chấm điểm xem đã đạt điều kiện chưa
+        let condPassed = true;
+        if (q.reqNormal > 0 && totalNormal < q.reqNormal) condPassed = false;
+        if (q.reqShiny > 0 && totalShiny < q.reqShiny) condPassed = false;
+        if (q.reqShinyTier === 'LSR' && !hasShinyLSR) condPassed = false;
+
+        let isCompleted = condPassed;
+
+        // Vẽ Nút Bấm
+        let btnHtml = isClaimed 
+            ? `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #555; color: #999; cursor: not-allowed;" disabled>Đã Nhận</button>` 
+            : (isCompleted 
+                ? `<button class="btn btn-warning" style="width: 100px; padding: 6px; margin: 0; animation: pulse 1s infinite; box-shadow: 0 0 10px var(--warning);" onclick="claimQuestReward(${q.id})">Nhận Quà</button>` 
+                : `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #e0e0e0; color: #999; cursor: not-allowed;" disabled>Chưa Đạt</button>`);
+
+        // Hiển thị thanh tiến độ bằng số
+        let progressText = "";
+        if(q.reqNormal > 0) progressText = `(${Math.min(totalNormal, q.reqNormal)}/${q.reqNormal})`;
+        if(q.reqShiny > 0) progressText = `(${Math.min(totalShiny, q.reqShiny)}/${q.reqShiny})`;
+        if(q.reqShinyTier === 'LSR') progressText = hasShinyLSR ? `(1/1)` : `(0/1)`;
+
+        let cardStyle = (isCompleted && !isClaimed) ? "border: 2px solid var(--warning); background: #fffde7;" : "border: 1px solid #ddd; background: #fff;";
+
+        html += `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 8px; ${cardStyle} box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <div style="text-align: left; width: 70%;">
+                    <div style="font-weight: 900; font-size: 15px; color: ${isCompleted ? 'var(--danger)' : '#333'};">${q.title} <span style="font-size:12px; color:#888; font-weight:normal;">${progressText}</span></div>
+                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">${q.desc}</div>
+                    <div style="font-size: 12px; color: #00bcd4; font-weight: bold; text-shadow: 0 0 2px rgba(0,188,212,0.5);">💎 +${q.rewardGems} | ⚡ +${q.rewardSkills} Kỹ Năng</div>
+                </div>
+                ${btnHtml}
+            </div>
+        `;
+    });
+
+    html += `</div><button class="btn btn-secondary" style="margin-top: 20px;" onclick="closeModal()">Đóng Bảng</button>`;
+    openModal("📜 BẢNG NHIỆM VỤ SƯU TẦP", html);
+};
+
+window.claimQuestReward = function(id) {
+    let q = questList.find(x => x.id === id);
+    if(!q || claimedQuests.includes(id)) return;
+
+    // Phát quà
+    claimedQuests.push(id);
+    gems += q.rewardGems;
+    skillCount += q.rewardSkills;
+    updateStats();
+
+    showToast(`🎉 ĐỈNH CAO! Hoàn thành: ${q.title}! Nhận ${q.rewardGems}💎`, "success");
+    database.ref('chat_messages').push({ name: "HỆ THỐNG", text: `📜 KẺ SĂN THƯỞNG: [${playerName}] vừa hoàn thành nhiệm vụ "${q.title}" vơ vét quà khủng!`, timestamp: Date.now() });
+    
+    // Tải lại bảng để nút chuyển thành "Đã Nhận"
+    openQuestCenter();
+};
+// ==========================================
+// BẢN VÁ: NHIỆM VỤ VÔ HẠN (CÀY CUỐC LIÊN TỤC)
+// ==========================================
+
+// 1. Biến lưu trữ tiến độ ngầm
+window.myStats = window.myStats || { packs: 0, trades: 0, forges: 0, auctions: 0 };
+
+// 2. Cài "Gián điệp" theo dõi người chơi (Chỉ chạy 1 lần để chống lỗi nếu dán code 2 lần)
+if(!window.isQuestHooked) {
+    // Theo dõi mua Pack
+    const origRollGacha = window.rollGacha;
+    window.rollGacha = function(type) {
+        let cost = { 'basic': 500, 'pro': 1500, 'elite': 3000, 'legend': 8000, 'infinity': 15000 }[type] || 500;
+        if(gems >= cost) window.myStats.packs++;
+        origRollGacha(type);
+    };
+    const origRollMissingPack = window.rollMissingPack;
+    window.rollMissingPack = function(cost) {
+        if(gems >= cost) window.myStats.packs++;
+        origRollMissingPack(cost);
+    };
+
+    // Theo dõi Ép Thẻ (Trạm Trade & Lò Rèn)
+    const origExecuteTrade = window.executeTrade;
+    window.executeTrade = function(fromTier, toTier, cost) {
+        let counts = {}; myGallery[fromTier].forEach(c => counts[c] = (counts[c] || 0) + 1);
+        let dupes = 0; for(let n in counts) dupes += Math.max(0, counts[n]-1);
+        if(dupes >= cost) window.myStats.forges++;
+        origExecuteTrade(fromTier, toTier, cost);
+    };
+    const origExecuteUpgrade = window.executeUpgrade;
+    window.executeUpgrade = function() {
+        let fT = document.getElementById('upgrade-fodder').value;
+        if(fT) {
+            let counts = {}; myGallery[fT].forEach(c => counts[c] = (counts[c] || 0) + 1);
+            let dupes = 0; for(let n in counts) dupes += Math.max(0, counts[n]-1);
+            if(dupes >= 3) window.myStats.forges++;
+        }
+        origExecuteUpgrade();
+    };
+
+    // Theo dõi Chợ Đen & Đấu Giá (Lắng nghe từ Database khi trade thành công)
+    database.ref('room_free_success').on('child_added', (snap) => {
+        if(!isGameActive) return; let data = snap.val(); if(Date.now() - data.time > 15000) return;
+        if(data.poster === playerName || data.buyer === playerName) window.myStats.trades++;
+    });
+    database.ref('room_auction_wins').on('child_added', snap => {
+        if(!isGameActive) return; let win = snap.val(); if(Date.now() - win.time > 15000) return;
+        if(win.winner === playerName) window.myStats.auctions++;
+    });
+
+    window.isQuestHooked = true;
+}
+
+// 3. Danh sách Nhiệm vụ Vô Hạn (Hoàn thành xong tự Reset)
+const infiniteQuests = [
+    { id: 'inf_1', title: "Cơn Nghiện Gacha", desc: "Đập hộp 5 Pack thẻ bất kỳ.", target: 5, stat: 'packs', rewardGems: 3000, rewardSkills: 0 },
+    { id: 'inf_2', title: "Thợ Rèn Chăm Chỉ", desc: "Thực hiện ép phôi/nung thẻ 3 lần.", target: 3, stat: 'forges', rewardGems: 5000, rewardSkills: 1 },
+    { id: 'inf_3', title: "Thương Gia Tự Do", desc: "Chốt đơn thành công 2 Giao dịch chợ đen.", target: 2, stat: 'trades', rewardGems: 8000, rewardSkills: 2 },
+    { id: 'inf_4', title: "Đại Gia Đấu Giá", desc: "Trúng thầu 1 vật phẩm Đấu giá.", target: 1, stat: 'auctions', rewardGems: 15000, rewardSkills: 3 }
+];
+
+// 4. Mở rộng Giao diện Bảng Nhiệm Vụ (Gộp Vô hạn + Sưu tầm)
+window.openQuestCenter = function() {
+    let totalNormal = 0; let totalShiny = 0; let hasShinyLSR = false;
+
+    for(let t in myGallery) {
+        myGallery[t].forEach(cardName => {
+            if(cardName.includes('✨')) { totalShiny++; if(t === 'LSR') hasShinyLSR = true; } 
+            else { totalNormal++; }
+        });
+    }
+
+    let html = `
+        <div style="background: linear-gradient(135deg, #111 0%, #333 100%); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 2px dashed #00C9FF; box-shadow: 0 5px 15px rgba(0,201,255,0.3);">
+            <h3 style="margin-top: 0; color: #00C9FF; text-align: center; text-shadow: 0 0 5px #00C9FF;">📊 THỐNG KÊ KHO ĐỒ</h3>
+            <div style="display:flex; justify-content:space-around; font-weight:bold; font-size:16px;">
+                <span style="color:#ddd;">Thẻ Thường: <span style="color:#fff; font-size:24px;">${totalNormal}</span></span>
+                <span class="shiny-text">Thẻ Shiny: <span style="font-size:24px; color:#fff;">${totalShiny}</span></span>
+            </div>
+        </div>
+        
+        <div style="max-height: 50vh; overflow-y: auto; padding-right: 5px;">
+            <!-- KHU VỰC NHIỆM VỤ VÔ HẠN -->
+            <h3 style="color:var(--danger); border-bottom: 2px solid #ccc; padding-bottom:5px; margin-top:0; text-align:left;">🔥 NHIỆM VỤ VÔ HẠN (LÀM LẠI LIÊN TỤC)</h3>
+            <div style="display: flex; flex-direction: column; gap: 10px; text-align:left; margin-bottom: 20px;">
+    `;
+
+    // Render Quests Vô Hạn
+    infiniteQuests.forEach(q => {
+        let currentProg = window.myStats[q.stat] || 0;
+        let isCompleted = currentProg >= q.target;
+
+        let btnHtml = isCompleted 
+            ? `<button class="btn btn-warning" style="width: 100px; padding: 6px; margin: 0; animation: pulse 1s infinite; box-shadow: 0 0 10px var(--warning);" onclick="claimInfiniteQuest('${q.id}')">Nhận Quà</button>` 
+            : `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #e0e0e0; color: #999; cursor: not-allowed;" disabled>Chưa Đạt</button>`;
+
+        let cardStyle = isCompleted ? "border: 2px solid var(--danger); background: #fff5f5;" : "border: 1px solid #ddd; background: #fff;";
+
+        html += `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 8px; ${cardStyle} box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <div style="text-align: left; width: 70%;">
+                    <div style="font-weight: 900; font-size: 15px; color: ${isCompleted ? 'var(--danger)' : '#333'};">${q.title} <span style="font-size:12px; color:var(--primary); font-weight:bold;">(${Math.min(currentProg, q.target)}/${q.target})</span></div>
+                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">${q.desc}</div>
+                    <div style="font-size: 12px; color: #00bcd4; font-weight: bold; text-shadow: 0 0 2px rgba(0,188,212,0.5);">💎 +${q.rewardGems} | ⚡ +${q.rewardSkills} Kỹ Năng</div>
+                </div>
+                ${btnHtml}
+            </div>
+        `;
+    });
+
+    // KHU VỰC NHIỆM VỤ SƯU TẦM
+    html += `
+            </div>
+            <h3 style="color:var(--primary); border-bottom: 2px solid #ccc; padding-bottom:5px; margin-top:10px; text-align:left;">🏆 NHIỆM VỤ SƯU TẦP (CHỈ NHẬN 1 LẦN)</h3>
+            <div style="display: flex; flex-direction: column; gap: 10px; text-align:left;">
+    `;
+
+    questList.forEach(q => {
+        let isClaimed = claimedQuests.includes(q.id);
+        let condPassed = true;
+        if (q.reqNormal > 0 && totalNormal < q.reqNormal) condPassed = false;
+        if (q.reqShiny > 0 && totalShiny < q.reqShiny) condPassed = false;
+        if (q.reqShinyTier === 'LSR' && !hasShinyLSR) condPassed = false;
+
+        let isCompleted = condPassed;
+        let btnHtml = isClaimed 
+            ? `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #555; color: #999; cursor: not-allowed;" disabled>Đã Nhận</button>` 
+            : (isCompleted 
+                ? `<button class="btn btn-warning" style="width: 100px; padding: 6px; margin: 0; animation: pulse 1s infinite; box-shadow: 0 0 10px var(--warning);" onclick="claimQuestReward(${q.id})">Nhận Quà</button>` 
+                : `<button class="btn" style="width: 100px; padding: 6px; margin: 0; background: #e0e0e0; color: #999; cursor: not-allowed;" disabled>Chưa Đạt</button>`);
+
+        let progressText = "";
+        if(q.reqNormal > 0) progressText = `(${Math.min(totalNormal, q.reqNormal)}/${q.reqNormal})`;
+        if(q.reqShiny > 0) progressText = `(${Math.min(totalShiny, q.reqShiny)}/${q.reqShiny})`;
+        if(q.reqShinyTier === 'LSR') progressText = hasShinyLSR ? `(1/1)` : `(0/1)`;
+
+        let cardStyle = (isCompleted && !isClaimed) ? "border: 2px solid var(--warning); background: #fffde7;" : "border: 1px solid #ddd; background: #fff;";
+
+        html += `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 8px; ${cardStyle} box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <div style="text-align: left; width: 70%;">
+                    <div style="font-weight: 900; font-size: 15px; color: ${isCompleted ? 'var(--danger)' : '#333'};">${q.title} <span style="font-size:12px; color:#888; font-weight:normal;">${progressText}</span></div>
+                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">${q.desc}</div>
+                    <div style="font-size: 12px; color: #00bcd4; font-weight: bold; text-shadow: 0 0 2px rgba(0,188,212,0.5);">💎 +${q.rewardGems} | ⚡ +${q.rewardSkills} Kỹ Năng</div>
+                </div>
+                ${btnHtml}
+            </div>
+        `;
+    });
+
+    html += `</div></div><button class="btn btn-secondary" style="margin-top: 20px; width: 100%; font-size: 16px; padding: 12px;" onclick="closeModal()">ĐÓNG BẢNG</button>`;
+    openModal("📜 NHIỆM VỤ CHIẾN DỊCH", html);
+};
+
+// 5. Hàm chốt lúa Nhiệm vụ vô hạn
+window.claimInfiniteQuest = function(qId) {
+    let q = infiniteQuests.find(x => x.id === qId);
+    if(!q) return;
+
+    let currentProg = window.myStats[q.stat] || 0;
+    if(currentProg >= q.target) {
+        // Trừ đi số lượng KPI để ông làm vòng tiếp theo (VD: có 6, trừ 5 còn dư 1 vòng mới)
+        window.myStats[q.stat] -= q.target;
+        
+        // Phát quà
+        gems += q.rewardGems;
+        skillCount += q.rewardSkills;
+        updateStats();
+
+        showToast(`🎉 Lụm lúa! ${q.rewardGems}💎 từ nhiệm vụ "${q.title}"! (Có thể làm tiếp)`, "success");
+        openQuestCenter(); // Tự động load lại bảng để update thanh tiến độ
+    }
 };
 </script>
 </body>
